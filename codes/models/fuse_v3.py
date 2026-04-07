@@ -1,10 +1,12 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.nn.functional import softmax as sf
 from models.utils import *
 from models.kpi_model_v3 import KpiEncoder, KpiEncoder_low
 from models.log_model_v3 import LogEncoder, LogEncoder_low
 from models.utils import MultiHeadAttention
+from models.trace_model_v3 import TraceEncoder, TraceEncoder_low, TraceModel
 class AddAttention(nn.Module): #k=V
     def __init__(self, dimensions,windows_lens=100):
         super(AddAttention, self).__init__()
@@ -54,13 +56,16 @@ class DotAttention(nn.Module): #k=V
 
 class MultiEncoder(nn.Module):
     def __init__(self, var_nums, device, vocab_size=300, fuse_type="cross_attn", **kwargs):
-        super(MultiEncoder, self).__init__() 
+        super(MultiEncoder, self).__init__()
         self.log_encoder = LogEncoder(device, **kwargs)
         self.kpi_encoder = KpiEncoder(device, **kwargs)
-        self.hidden_size = kwargs["hidden_size"]  
+        self.hidden_size = kwargs["hidden_size"]
         self.window_size = 100
         self.feature_type = kwargs["feature_type"]
         self.fuse_type = fuse_type
+        self.open_trace = kwargs.get("open_trace", False)
+        if self.open_trace:
+            self.trace_encoder = TraceEncoder(device, **kwargs)
         if self.fuse_type == "cross_attn" or self.fuse_type == "sep_attn":
             if kwargs["attn_type"] == "add":
                 self.attn_alpha = AddAttention(self.hidden_size,kwargs["window_size"])
@@ -71,11 +76,27 @@ class MultiEncoder(nn.Module):
             elif kwargs["attn_type"] == "dot":
                 self.attn_alpha = DotAttention(self.hidden_size)
                 self.attn_beta = DotAttention(self.hidden_size)
-        elif  self.fuse_type == "multi_modal_self_attn":
-            self.self_attention=MultiHeadAttention(2*self.hidden_size,2,device=device)
-    def forward(self, log_x, kpi_x):
-        kpi_re = self.kpi_encoder(kpi_x) #[batch_size, T, hidden_size]
-        log_re = self.log_encoder(log_x) #[batch_size, W, hidden_size]
+        elif self.fuse_type == "multi_modal_self_attn":
+            # Khi có trace: self-attention trên 3 biểu diễn [log ‖ kpi ‖ trace] → 3H
+            # Khi không có trace: chỉ [log ‖ kpi] → 2H (backward compatible)
+            n_modal = 3 if self.open_trace else 2
+            self.self_attention = MultiHeadAttention(n_modal * self.hidden_size, 2, device=device)
+
+    def forward(self, log_x, kpi_x, trace_nodes=None, trace_adj=None):
+        kpi_re = self.kpi_encoder(kpi_x)  # [B, W, H]
+        log_re = self.log_encoder(log_x)  # [B, W, H]
+
+        # ── Trace branch: tính TRƯỚC fuse để có thể đưa vào self-attention ──
+        trace_re = None
+        if self.open_trace and trace_nodes is not None and trace_adj is not None:
+            B, W, N, C = trace_nodes.shape
+            trace_z = self.trace_encoder(
+                trace_nodes.reshape(B * W, N, C),
+                trace_adj.reshape(B * W, N, N)
+            )  # [B*W, N, H]
+            trace_re = trace_z.mean(dim=1).reshape(B, W, self.hidden_size)  # [B, W, H]
+
+        # ── Fusion ────────────────────────────────────────────────────────────
         fused = None
         if self.fuse_type == "cross_attn":
             fused_kpi, _ = self.attn_alpha(query=log_re, context=kpi_re)
@@ -92,9 +113,15 @@ class MultiEncoder(nn.Module):
         elif self.fuse_type == "multi_modal_self_attn":
             fused_kpi = kpi_re
             fused_log = log_re
-            fused = torch.cat((kpi_re, log_re), dim=-1)
-            fused=self.self_attention(fused,fused)[0]
-        return fused_kpi,fused_log,fused #[batch_size, T+W, hidden_size]
+            if trace_re is not None:
+                # Trộn cả 3 biểu diễn: [log ‖ kpi ‖ trace] → [B, W, 3H]
+                # Self-attention học tương quan chéo sâu giữa đồ thị/văn bản/số liệu
+                fused = torch.cat((kpi_re, log_re, trace_re), dim=-1)
+            else:
+                fused = torch.cat((kpi_re, log_re), dim=-1)   # fallback: 2H
+            fused = self.self_attention(fused, fused)[0]
+
+        return fused_kpi, fused_log, fused, trace_re
     
 class ReturnSelf(nn.Module):
     def __init__(self):
@@ -160,10 +187,13 @@ class MultiEncoder_low(nn.Module):
         super(MultiEncoder_low, self).__init__()
         self.log_encoder = LogEncoder_low(device, **kwargs).to(device)
         self.kpi_encoder = KpiEncoder_low(device, **kwargs).to(device)
-        self.hidden_size = kwargs["hidden_size"]  
+        self.hidden_size = kwargs["hidden_size"]
         self.window_size = 100
         self.feature_type = kwargs["feature_type"]
         self.fuse_type = "concat"
+        self.open_trace = kwargs.get("open_trace", False)
+        if self.open_trace:
+            self.trace_encoder = TraceEncoder_low(device, **kwargs).to(device)
         # self.fuse_type = fuse_type
         if self.fuse_type == "cross_attn" or self.fuse_type == "sep_attn":
             if kwargs["attn_type"] == "add":
@@ -177,12 +207,21 @@ class MultiEncoder_low(nn.Module):
                 self.attn_beta = DotAttention(self.hidden_size)
         elif  self.fuse_type == "multi_modal_self_attn":
             self.self_attention=MultiHeadAttention(2*self.hidden_size,2,device=device)
-    def forward(self, log_x, kpi_x):
+
+    def forward(self, log_x, kpi_x, trace_nodes=None, trace_adj=None):
         kpi_re = self.kpi_encoder(kpi_x) #[batch_size, T, hidden_size]
         log_re = self.log_encoder(log_x) #[batch_size, W, hidden_size]
-        # fuse_re = torch.cat((kpi_re, log_re), dim=-1)
-        # return kpi_re,log_re,fuse_re
-        
+
+        # ── Trace branch: tính TRƯỚC fuse để đưa vào concat ──────────────────
+        trace_re = None
+        if self.open_trace and trace_nodes is not None and trace_adj is not None:
+            B, W, N, C = trace_nodes.shape
+            trace_z = self.trace_encoder(
+                trace_nodes.reshape(B * W, N, C),
+                trace_adj.reshape(B * W, N, N)
+            )  # [B*W, N, hidden_size]
+            trace_re = trace_z.mean(dim=1).reshape(B, W, self.hidden_size)  # [B, W, H]
+
         fused = None
         if self.fuse_type == "cross_attn":
             fused_kpi, _ = self.attn_alpha(query=log_re, context=kpi_re)
@@ -195,112 +234,115 @@ class MultiEncoder_low(nn.Module):
         elif self.fuse_type == "concat":
             fused_kpi = kpi_re
             fused_log = log_re
-            fused = torch.cat((kpi_re, log_re), dim=-1)
+            if trace_re is not None:
+                fused = torch.cat((kpi_re, log_re, trace_re), dim=-1)  # [B,W,3H]
+            else:
+                fused = torch.cat((kpi_re, log_re), dim=-1)             # [B,W,2H]
         elif self.fuse_type == "multi_modal_self_attn":
             fused_kpi = kpi_re
             fused_log = log_re
             fused = torch.cat((kpi_re, log_re), dim=-1)
             fused=self.self_attention(fused,fused)[0]
-        return fused_kpi,fused_log,fused #[batch_size, T+W, hidden_size]
+
+        return fused_kpi, fused_log, fused, trace_re
         
 class MultiDiscriminator(nn.Module):
     def __init__(self, var_nums, device, fuse_type="cross_attn", **kwargs):
         super(MultiDiscriminator, self).__init__()
         self.fuse_type = fuse_type
+        self.open_trace = kwargs.get("open_trace", False)
         self.encoder = MultiEncoder_low(var_nums=var_nums, device=device, fuse_type=fuse_type, **kwargs)
         # self.encoder = MultiEncoder(var_nums=var_nums, device=device, fuse_type=fuse_type, **kwargs)
-        self.fc = nn.Linear(kwargs["window_size"]*kwargs["hidden_size"]*2,kwargs["hidden_size"])
-        self.decoder_fuse = nn.Linear(kwargs["hidden_size"],2)
-        self.decoder = nn.Linear(kwargs["window_size"]*kwargs["hidden_size"]*2,2)
-        self.decoder2 = nn.Linear(kwargs["window_size"]*kwargs["hidden_size"]*2,2)
-        self.decoder3 = nn.Linear(kwargs["window_size"]*kwargs["hidden_size"],2)
-        self.decoder4 = nn.Linear(kwargs["window_size"]*kwargs["hidden_size"],2)
+        # Khi open_trace: concat_feature có chiều 3H; nếu không: 2H
+        _n_modal = 3 if self.open_trace else 2
+        _W, _H = kwargs["window_size"], kwargs["hidden_size"]
+        self.fc = nn.Linear(_W * _H * _n_modal, _H)
+        self.decoder_fuse = nn.Linear(_H, 2)
+        self.decoder = nn.Linear(_W * _H * _n_modal, 2)
+        self.decoder2 = nn.Linear(_W * _H * _n_modal, 2)
+        self.decoder3 = nn.Linear(_W * _H, 2)
+        self.decoder4 = nn.Linear(_W * _H, 2)
+        # Classifier riêng cho trace (real/fake phân loại dựa trên trace embedding)
+        if self.open_trace:
+            self.decoder5 = nn.Linear(_W * _H, 2)
         self.criterion = nn.CrossEntropyLoss() #nn.CrossEntropyLoss(reduction='none')
         self.criterion2 = nn.MSELoss()
     
+    def _get_trace_inputs(self, input_dict):
+        """Helper: return (trace_nodes, trace_adj) or (None, None) when unavailable."""
+        if self.open_trace and "trace_node_features" in input_dict:
+            return input_dict["trace_node_features"], input_dict["trace_adj"]
+        return None, None
+
     def get_loss_old(self, input_dict, res_set, flag=False):
         log_x = input_dict["log_features"]
         kpi_x = input_dict["kpi_features"]
         unmatched_kpi_x = input_dict["unmatched_kpi_features"]
         log_x_fake = res_set["output"][0]
         kpi_x_fake = res_set["output"][1]
+        trace_nodes, trace_adj = self._get_trace_inputs(input_dict)
         b,_,_ = kpi_x.shape
-        kpi_re,log_re,concate_feature = self.encoder(log_x,kpi_x)
+        kpi_re,log_re,concate_feature,_ = self.encoder(log_x,kpi_x,trace_nodes,trace_adj)
         pred = self.decoder(concate_feature.reshape(b,-1))
-        kpi_re_fake,log_re_fake,concate_feature_fake = self.encoder(log_x_fake,kpi_x_fake)
+        kpi_re_fake,log_re_fake,concate_feature_fake,_ = self.encoder(log_x_fake,kpi_x_fake,trace_nodes,trace_adj)
         pred_fake = self.decoder(concate_feature_fake.reshape(b,-1))
-        kpi_re_unmatched,log_re_unmatched,concate_feature_unmatched = self.encoder(log_x,unmatched_kpi_x)
+        kpi_re_unmatched,log_re_unmatched,concate_feature_unmatched,_ = self.encoder(log_x,unmatched_kpi_x)
         pred_unmatched = self.decoder(concate_feature_unmatched.reshape(b,-1))
         y1 = torch.ones_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device)
         y2 = torch.zeros_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device)
-        # y3 = torch.ones_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device) * 2
         loss = self.criterion(pred,y1) + self.criterion(pred_fake,y2)
-
         deceive_loss = self.criterion2(concate_feature,concate_feature_fake)
-        
-        # if flag:
-        #     loss += self.criterion(pred_unmatched,y2)
-        #     deceive_loss =max(0,deceive_loss - self.criterion2(kpi_re_fake,kpi_re_unmatched)) # work
-        #     # deceive_loss =max(0,deceive_loss - self.criterion2(concate_feature_fake,concate_feature_unmatched)) # prob work
-        
         return {"loss":loss,"deceive_loss":deceive_loss}
-    
+
     def get_loss_sep(self, input_dict, res_set, flag=False):
         log_x = input_dict["log_features"]
         kpi_x = input_dict["kpi_features"]
         unmatched_kpi_x = input_dict["unmatched_kpi_features"]
         log_x_fake = res_set["output"][0]
         kpi_x_fake = res_set["output"][1]
+        trace_nodes, trace_adj = self._get_trace_inputs(input_dict)
         b,_,_ = kpi_x.shape
-        kpi_re,log_re,concate_feature_ = self.encoder(log_x,kpi_x)
+        kpi_re,log_re,concate_feature_,_ = self.encoder(log_x,kpi_x,trace_nodes,trace_adj)
         concate_feature = self.fc(concate_feature_.reshape(b,-1))
         pred = self.decoder_fuse(concate_feature)
-        kpi_re_fake,log_re_fake,concate_feature_fake_ = self.encoder(log_x_fake,kpi_x_fake)
+        kpi_re_fake,log_re_fake,concate_feature_fake_,_ = self.encoder(log_x_fake,kpi_x_fake,trace_nodes,trace_adj)
         concate_feature_fake = self.fc(concate_feature_fake_.reshape(b,-1))
         pred_fake = self.decoder_fuse(concate_feature_fake)
-        kpi_re_unmatched,log_re_unmatched,concate_feature_unmatched_ = self.encoder(log_x,unmatched_kpi_x)
+        kpi_re_unmatched,log_re_unmatched,concate_feature_unmatched_,_ = self.encoder(log_x,unmatched_kpi_x)
         concate_feature_unmatched = self.fc(concate_feature_unmatched_.reshape(b,-1))
         pred_unmatched = self.decoder_fuse(concate_feature_unmatched)
         y1 = torch.ones_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device)
         y2 = torch.zeros_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device)
-        # y3 = torch.ones_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device) * 2
         loss = self.criterion(pred,y1) + self.criterion(pred_fake,y2)
-
         deceive_loss = self.criterion2(concate_feature,concate_feature_fake)
-        # if flag:
-        #     loss += self.criterion(pred_unmatched,y2)
-        #     deceive_loss =max(0,deceive_loss - self.criterion2(concate_feature_fake,concate_feature_unmatched)+0.1) # prob work
-        #     # deceive_loss =max(0,deceive_loss - self.criterion2(kpi_re_fake,kpi_re_unmatched)) # work
         return {"loss":loss,"deceive_loss":deceive_loss}
 
-    
     def get_loss(self, input_dict, res_set, flag=False):
         log_x = input_dict["log_features"]
         kpi_x = input_dict["kpi_features"]
-        # unmatched_kpi_x = input_dict["unmatched_kpi_features"]
         log_x_fake = res_set["output"][0]
         kpi_x_fake = res_set["output"][1]
+        trace_nodes, trace_adj = self._get_trace_inputs(input_dict)
         b,_,_ = kpi_x.shape
-        kpi_re,log_re,concate_feature = self.encoder(log_x,kpi_x)
+        kpi_re,log_re,concate_feature,trace_re = self.encoder(log_x,kpi_x,trace_nodes,trace_adj)
         pred = self.decoder2(concate_feature.reshape(b,-1))
         pred_log = self.decoder3(log_re.reshape(b,-1))
-        pred_kpi = self.decoder4(kpi_re.reshape(b,-1))  
-        kpi_re_fake,log_re_fake,concate_feature_fake = self.encoder(log_x_fake,kpi_x_fake)
+        pred_kpi = self.decoder4(kpi_re.reshape(b,-1))
+        kpi_re_fake,log_re_fake,concate_feature_fake,trace_re_fake = self.encoder(log_x_fake,kpi_x_fake,trace_nodes,trace_adj)
         pred_fake = self.decoder2(concate_feature_fake.reshape(b,-1))
         pred_log_fake = self.decoder3(log_re_fake.reshape(b,-1))
         pred_kpi_fake = self.decoder4(kpi_re_fake.reshape(b,-1))
-        # kpi_re_unmatched,log_re_unmatched,concate_feature_unmatched = self.encoder(log_x,unmatched_kpi_x)
-        # pred_unmatched = self.decoder2(concate_feature_unmatched.reshape(b,-1))
-        # pred_log_unmatched = self.decoder3(log_re_unmatched.reshape(b,-1))
-        # pred_kpi_unmatched = self.decoder4(kpi_re_unmatched.reshape(b,-1))
-        
         y1 = torch.ones_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device)
         y2 = torch.zeros_like(pred).mean(dim=-1).type(torch.LongTensor).to(pred.device)
-        loss = self.criterion(pred_kpi_fake,y2)  + self.criterion(pred_kpi,y1) + self.criterion(pred_log,y1) + self.criterion(pred_log_fake,y2)
-        deceive_loss = self.criterion2(kpi_re,kpi_re_fake)  + self.criterion2(log_re,log_re_fake)
-        # if flag:
-        #     loss += self.criterion(pred_kpi_unmatched,y2)
-        #     deceive_loss = max(0, deceive_loss - self.criterion2(kpi_re_fake,kpi_re_unmatched)+0.2)
+        loss = self.criterion(pred_kpi_fake,y2) + self.criterion(pred_kpi,y1) + self.criterion(pred_log,y1) + self.criterion(pred_log_fake,y2)
+        # Trace: Discriminator phân biệt real/fake trace embedding
+        if trace_re is not None and trace_re_fake is not None:
+            pred_trace      = self.decoder5(trace_re.reshape(b, -1))
+            pred_trace_fake = self.decoder5(trace_re_fake.reshape(b, -1))
+            loss = loss + self.criterion(pred_trace, y1) + self.criterion(pred_trace_fake, y2)
+        deceive_loss = self.criterion2(kpi_re,kpi_re_fake) + self.criterion2(log_re,log_re_fake)
+        if trace_re is not None and trace_re_fake is not None:
+            deceive_loss = deceive_loss + self.criterion2(trace_re, trace_re_fake)
         return {"loss":loss,"deceive_loss":deceive_loss}
 
 class MultiModel(nn.Module):
@@ -311,60 +353,92 @@ class MultiModel(nn.Module):
         self.encoder = MultiEncoder(var_nums=var_nums, device=device, fuse_type=fuse_type, **kwargs)
         self.log_c = kwargs["log_c"]
         self.kpi_c = kwargs["kpi_c"]
-        # self.unmatch_k = kwargs["unmatch_k"]*0.1 + 1.0 # 之前的实验
-        self.unmatch_k = kwargs["unmatch_k"]*0.01  # 之前的实验
-        self.fuse_decoder=nn.Linear(kwargs["hidden_size"]*2,self.kpi_c+self.log_c)
+        self.unmatch_k = kwargs["unmatch_k"]*0.01
+        # Khi multi_modal_self_attn + open_trace: concat_feature có chiều 3H thay vì 2H
+        open_trace = kwargs.get("open_trace", False)
+        if fuse_type == "multi_modal_self_attn" and open_trace:
+            fuse_in_dim = kwargs["hidden_size"] * 3
+        else:
+            fuse_in_dim = kwargs["hidden_size"] * 2
+        self.fuse_decoder = nn.Linear(fuse_in_dim, self.kpi_c + self.log_c)
         if kwargs["criterion"] == "l1":
             self.criterion1 = nn.L1Loss()
             self.criterion2 = nn.L1Loss(reduction='none')
         else:
             self.criterion1 = nn.MSELoss()
             self.criterion2 = nn.MSELoss(reduction='none')
-        
-        
+
         self.criterion3 = nn.MSELoss()
         self.criterion4 = nn.L1Loss()
         self.narrow_modal_gap = ReturnSelf() if kwargs["open_narrowing_modal_gap"] else Return0()
         self.expand_anomaly_gap = ReturnTopXWeight() if kwargs["open_expand_anomaly_gap"] else Return1()
 
+        # Trace branch (Structure Autoencoder from TraceDAE)
+        self.open_trace = kwargs.get("open_trace", False)
+        self.trace_weight = kwargs.get("trace_weight", 1.0)
+        if self.open_trace:
+            self.trace_model = TraceModel(device, **kwargs)
+
     def forward(self, input_dict, flag=False):
         input = torch.concatenate([input_dict["kpi_features"],input_dict["log_features"]],dim=-1)
         input_unmatched = torch.concatenate([input_dict["unmatched_kpi_features"],input_dict["log_features"]],dim=-1)
-        fused_kpi,fused_log,concat_feature = self.encoder(input_dict["log_features"],input_dict["kpi_features"])
-        fused_kpi_unmatched,fused_log_unmatched,concat_feature_unmatched = self.encoder(input_dict["log_features"],input_dict["unmatched_kpi_features"])
+
+        # Trace inputs (optional)
+        trace_nodes = input_dict.get("trace_node_features", None)
+        trace_adj   = input_dict.get("trace_adj", None)
+
+        fused_kpi, fused_log, concat_feature, trace_re = self.encoder(
+            input_dict["log_features"], input_dict["kpi_features"], trace_nodes, trace_adj
+        )
+        # Unmatched pass: chỉ thay KPI, trace graph giữ nguyên → chiều nhất quán
+        fused_kpi_unmatched, fused_log_unmatched, concat_feature_unmatched, _ = self.encoder(
+            input_dict["log_features"], input_dict["unmatched_kpi_features"], trace_nodes, trace_adj
+        )
         fused_out_unmatched = self.fuse_decoder(concat_feature_unmatched)
         fused_out = self.fuse_decoder(concat_feature)
         kpi_out=fused_out[:,:,:self.kpi_c]
         log_out =fused_out[:,:,self.kpi_c:]
         kpi_out_unmatched=fused_out_unmatched[:,:,:self.kpi_c]
         log_out_unmatched =fused_out_unmatched[:,:,self.kpi_c:]
-        fused_kpi_fake,fused_log_fake,concat_feature_fake = self.encoder(log_out,kpi_out)
+        # Fake pass: encode lại output đã reconstruct, trace graph giữ nguyên
+        fused_kpi_fake, fused_log_fake, concat_feature_fake, _ = self.encoder(
+            log_out, kpi_out, trace_nodes, trace_adj
+        )
         fused_out_fake = self.fuse_decoder(concat_feature_fake)
-        
+
         kpi_dis=self.criterion2(kpi_out,input_dict["kpi_features"]).mean(dim=-1)
         log_dis=self.criterion2(log_out,input_dict["log_features"]).mean(dim=-1)
-        
 
-        # log_d = log_dis
-        # kpi_d = kpi_dis
-        log_d = log_dis* self.expand_anomaly_gap(log_dis)
-        kpi_d = kpi_dis* self.expand_anomaly_gap(kpi_dis)
+        log_d = log_dis * self.expand_anomaly_gap(log_dis)
+        kpi_d = kpi_dis * self.expand_anomaly_gap(kpi_dis)
         fusion_loss = log_d + kpi_d + self.narrow_modal_gap(torch.abs(log_d-kpi_d))
-        # loss = log_dis.mean() + kpi_dis.mean()+ max(0,self.criterion3(concat_feature,concat_feature_fake) - self.criterion3(concat_feature,concat_feature_unmatched))
-        
+
         loss = log_dis.mean() + kpi_dis.mean()
-        # loss = self.criterion4(input,fused_out)
-        
+
+        # ── Trace Structure Autoencoder branch ────────────────────────────────
+        trace_dis = None
+        if self.open_trace and trace_nodes is not None and trace_adj is not None:
+            B, W, N, _ = trace_nodes.shape
+            _, adj_hat, trace_dis_flat = self.trace_model(
+                trace_nodes.reshape(B * W, N, -1),
+                trace_adj.reshape(B * W, N, N)
+            )  # trace_dis_flat: [B*W]
+            trace_dis = trace_dis_flat.reshape(B, W)  # [B, W]
+            trace_d = trace_dis * self.expand_anomaly_gap(trace_dis)
+            fusion_loss = fusion_loss + self.trace_weight * trace_d
+            loss = loss + self.trace_weight * trace_dis.mean()
+        # ──────────────────────────────────────────────────────────────────────
+
         if flag:
-            # loss += max(0,self.criterion3(concat_feature,concat_feature_fake) - self.criterion3(concat_feature[:,:,:self.hidden_size],concat_feature_unmatched[:,:,:self.hidden_size])-0.1)
-            # loss += max(0,self.criterion4(input[:,:,:self.kpi_c],input_unmatched[:,:,:self.kpi_c])*1.2-self.criterion4(fused_out_fake[:,:,:self.kpi_c],fused_out_unmatched[:,:,:self.kpi_c]))
-            # loss += max(0,self.criterion4(input,input_unmatched)*1.5-self.criterion4(fused_out_fake,fused_out_unmatched))
-            # loss += max(0,self.criterion4(input,fused_out)*1.2-self.criterion4(input_unmatched,fused_out_unmatched))
-            # loss += max(0,self.criterion4(input_dict["kpi_features"],kpi_out)*self.unmatch_k-self.criterion4(input_dict["unmatched_kpi_features"],kpi_out_unmatched)) # 之前的实验
-            loss += max(0,self.criterion4(input_dict["kpi_features"],kpi_out)+ self.unmatch_k -self.criterion4(input_dict["unmatched_kpi_features"],kpi_out_unmatched))
+            loss += max(0, self.criterion4(input_dict["kpi_features"], kpi_out)
+                        + self.unmatch_k
+                        - self.criterion4(input_dict["unmatched_kpi_features"], kpi_out_unmatched))
 
-
-            # loss += self.criterion3(concat_feature,concat_feature_fake) + max(0,self.criterion3(concat_feature,concat_feature_fake)*2 - self.criterion3(concat_feature[:,:,:self.hidden_size],concat_feature_unmatched[:,:,:self.hidden_size]))
-            # loss = log_dis.mean() + kpi_dis.mean()+ max(0, 0.1 - self.criterion3(concat_feature,concat_feature_unmatched))
-        
-        return {"fusion_loss":fusion_loss,"loss":loss,"dis":(log_dis,kpi_dis),"features":(fused_log,fused_kpi,concat_feature), "output":(log_out,kpi_out)}
+        dis_tuple = (log_dis, kpi_dis) if trace_dis is None else (log_dis, kpi_dis, trace_dis)
+        return {
+            "fusion_loss": fusion_loss,
+            "loss": loss,
+            "dis": dis_tuple,
+            "features": (fused_log, fused_kpi, concat_feature),
+            "output": (log_out, kpi_out),
+        }

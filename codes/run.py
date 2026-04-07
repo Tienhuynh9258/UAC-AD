@@ -44,8 +44,8 @@ parser.add_argument("--open_position_embedding", default=False, type=str2bool)
 parser.add_argument("--sigma_matrix", default=False, type=str2bool)
 parser.add_argument("--feature_type", default="template_appear", type=str, choices=["word2vec", "sequential","template_count","template_appear"])
 parser.add_argument("--data", type=str, default="../data/chunk_10")
+# dataset choices: "original" | "yzh" | "zte" | "micross"
 parser.add_argument("--dataset", type=str, default="original")
-# parser.add_argument("--dataset", type=str, default="yzh")
 # parser.add_argument("--data", type=str, default="../data/data3")
 # parser.add_argument("--dataset", type=str, default="zte")
 # parser.add_argument("--data", type=str, default="../data/zte2")
@@ -68,11 +68,24 @@ parser.add_argument("--anomaly_rate", default=20, type=int) # 20 10 10
 parser.add_argument("--criterion", default="l1", type=str, choices=["l1", "mse"])
 
 
-##### Munual params
+##### Manual params
 parser.add_argument("--window_size", default=50, type=int)
 parser.add_argument("--hidden_size", default=32, type=int, help="Dim of the commnon feature space") # 可调
 # Fuse params
 parser.add_argument("--data_type", default="kpi", choices=["fuse", "log", "kpi"])
+
+### Trace params (Structure Autoencoder from TraceDAE)
+parser.add_argument("--open_trace", default=False, type=str2bool,
+                    help="Enable trace branch (GAT Structure Autoencoder). "
+                         "Requires trace_node_features and trace_adj in the data.")
+parser.add_argument("--num_services", default=10, type=int,
+                    help="Number of service nodes in the Service Trace Graph (STG)")
+parser.add_argument("--trace_c", default=5, type=int,
+                    help="Feature dimension per node in the STG (e.g. response_time, cpu, mem, ...)")
+parser.add_argument("--trace_weight", default=1.0, type=float,
+                    help="Weight for the trace reconstruction loss in the total loss")
+parser.add_argument("--trace_dropout", default=0.1, type=float,
+                    help="Dropout rate inside GAT layers")
 parser.add_argument("--fuse_type", default="multi_modal_self_attn", choices=["concat", "cross_attn", "sep_attn","multi_modal_self_attn"])
 parser.add_argument("--attn_type", default="add", choices=["dot", "add","qkv"])
 
@@ -97,7 +110,21 @@ parser.add_argument("--result_dir", default="../result21/", type=str)
 parser.add_argument("--main_model", default="hades", choices=["hades", "join-hades", "concat-hades", "sep-hades", "agn-hades", "one-hades", "met-hades", "anno-hades"])
 
 params = vars(parser.parse_args())
-# params["hash_id"] = dump_params(params)
+
+# Auto-load metadata saved by preprocess_micross.py (num_services, trace_c, etc.)
+import pickle as _pkl
+_meta_path = os.path.join(params["data"], "meta.pkl")
+if os.path.exists(_meta_path):
+    with open(_meta_path, "rb") as _f:
+        _meta = _pkl.load(_f)
+    # Only override if the user did not explicitly set them (still at default 0)
+    if params.get("num_services", 0) == 0 and "num_services" in _meta:
+        params["num_services"] = _meta["num_services"]
+    if params.get("trace_c", 0) == 0 and "trace_c" in _meta:
+        params["trace_c"] = _meta["trace_c"]
+    logging.info(f"Loaded meta.pkl: num_services={params['num_services']}, "
+                 f"trace_c={params['trace_c']}")
+
 seed_everything(params["random_seed"])
 os.environ ["CUDA_VISIBLE_DEVICES"] = params["gpu_device"]
 
