@@ -148,7 +148,7 @@ class FeatureExtractor(BaseEstimator):
         self.id2log_train.update({idx: log for idx, log in enumerate(self.ulog_train, 1)})
         self.log2id_train = {v: k for k, v in self.id2log_train.items()}
 
-        if self.feature_type == "word2vec"or "template_count":
+        if self.feature_type in ("word2vec", "template_count"):
             self.vocab.get_word2vec(total_logs)
             self.word_vectors = self.vocab.wv
             self.known_words = self.vocab.wv.key_to_index #known word list
@@ -171,10 +171,13 @@ class FeatureExtractor(BaseEstimator):
             # template_feature = np.array([self.__log2vec(t) for t in template])
             # kmean = KMeans(n_clusters=10)
             # self.cluster_y_pred = kmean.fit_predict(template_feature)
-        elif self.feature_type == "sequential" :
+        elif self.feature_type in ("template_appear", "sequential"):
+            # For template-based features, vocab_size = number of unique templates
             self.meta_data["vocab_size"] = len(self.log2id_train)
-        
-        else: raise ValueError("Unrecognized feature type {}".format(self.feature_type))
+            logging.info("{} unique log templates found.".format(len(self.log2id_train)))
+
+        else:
+            raise ValueError("Unrecognized feature type {}".format(self.feature_type))
 
 
     def transform(self, chunks,datatype="train"):

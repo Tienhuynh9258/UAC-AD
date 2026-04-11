@@ -1,0 +1,24 @@
+# Data files (too large for GitHub)
+data/
+*.pkl
+
+# Model checkpoints & training results
+*.ckpt
+result*/
+result21/
+
+# Claude local config
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Trained word vectors
+trained_wv/
+
+# Temp / logs
+*.log
+temp/
