@@ -1,0 +1,50 @@
+2026-04-11 10:41:33,306 P20608 INFO ^^^^^^^^^^ Current Model:hades, micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_2 ^^^^^^^^^^
+2026-04-11 10:41:33,306 P20608 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross
+2026-04-11 10:41:44,432 P20608 INFO 33 unique log templates found.
+2026-04-11 10:41:44,544 P20608 INFO Transforming unlabel train data.
+2026-04-11 10:41:45,634 P20608 INFO Transforming test data.
+2026-04-11 10:41:45,666 P20608 INFO 1 new templates show.
+2026-04-11 10:41:46,033 P20608 INFO Data loaded done!
+2026-04-11 10:42:00,784 P20608 INFO Known word number: 33
+2026-04-11 10:47:25,657 P20608 INFO Epoch 0/10, train generator loss: 0.33421
+2026-04-11 10:50:29,804 P20608 INFO Epoch 0/10, train discriminator loss: 2.34716
+2026-04-11 10:50:32,703 P20608 INFO *** Test time is 2.8995838165283203
+2026-04-11 10:50:32,703 P20608 INFO Epoch 0/10, test f1: 0.31788 rc: 0.32219 pc: 0.31368. [508.50s]
+2026-04-11 10:55:03,163 P20608 INFO Epoch 1/10, train generator loss: 0.17322
+2026-04-11 10:58:17,537 P20608 INFO Epoch 1/10, train discriminator loss: 2.61062
+2026-04-11 10:58:20,954 P20608 INFO *** Test time is 3.4011149406433105
+2026-04-11 10:58:20,954 P20608 INFO Epoch 1/10, test f1: 0.31070 rc: 0.26163 pc: 0.38244. [464.77s]
+2026-04-11 10:58:20,954 P20608 INFO early stopping epoch 1/5
+2026-04-11 11:02:29,059 P20608 INFO Epoch 2/10, train generator loss: 0.15742
+2026-04-11 11:05:52,190 P20608 INFO Epoch 2/10, train discriminator loss: 3.49848
+2026-04-11 11:05:54,399 P20608 INFO *** Test time is 2.206641912460327
+2026-04-11 11:05:54,399 P20608 INFO Epoch 2/10, test f1: 0.34208 rc: 0.41667 pc: 0.29015. [451.24s]
+2026-04-11 11:10:16,536 P20608 INFO Epoch 3/10, train generator loss: 0.11913
+2026-04-11 11:13:34,982 P20608 INFO Epoch 3/10, train discriminator loss: 1.83818
+2026-04-11 11:13:37,148 P20608 INFO *** Test time is 2.1484344005584717
+2026-04-11 11:13:37,150 P20608 INFO Epoch 3/10, test f1: 0.33906 rc: 0.41134 pc: 0.28838. [460.46s]
+2026-04-11 11:13:37,150 P20608 INFO early stopping epoch 1/5
+2026-04-11 11:17:56,414 P20608 INFO Epoch 4/10, train generator loss: 0.10815
+2026-04-11 11:21:27,726 P20608 INFO Epoch 4/10, train discriminator loss: 1.56955
+2026-04-11 11:21:29,976 P20608 INFO *** Test time is 2.243237018585205
+2026-04-11 11:21:29,977 P20608 INFO Epoch 4/10, test f1: 0.33865 rc: 0.41134 pc: 0.28780. [470.58s]
+2026-04-11 11:21:29,977 P20608 INFO early stopping epoch 2/5
+2026-04-11 11:25:57,998 P20608 INFO Epoch 5/10, train generator loss: 0.10289
+2026-04-11 11:29:24,636 P20608 INFO Epoch 5/10, train discriminator loss: 1.89434
+2026-04-11 11:29:26,679 P20608 INFO *** Test time is 2.024649143218994
+2026-04-11 11:29:26,679 P20608 INFO Epoch 5/10, test f1: 0.33106 rc: 0.40068 pc: 0.28206. [474.68s]
+2026-04-11 11:29:26,679 P20608 INFO early stopping epoch 3/5
+2026-04-11 11:33:44,742 P20608 INFO Epoch 6/10, train generator loss: 0.08794
+2026-04-11 11:37:08,444 P20608 INFO Epoch 6/10, train discriminator loss: 1.73298
+2026-04-11 11:37:10,592 P20608 INFO *** Test time is 2.140249490737915
+2026-04-11 11:37:10,592 P20608 INFO Epoch 6/10, test f1: 0.32564 rc: 0.39293 pc: 0.27803. [461.77s]
+2026-04-11 11:37:10,592 P20608 INFO early stopping epoch 4/5
+2026-04-11 11:41:31,045 P20608 INFO Epoch 7/10, train generator loss: 0.07553
+2026-04-11 11:44:55,672 P20608 INFO Epoch 7/10, train discriminator loss: 1.78173
+2026-04-11 11:44:57,871 P20608 INFO *** Test time is 2.1990909576416016
+2026-04-11 11:44:57,872 P20608 INFO Epoch 7/10, test f1: 0.33845 rc: 0.41134 pc: 0.28750. [465.08s]
+2026-04-11 11:44:57,872 P20608 INFO early stopping epoch 5/5
+2026-04-11 11:44:57,872 P20608 INFO Early stopping
+2026-04-11 11:45:00,657 P20608 INFO *** Test F1 0.3421  of unsupervised traning
+2026-04-11 11:45:00,657 P20608 INFO *** Best F1 {'f1': 0.3420843277645187, 'rc': 0.4166666666666667, 'pc': 0.2901484480431849}  of unsupervised traning
+2026-04-11 11:45:00,763 P20608 INFO Current hash id micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_2

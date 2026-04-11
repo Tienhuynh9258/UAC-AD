@@ -217,8 +217,14 @@ def construct_unmatched_data(data, params):
         old_kpis = temp_data[idx][1]["kpis"]
         old_log = temp_data[idx][1]["log_features"]
         new_id = np.random.randint(len(temp_data))
-        while (temp_data[new_id][1]["log_features"] == old_log).all() or np.abs(temp_data[new_id][1]["kpis"]-old_kpis).mean()<params["theta"]:
+        max_tries = 500
+        tries = 0
+        while tries < max_tries and (
+            (temp_data[new_id][1]["log_features"] == old_log).all()
+            or np.abs(temp_data[new_id][1]["kpis"] - old_kpis).mean() < params["theta"]
+        ):
             new_id = np.random.randint(len(temp_data))
+            tries += 1
         new_kpis = temp_data[new_id][1]["kpis"]
         temp_data[idx][1]["unmatched_kpi_features"] = new_kpis
     idx = 0

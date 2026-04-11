@@ -1,0 +1,57 @@
+2026-04-11 09:27:53,620 P20608 INFO ^^^^^^^^^^ Current Model:hades, micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_1 ^^^^^^^^^^
+2026-04-11 09:27:53,620 P20608 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross
+2026-04-11 09:28:03,537 P20608 INFO 33 unique log templates found.
+2026-04-11 09:28:03,616 P20608 INFO Transforming unlabel train data.
+2026-04-11 09:28:04,184 P20608 INFO Transforming test data.
+2026-04-11 09:28:04,200 P20608 INFO 1 new templates show.
+2026-04-11 09:28:04,519 P20608 INFO Data loaded done!
+2026-04-11 09:28:19,256 P20608 INFO Known word number: 33
+2026-04-11 09:32:51,708 P20608 INFO Epoch 0/10, train generator loss: 0.32922
+2026-04-11 09:35:33,307 P20608 INFO Epoch 0/10, train discriminator loss: 2.37366
+2026-04-11 09:35:35,481 P20608 INFO *** Test time is 2.1581337451934814
+2026-04-11 09:35:35,481 P20608 INFO Epoch 0/10, test f1: 0.30750 rc: 0.35562 pc: 0.27085. [433.46s]
+2026-04-11 09:39:00,189 P20608 INFO Epoch 1/10, train generator loss: 0.16302
+2026-04-11 09:41:35,459 P20608 INFO Epoch 1/10, train discriminator loss: 2.29858
+2026-04-11 09:41:37,588 P20608 INFO *** Test time is 2.129253625869751
+2026-04-11 09:41:37,588 P20608 INFO Epoch 1/10, test f1: 0.27639 rc: 0.32607 pc: 0.23984. [359.92s]
+2026-04-11 09:41:37,588 P20608 INFO early stopping epoch 1/5
+2026-04-11 09:45:18,639 P20608 INFO Epoch 2/10, train generator loss: 0.12025
+2026-04-11 09:48:36,762 P20608 INFO Epoch 2/10, train discriminator loss: 3.17123
+2026-04-11 09:48:38,763 P20608 INFO *** Test time is 1.9851975440979004
+2026-04-11 09:48:38,763 P20608 INFO Epoch 2/10, test f1: 0.30576 rc: 0.36628 pc: 0.26241. [419.19s]
+2026-04-11 09:48:38,763 P20608 INFO early stopping epoch 2/5
+2026-04-11 09:52:50,397 P20608 INFO Epoch 3/10, train generator loss: 0.09269
+2026-04-11 09:56:17,536 P20608 INFO Epoch 3/10, train discriminator loss: 1.82634
+2026-04-11 09:56:19,477 P20608 INFO *** Test time is 1.9410665035247803
+2026-04-11 09:56:19,477 P20608 INFO Epoch 3/10, test f1: 0.29994 rc: 0.35756 pc: 0.25831. [458.77s]
+2026-04-11 09:56:19,477 P20608 INFO early stopping epoch 3/5
+2026-04-11 10:00:31,317 P20608 INFO Epoch 4/10, train generator loss: 0.08677
+2026-04-11 10:03:45,597 P20608 INFO Epoch 4/10, train discriminator loss: 2.81106
+2026-04-11 10:03:48,025 P20608 INFO *** Test time is 2.4119319915771484
+2026-04-11 10:03:48,025 P20608 INFO Epoch 4/10, test f1: 0.32336 rc: 0.39002 pc: 0.27616. [446.12s]
+2026-04-11 10:08:01,301 P20608 INFO Epoch 5/10, train generator loss: 0.08163
+2026-04-11 10:11:11,499 P20608 INFO Epoch 5/10, train discriminator loss: 2.13060
+2026-04-11 10:11:13,703 P20608 INFO *** Test time is 2.188683271408081
+2026-04-11 10:11:13,703 P20608 INFO Epoch 5/10, test f1: 0.33093 rc: 0.40068 pc: 0.28187. [443.41s]
+2026-04-11 10:15:29,194 P20608 INFO Epoch 6/10, train generator loss: 0.07478
+2026-04-11 10:18:43,819 P20608 INFO Epoch 6/10, train discriminator loss: 2.65547
+2026-04-11 10:18:45,891 P20608 INFO *** Test time is 2.0726819038391113
+2026-04-11 10:18:45,891 P20608 INFO Epoch 6/10, test f1: 0.33858 rc: 0.41134 pc: 0.28770. [450.08s]
+2026-04-11 10:22:57,265 P20608 INFO Epoch 7/10, train generator loss: 0.07064
+2026-04-11 10:26:23,201 P20608 INFO Epoch 7/10, train discriminator loss: 2.14247
+2026-04-11 10:26:25,426 P20608 INFO *** Test time is 2.2217912673950195
+2026-04-11 10:26:25,426 P20608 INFO Epoch 7/10, test f1: 0.32538 rc: 0.39293 pc: 0.27764. [457.28s]
+2026-04-11 10:26:25,426 P20608 INFO early stopping epoch 1/5
+2026-04-11 10:30:32,017 P20608 INFO Epoch 8/10, train generator loss: 0.06412
+2026-04-11 10:33:55,146 P20608 INFO Epoch 8/10, train discriminator loss: 1.82850
+2026-04-11 10:33:57,598 P20608 INFO *** Test time is 2.4357340335845947
+2026-04-11 10:33:57,613 P20608 INFO Epoch 8/10, test f1: 0.33307 rc: 0.40359 pc: 0.28353. [449.74s]
+2026-04-11 10:33:57,613 P20608 INFO early stopping epoch 2/5
+2026-04-11 10:38:02,576 P20608 INFO Epoch 9/10, train generator loss: 0.06090
+2026-04-11 10:41:19,945 P20608 INFO Epoch 9/10, train discriminator loss: 1.71100
+2026-04-11 10:41:22,042 P20608 INFO *** Test time is 2.0805137157440186
+2026-04-11 10:41:22,042 P20608 INFO Epoch 9/10, test f1: 0.33666 rc: 0.40891 pc: 0.28610. [442.35s]
+2026-04-11 10:41:22,042 P20608 INFO early stopping epoch 3/5
+2026-04-11 10:41:24,340 P20608 INFO *** Test F1 0.3386  of unsupervised traning
+2026-04-11 10:41:24,340 P20608 INFO *** Best F1 {'f1': 0.33858424725822533, 'rc': 0.4113372093023256, 'pc': 0.28769908505591324}  of unsupervised traning
+2026-04-11 10:41:24,464 P20608 INFO Current hash id micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_1

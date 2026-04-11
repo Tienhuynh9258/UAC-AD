@@ -1,0 +1,49 @@
+2026-04-11 07:51:05,617 P9940 INFO ^^^^^^^^^^ Current Model:hades, micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_2 ^^^^^^^^^^
+2026-04-11 07:51:05,617 P9940 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross
+2026-04-11 07:51:14,710 P9940 INFO 33 unique log templates found.
+2026-04-11 07:51:14,805 P9940 INFO Transforming unlabel train data.
+2026-04-11 07:51:15,625 P9940 INFO Transforming test data.
+2026-04-11 07:51:15,657 P9940 INFO 1 new templates show.
+2026-04-11 07:51:16,023 P9940 INFO Data loaded done!
+2026-04-11 07:51:29,573 P9940 INFO Known word number: 33
+2026-04-11 07:53:20,716 P9940 INFO Epoch 0/10, train generator loss: 0.33003
+2026-04-11 07:55:06,959 P9940 INFO Epoch 0/10, train discriminator loss: 1.16872
+2026-04-11 07:55:08,451 P9940 INFO *** Test time is 1.4913885593414307
+2026-04-11 07:55:08,451 P9940 INFO Epoch 0/10, test f1: 0.05334 rc: 0.03052 pc: 0.21141. [216.97s]
+2026-04-11 07:57:09,068 P9940 INFO Epoch 1/10, train generator loss: 0.14867
+2026-04-11 07:59:19,980 P9940 INFO Epoch 1/10, train discriminator loss: 0.86832
+2026-04-11 07:59:21,600 P9940 INFO *** Test time is 1.6198647022247314
+2026-04-11 07:59:21,600 P9940 INFO Epoch 1/10, test f1: 0.05953 rc: 0.03585 pc: 0.17536. [251.48s]
+2026-04-11 08:01:03,000 P9940 INFO Epoch 2/10, train generator loss: 0.12158
+2026-04-11 08:03:13,329 P9940 INFO Epoch 2/10, train discriminator loss: 0.86673
+2026-04-11 08:03:14,772 P9940 INFO *** Test time is 1.4436249732971191
+2026-04-11 08:03:14,772 P9940 INFO Epoch 2/10, test f1: 0.25322 rc: 0.29506 pc: 0.22178. [231.71s]
+2026-04-11 08:04:50,465 P9940 INFO Epoch 3/10, train generator loss: 0.08127
+2026-04-11 08:06:50,532 P9940 INFO Epoch 3/10, train discriminator loss: 1.18938
+2026-04-11 08:06:52,120 P9940 INFO *** Test time is 1.588062047958374
+2026-04-11 08:06:52,120 P9940 INFO Epoch 3/10, test f1: 0.19944 rc: 0.22432 pc: 0.17953. [215.73s]
+2026-04-11 08:06:52,120 P9940 INFO early stopping epoch 1/5
+2026-04-11 08:08:32,518 P9940 INFO Epoch 4/10, train generator loss: 0.07525
+2026-04-11 08:10:37,119 P9940 INFO Epoch 4/10, train discriminator loss: 1.63350
+2026-04-11 08:10:38,435 P9940 INFO *** Test time is 1.3167860507965088
+2026-04-11 08:10:38,435 P9940 INFO Epoch 4/10, test f1: 0.18959 rc: 0.21269 pc: 0.17102. [225.00s]
+2026-04-11 08:10:38,435 P9940 INFO early stopping epoch 2/5
+2026-04-11 08:12:23,730 P9940 INFO Epoch 5/10, train generator loss: 0.05958
+2026-04-11 08:14:17,273 P9940 INFO Epoch 5/10, train discriminator loss: 1.12213
+2026-04-11 08:14:18,623 P9940 INFO *** Test time is 1.3497323989868164
+2026-04-11 08:14:18,623 P9940 INFO Epoch 5/10, test f1: 0.18123 rc: 0.20203 pc: 0.16430. [218.84s]
+2026-04-11 08:14:18,623 P9940 INFO early stopping epoch 3/5
+2026-04-11 08:16:00,577 P9940 INFO Epoch 6/10, train generator loss: 0.05818
+2026-04-11 08:18:01,785 P9940 INFO Epoch 6/10, train discriminator loss: 0.67648
+2026-04-11 08:18:03,192 P9940 INFO *** Test time is 1.4067723751068115
+2026-04-11 08:18:03,192 P9940 INFO Epoch 6/10, test f1: 0.18210 rc: 0.20203 pc: 0.16574. [223.16s]
+2026-04-11 08:18:03,208 P9940 INFO early stopping epoch 4/5
+2026-04-11 08:19:49,467 P9940 INFO Epoch 7/10, train generator loss: 0.05823
+2026-04-11 08:21:53,394 P9940 INFO Epoch 7/10, train discriminator loss: 1.87406
+2026-04-11 08:21:54,945 P9940 INFO *** Test time is 1.5508952140808105
+2026-04-11 08:21:54,945 P9940 INFO Epoch 7/10, test f1: 0.21142 rc: 0.24031 pc: 0.18874. [230.19s]
+2026-04-11 08:21:54,945 P9940 INFO early stopping epoch 5/5
+2026-04-11 08:21:54,945 P9940 INFO Early stopping
+2026-04-11 08:21:56,790 P9940 INFO *** Test F1 0.2532  of unsupervised traning
+2026-04-11 08:21:56,790 P9940 INFO *** Best F1 {'f1': 0.25322245322245324, 'rc': 0.29505813953488375, 'pc': 0.2217771303714494}  of unsupervised traning
+2026-04-11 08:21:57,000 P9940 INFO Current hash id micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_2

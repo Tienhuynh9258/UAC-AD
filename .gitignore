@@ -1,0 +1,22 @@
+# Data files (too large for GitHub)
+*.pkl
+
+# Training results (root-level only, not data/micross/result_*)
+result21/
+
+# Python
+
+# Claude local config
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Trained word vectors
+trained_wv/
+
+# Temp
+temp/

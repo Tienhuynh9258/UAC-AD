@@ -25,7 +25,7 @@ UAC-AD/
 │       ├── trace_model_v3.py           ← Trace encoder (GAT) + TraceModel
 │       └── utils.py                    ← Các module dùng chung (Attention, ...)
 └── data/
-    └── micross_v3/
+    └── micross/
         ├── train.pkl / unlabel.pkl / test.pkl
         └── meta.pkl
 ```
