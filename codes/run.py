@@ -63,6 +63,8 @@ parser.add_argument("--open_unmatch_zoomout", default=True, type=str2bool)
 # parser.add_argument("--unmatch_k", default=16, type=int)
 parser.add_argument("--unmatch_k", default=16, type=int)
 parser.add_argument("--run_times", default=0, type=int)
+parser.add_argument("--run_start", default=0, type=int, help="First run index (inclusive)")
+parser.add_argument("--run_end",   default=5, type=int, help="Last run index (exclusive)")
 parser.add_argument("--theta", default=0.15, type=float) # 0.3 0.15
 parser.add_argument("--anomaly_rate", default=20, type=int) # 20 10 10
 parser.add_argument("--criterion", default="l1", type=str, choices=["l1", "mse"])
@@ -82,8 +84,6 @@ parser.add_argument("--num_services", default=10, type=int,
                     help="Number of service nodes in the Service Trace Graph (STG)")
 parser.add_argument("--trace_c", default=5, type=int,
                     help="Feature dimension per node in the STG (e.g. response_time, cpu, mem, ...)")
-parser.add_argument("--trace_weight", default=1.0, type=float,
-                    help="Weight for the trace reconstruction loss in the total loss")
 parser.add_argument("--trace_dropout", default=0.1, type=float,
                     help="Dropout rate inside GAT layers")
 parser.add_argument("--fuse_type", default="multi_modal_self_attn", choices=["concat", "cross_attn", "sep_attn","multi_modal_self_attn"])
@@ -192,7 +192,7 @@ def main(var_nums):
     dump_scores(params["result_dir"], params["hash_id"], scores, model.train_time)
     logging.info("Current hash id {}".format(params["hash_id"]))
 
-for run_times in range(0,5):
+for run_times in range(params["run_start"], params["run_end"]):
     params["run_times"] = run_times
     if params["dataset"] == 'yzh':
         params["open_kpi_select"] = False
