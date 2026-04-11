@@ -1,7 +1,7 @@
 2026-04-11 08:25:02,165 P15976 INFO ^^^^^^^^^^ Current Model:hades, micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0 ^^^^^^^^^^
-2026-04-11 08:25:02,165 P15976 INFO Load from C:/Users/us/Desktop/UAC-AD/.claire/worktrees/data/micross_v3
+2026-04-11 08:25:02,165 P15976 INFO Load from C:/Users/us/Desktop/UAC-AD/.claire/worktrees/data/micross
 2026-04-11 08:25:49,197 P20608 INFO ^^^^^^^^^^ Current Model:hades, micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0 ^^^^^^^^^^
-2026-04-11 08:25:49,197 P20608 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross_v3
+2026-04-11 08:25:49,197 P20608 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross
 2026-04-11 08:25:56,630 P20608 INFO 33 unique log templates found.
 2026-04-11 08:25:56,763 P20608 INFO Transforming unlabel train data.
 2026-04-11 08:25:57,458 P20608 INFO Transforming test data.

@@ -1,6 +1,6 @@
 # Experiment Results — MicroSS: Baseline vs Trace-v3
 
-> **Dataset**: MicroSS (micross_v3) — 26,235 train / 13,213 test (11,149 normal + 2,064 anomaly, anomaly rate ~15.6%)
+> **Dataset**: MicroSS (micross) — 26,235 train / 13,213 test (11,149 normal + 2,064 anomaly, anomaly rate ~15.6%)
 > **Date**: 2026-04-11
 
 ---
@@ -151,7 +151,7 @@
 ```bash
 # Baseline (log + metric)
 python codes/run.py \
-    --data "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross_v3" \
+    --data "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross" \
     --dataset micross --data_type fuse \
     --open_trace False \
     --epoches 10 10 --batch_size 256 --patience 5 \
@@ -160,7 +160,7 @@ python codes/run.py \
 
 # Trace-v3 (log + metric + trace)
 python codes/run.py \
-    --data "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross_v3" \
+    --data "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross" \
     --dataset micross --data_type fuse \
     --open_trace True --num_services 4 --trace_c 5 \
     --epoches 10 10 --batch_size 256 --patience 5 \

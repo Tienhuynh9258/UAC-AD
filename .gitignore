@@ -1,7 +1,7 @@
 # Data files (too large for GitHub)
 *.pkl
 
-# Training results (root-level only, not data/micross_v3/result_*)
+# Training results (root-level only, not data/micross/result_*)
 result21/
 
 # Python

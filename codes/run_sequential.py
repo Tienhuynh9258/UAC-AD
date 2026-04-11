@@ -13,7 +13,7 @@ import subprocess, sys, os
 
 python = sys.executable
 script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "run.py")
-data   = "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross_v3"
+data   = "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross"
 
 RESULT_BASE  = "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/result_fuse_baseline"
 RESULT_TRACE = "C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/result_fuse_trace"

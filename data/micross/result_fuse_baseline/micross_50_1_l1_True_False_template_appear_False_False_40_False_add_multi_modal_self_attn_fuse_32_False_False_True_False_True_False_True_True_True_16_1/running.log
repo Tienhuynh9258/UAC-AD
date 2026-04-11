@@ -1,5 +1,5 @@
 2026-04-11 07:15:28,838 P9940 INFO ^^^^^^^^^^ Current Model:hades, micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_1 ^^^^^^^^^^
-2026-04-11 07:15:28,838 P9940 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross_v3
+2026-04-11 07:15:28,838 P9940 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross
 2026-04-11 07:15:37,132 P9940 INFO 33 unique log templates found.
 2026-04-11 07:15:37,249 P9940 INFO Transforming unlabel train data.
 2026-04-11 07:15:38,072 P9940 INFO Transforming test data.
