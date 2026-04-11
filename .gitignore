@@ -1,11 +1,10 @@
 # Data files (too large for GitHub)
-data/
 *.pkl
 
-# Model checkpoints & training results
-*.ckpt
-result*/
+# Training results (root-level only, not data/micross_v3/result_*)
 result21/
+
+# Python
 
 # Claude local config
 .claude/
