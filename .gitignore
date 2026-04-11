@@ -18,6 +18,5 @@ __pycache__/
 # Trained word vectors
 trained_wv/
 
-# Temp / logs
-*.log
+# Temp
 temp/

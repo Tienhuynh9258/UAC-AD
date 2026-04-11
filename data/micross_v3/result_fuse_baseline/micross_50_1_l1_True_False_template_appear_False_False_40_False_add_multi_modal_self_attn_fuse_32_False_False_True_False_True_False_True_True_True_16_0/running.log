@@ -1,0 +1,55 @@
+2026-04-11 06:40:54,093 P9940 INFO ^^^^^^^^^^ Current Model:hades, micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0 ^^^^^^^^^^
+2026-04-11 06:40:54,093 P9940 INFO Load from C:/Users/us/Desktop/UAC-AD/.claude/worktrees/data/micross_v3
+2026-04-11 06:41:00,776 P9940 INFO 33 unique log templates found.
+2026-04-11 06:41:00,877 P9940 INFO Transforming unlabel train data.
+2026-04-11 06:41:01,474 P9940 INFO Transforming test data.
+2026-04-11 06:41:01,493 P9940 INFO 1 new templates show.
+2026-04-11 06:41:01,809 P9940 INFO Data loaded done!
+2026-04-11 06:41:14,147 P9940 INFO Known word number: 33
+2026-04-11 06:43:07,943 P9940 INFO Epoch 0/10, train generator loss: 0.33655
+2026-04-11 06:44:54,467 P9940 INFO Epoch 0/10, train discriminator loss: 0.81609
+2026-04-11 06:44:56,447 P9940 INFO *** Test time is 1.9801299571990967
+2026-04-11 06:44:56,447 P9940 INFO Epoch 0/10, test f1: 0.09214 rc: 0.06783 pc: 0.14359. [215.42s]
+2026-04-11 06:46:38,166 P9940 INFO Epoch 1/10, train generator loss: 0.12360
+2026-04-11 06:48:27,412 P9940 INFO Epoch 1/10, train discriminator loss: 1.61872
+2026-04-11 06:48:28,857 P9940 INFO *** Test time is 1.4451212882995605
+2026-04-11 06:48:28,857 P9940 INFO Epoch 1/10, test f1: 0.29661 rc: 0.35223 pc: 0.25617. [210.92s]
+2026-04-11 06:50:00,493 P9940 INFO Epoch 2/10, train generator loss: 0.07475
+2026-04-11 06:51:44,870 P9940 INFO Epoch 2/10, train discriminator loss: 1.31138
+2026-04-11 06:51:46,503 P9940 INFO *** Test time is 1.6330926418304443
+2026-04-11 06:51:46,503 P9940 INFO Epoch 2/10, test f1: 0.33865 rc: 0.41134 pc: 0.28780. [195.96s]
+2026-04-11 06:53:17,121 P9940 INFO Epoch 3/10, train generator loss: 0.06458
+2026-04-11 06:54:59,947 P9940 INFO Epoch 3/10, train discriminator loss: 1.17594
+2026-04-11 06:55:01,415 P9940 INFO *** Test time is 1.4682443141937256
+2026-04-11 06:55:01,415 P9940 INFO Epoch 3/10, test f1: 0.31198 rc: 0.37403 pc: 0.26759. [193.40s]
+2026-04-11 06:55:01,415 P9940 INFO early stopping epoch 1/5
+2026-04-11 06:56:33,952 P9940 INFO Epoch 4/10, train generator loss: 0.04715
+2026-04-11 06:58:25,018 P9940 INFO Epoch 4/10, train discriminator loss: 0.57616
+2026-04-11 06:58:26,440 P9940 INFO *** Test time is 1.4218599796295166
+2026-04-11 06:58:26,440 P9940 INFO Epoch 4/10, test f1: 0.31396 rc: 0.37694 pc: 0.26902. [203.60s]
+2026-04-11 06:58:26,440 P9940 INFO early stopping epoch 2/5
+2026-04-11 06:59:57,141 P9940 INFO Epoch 5/10, train generator loss: 0.04518
+2026-04-11 07:01:46,027 P9940 INFO Epoch 5/10, train discriminator loss: 0.86481
+2026-04-11 07:01:47,614 P9940 INFO *** Test time is 1.5868000984191895
+2026-04-11 07:01:47,630 P9940 INFO Epoch 5/10, test f1: 0.33466 rc: 0.40601 pc: 0.28465. [199.59s]
+2026-04-11 07:01:47,630 P9940 INFO early stopping epoch 3/5
+2026-04-11 07:03:22,187 P9940 INFO Epoch 6/10, train generator loss: 0.04431
+2026-04-11 07:05:05,778 P9940 INFO Epoch 6/10, train discriminator loss: 1.12239
+2026-04-11 07:05:07,260 P9940 INFO *** Test time is 1.4822492599487305
+2026-04-11 07:05:07,260 P9940 INFO Epoch 6/10, test f1: 0.34188 rc: 0.41667 pc: 0.28986. [198.15s]
+2026-04-11 07:06:42,595 P9940 INFO Epoch 7/10, train generator loss: 0.04028
+2026-04-11 07:08:35,272 P9940 INFO Epoch 7/10, train discriminator loss: 1.35396
+2026-04-11 07:08:36,747 P9940 INFO *** Test time is 1.4753575325012207
+2026-04-11 07:08:36,747 P9940 INFO Epoch 7/10, test f1: 0.34570 rc: 0.42200 pc: 0.29277. [207.86s]
+2026-04-11 07:10:08,541 P9940 INFO Epoch 8/10, train generator loss: 0.03574
+2026-04-11 07:12:03,959 P9940 INFO Epoch 8/10, train discriminator loss: 1.36817
+2026-04-11 07:12:05,527 P9940 INFO *** Test time is 1.5519657135009766
+2026-04-11 07:12:05,527 P9940 INFO Epoch 8/10, test f1: 0.34945 rc: 0.42733 pc: 0.29558. [207.20s]
+2026-04-11 07:13:37,097 P9940 INFO Epoch 9/10, train generator loss: 0.03377
+2026-04-11 07:15:22,279 P9940 INFO Epoch 9/10, train discriminator loss: 1.02407
+2026-04-11 07:15:23,689 P9940 INFO *** Test time is 1.409679651260376
+2026-04-11 07:15:23,689 P9940 INFO Epoch 9/10, test f1: 0.34563 rc: 0.42200 pc: 0.29267. [196.72s]
+2026-04-11 07:15:23,689 P9940 INFO early stopping epoch 1/5
+2026-04-11 07:15:25,592 P9940 INFO *** Test F1 0.3494  of unsupervised traning
+2026-04-11 07:15:25,592 P9940 INFO *** Best F1 {'f1': 0.34944532488114105, 'rc': 0.4273255813953488, 'pc': 0.2955764075067024}  of unsupervised traning
+2026-04-11 07:15:25,775 P9940 INFO Current hash id micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0
