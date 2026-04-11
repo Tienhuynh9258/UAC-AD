@@ -171,6 +171,9 @@ class BaseModel(nn.Module):
         self.kpi_c = kwargs["kpi_c"]
         self.hidden_size = kwargs["hidden_size"]
         self.anomaly_rate = kwargs["anomaly_rate"]
+        self.open_trace = kwargs.get("open_trace", False)
+        self.num_services = kwargs.get("num_services", 0)
+        self.trace_c = kwargs.get("trace_c", 0)
         self.kwargs = kwargs
 
         self.model_save_dir = os.path.join(kwargs["result_dir"], kwargs["hash_id"])
@@ -256,14 +259,11 @@ class BaseModel(nn.Module):
                     distance = result["loss"]
                 res["loss"].extend(distance.cpu().numpy().reshape(-1).tolist())
                 res["true"].extend(batch_input["labels"].cpu().numpy().reshape(-1).tolist())
-        
+
         kpi_inputs = np.concatenate(kpi_inputs,axis=0).reshape(-1,self.kpi_c)
         kpi_outputs = np.concatenate(kpi_outputs,axis=0).reshape(-1,self.kpi_c)
         log_inputs = np.concatenate(log_inputs,axis=0).reshape(-1,self.log_c)
         log_outputs = np.concatenate(log_outputs,axis=0).reshape(-1,self.log_c)
-        # inputs = np.concatenate([kpi_inputs,log_inputs],axis=-1)
-        # outputs = np.concatenate([kpi_outputs,log_outputs],axis=-1)
-        # embeds = np.concatenate(embeds,axis=0).reshape(-1,self.hidden_size*2)
         test_embeds = {"embeds":embeds,"distance":res["loss"],"labels":res["true"]}
         
         # anomaly_ratio= range(1, 101) # [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,]
@@ -475,7 +475,7 @@ class BaseModel(nn.Module):
             kpi_outputs = []
             log_outputs = []
             labels = []
-            
+
             # train generator
             self.model.train()
             self.discriminator.eval()
@@ -486,13 +486,8 @@ class BaseModel(nn.Module):
                 labels.append(batch_input["labels"])
                 optimizer.zero_grad()
                 res = self.model(self.__input2device(batch_input), True) if self.open_unmatch_zoomout else self.model(self.__input2device(batch_input))
-                # macs1, params1 = profile(self.model, inputs=(self.__input2device(batch_input),))
-
-
 
                 if self.data_type == "fuse":
-                    # loss = res["loss"][0] + res["loss"][1]
-                    # loss = res["fusion_loss"]
                     loss = res["loss"]
                     kpi_outputs.append(res["output"][1].detach().cpu().numpy())
                     log_outputs.append(res["output"][0].detach().cpu().numpy())

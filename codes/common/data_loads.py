@@ -15,11 +15,11 @@ from sklearn.preprocessing import MinMaxScaler, RobustScaler
 # from src.utils import get_causal_chains, plot
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-def load_sessions(data_dir,**keywds): #both log and kpi
+def load_sessions(data_dir, **keywds):  # both log and kpi
     logging.info("Load from {}".format(data_dir))
     with open(os.path.join(data_dir, "train.pkl"), "rb") as fr:
         train = pickle.load(fr)
-    if keywds["dataset"] == "yzh": 
+    if keywds["dataset"] == "yzh":
         unlabel = {}
     else:
         with open(os.path.join(data_dir, "unlabel.pkl"), "rb") as fr:
@@ -29,11 +29,14 @@ def load_sessions(data_dir,**keywds): #both log and kpi
     return train, unlabel, test
 
 class myDataset(Dataset):
-    def __init__(self, sessions,window_size=100, test_flag=False):
+    def __init__(self, sessions, window_size=100, test_flag=False):
         self.data = []
         self.window=[]
         self.idx2id = {}
         self.test_flag = test_flag
+        # Detect whether trace data is present in the dataset
+        first_item = next(iter(sessions.values()))
+        self.has_trace = "trace_node_features" in first_item and "trace_adj" in first_item
         for idx, block_id in enumerate(sessions.keys()):
             self.idx2id[idx] = block_id
             item = sessions[block_id]
@@ -42,13 +45,12 @@ class myDataset(Dataset):
                 'label': int(item['label']),
                 'kpi_features': item['kpis'],
                 'unmatched_kpi_features': item['unmatched_kpi_features'],
-                # 'log_sequence':item['seqs'],
-                'raw_logs':item["logs"],
+                'raw_logs': item["logs"],
                 'log_features': item['log_features'],
-                
-                # 'kpi_cluster':item["cluster_kpis"],
-                # "log_cluster":item["cluster_log"]
             }
+            if self.has_trace:
+                sample['trace_node_features'] = item['trace_node_features']  # [num_services, trace_c]
+                sample['trace_adj'] = item['trace_adj']                      # [num_services, num_services]
             self.data.append(sample)
         
         if test_flag:
@@ -66,55 +68,34 @@ class myDataset(Dataset):
     def __len__(self):
         return len(self.window)
     def __getitem__(self, idx):
-        # log_features=np.array([x['log_features'] for x in self.window[idx]][:-1])
-        # kpi_features=np.array([x['kpis'] for x in self.window[idx]][:-1])
-        # label=self.window[idx][-1]["label"]
-        # metric_label=self.window[idx][-1]["kpi_cluster"]
-        # log_label=self.window[idx][-1]["log_cluster"]
-        # label=self.data[idx]["label"]
-        # log_features=self.data[idx]["log_features"]
-        log_template=[]
+        log_template = []
         kpis = []
-        labels=[]
+        labels = []
         kpis2 = []
-        # log2 = []
+        trace_nodes_list = []
+        trace_adjs_list = []
+
         for block in self.window[idx]:
-            kpis.append(block["kpi_features"]) # todo 待聚合
+            kpis.append(block["kpi_features"])
             log_template.append(block["log_features"])
             labels.append(block["label"])
-            # new_id = np.random.randint(len(self.data))
-            # while (self.data[new_id]["log_features"] == block["log_features"]).all() or np.abs(self.data[new_id]["kpi_features"]-block["kpi_features"]).mean()<0.15:
-            #     new_id = np.random.randint(len(self.data))
-            # new_kpi = self.data[new_id]["kpi_features"]
-            # old_kpi = block["kpi_features"]
-            # kpi_dis = np.abs(self.data[new_id]["kpi_features"]-block["kpi_features"]).mean()
-            # new_log = self.data[new_id]["log_features"]
-            # old_log = block["log_features"]
-            # log_dis = np.abs(self.data[new_id]["log_features"]-block["log_features"]).mean()
             kpis2.append(block["unmatched_kpi_features"])
-        
-        # new_idx = np.random.randint(len(self.window))
-        # # new_idx = idx
-        # batch_length = len(self.window[new_idx])
-        # for block in self.window[new_idx]:
-        #     noise = np.random.randn(len(block["kpi_features"]))
-        #     new_kpi = block["kpi_features"] + noise
-        #     kpis2.append(new_kpi) # todo 待聚合
-        #     # noise = np.random.randn(len(block["log_features"]))
-        #     # new_log = block["log_features"] + noise
-        #     # log2.append(new_log)
-            
-            
-        return {
-                # "kpi_features":torch.FloatTensor(np.array(kpis).mean(axis=1)),
-                "kpi_features":torch.FloatTensor(np.array(kpis)),
-                "log_features":torch.FloatTensor(np.array(log_template)),
-                "labels":torch.tensor(labels),
-                "unmatched_kpi_features":torch.FloatTensor(np.array(kpis2)),
-                # "unmatched_log_features":torch.FloatTensor(np.array(log2)),
-            }
-            
-        # return torch.FloatTensor(np.array(log_template)),torch.tensor(labels)
+            if self.has_trace:
+                trace_nodes_list.append(block["trace_node_features"])  # [num_services, trace_c]
+                trace_adjs_list.append(block["trace_adj"])             # [num_services, num_services]
+
+        result = {
+            "kpi_features": torch.FloatTensor(np.array(kpis)),
+            "log_features": torch.FloatTensor(np.array(log_template)),
+            "labels": torch.tensor(labels),
+            "unmatched_kpi_features": torch.FloatTensor(np.array(kpis2)),
+        }
+        if self.has_trace:
+            # trace_node_features: [window_size, num_services, trace_c]
+            # trace_adj:           [window_size, num_services, num_services]
+            result["trace_node_features"] = torch.FloatTensor(np.array(trace_nodes_list))
+            result["trace_adj"] = torch.FloatTensor(np.array(trace_adjs_list))
+        return result
     def __get_session_id__(self, idx):
         return self.idx2id[idx]
     
@@ -191,9 +172,11 @@ def normalization(train_chunks, unlabel_chunks, test_chunks,**params):
     test_features = get_features(test_chunks)
     
     if params["dataset"] == "original":
+        # Original dataset stores kpis as [num_subwindows, num_metrics]; average over time
         train_features["kpis"] = np.mean(train_features["kpis"],axis=-2)
         unlabel_features["kpis"] = np.mean(unlabel_features["kpis"],axis=-2)
         test_features["kpis"] = np.mean(test_features["kpis"],axis=-2)
+    # For "micross" and other datasets, kpis are already 1-D per sample — no averaging needed
         
     
     # plt.figure(figsize=(8*2,6*2))
