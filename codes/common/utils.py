@@ -24,7 +24,7 @@ def dump_params(params):
     # if params["data_type"] == "fuse":
     # open_template_appear_feature open_min_max open_kpi_select
     # hash_id = hashlib.md5(str(sorted([(k, v) for k, v in params.items()])).encode("utf-8")).hexdigest()[0:8]
-    hash_id = f'{params["dataset"]}_{params["window_size"]}_{params["k"]}_{params["criterion"]}_{params["open_kpi_normalization"]}_{params["open_log_normalization"]}_{params["feature_type"]}_{params["open_min_max"]}_{params["open_kpi_select"]}_{params["kpi_ratio"]}_{params["kpi_with_high_std"]}_{params["attn_type"]}_{params["fuse_type"]}_{params["data_type"]}_{params["hidden_size"]}_{params["open_position_embedding"]}_{params["sigma_matrix"]}_{params["open_narrowing_modal_gap"]}_{params["open_feature2"]}_{params["open_expand_anomaly_gap"]}_{params["evaluation_sep"]}_{params["open_gan"]}_{params["open_unmatch_zoomout"]}_{params["open_gan_sep"]}_{params["unmatch_k"]}_{params["run_times"]}'
+    hash_id = hashlib.md5(str(sorted([(k, v) for k, v in params.items()])).encode("utf-8")).hexdigest()[:8]
     result_dir = os.path.join(params["result_dir"], hash_id)
     os.makedirs(result_dir, exist_ok=True)
 

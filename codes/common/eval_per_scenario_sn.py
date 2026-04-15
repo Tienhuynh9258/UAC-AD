@@ -182,7 +182,10 @@ def main():
     results = []   # list of (sc_name, f1, pc, rc)
 
     for sc_name, test_pkl in scenario_files:
-        sc_result_dir = os.path.join(result_base, sc_name)
+        # Strip trailing _YYYYMMDD_HHMMSS timestamp from sc_name for result folder
+        import re as _re
+        sc_folder = _re.sub(r'_\d{8}_\d{6}$', '', sc_name)
+        sc_result_dir = os.path.join(result_base, sc_folder)
         os.makedirs(sc_result_dir, exist_ok=True)
 
         logging.info(f"{'='*60}")
