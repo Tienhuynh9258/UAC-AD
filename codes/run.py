@@ -66,12 +66,16 @@ parser.add_argument("--run_times", default=0, type=int)
 parser.add_argument("--run_start", default=0, type=int, help="First run index (inclusive)")
 parser.add_argument("--run_end",   default=5, type=int, help="Last run index (exclusive)")
 parser.add_argument("--theta", default=0.15, type=float) # 0.3 0.15
-parser.add_argument("--anomaly_rate", default=20, type=int) # 20 10 10
+parser.add_argument("--anomaly_rate", default=20, type=int,
+                    help="Threshold sweep range for non-SN datasets (backward compat).")
+parser.add_argument("--val_percentile", default=None, type=float,
+                    help="If set, threshold = percentile(normal_train_losses, val_percentile). "
+                         "Recommended: 95. Replaces anomaly_rate sweep for SN dataset.")
 parser.add_argument("--criterion", default="l1", type=str, choices=["l1", "mse"])
 
 
 ##### Manual params
-parser.add_argument("--window_size", default=50, type=int)
+parser.add_argument("--window_size", default=5, type=int)
 parser.add_argument("--hidden_size", default=32, type=int, help="Dim of the commnon feature space") # 可调
 # Fuse params
 parser.add_argument("--data_type", default="kpi", choices=["fuse", "log", "kpi"])
@@ -107,6 +111,9 @@ parser.add_argument("--word2vec_epoch", default=50, type=int)
 parser.add_argument("--pre_model", default=None, type=str)
 parser.add_argument("--word2vec_save_dir", default="../trained_wv/", type=str)
 parser.add_argument("--result_dir", default="../result21/", type=str)
+parser.add_argument("--test_pkl",   default=None, type=str,
+                    help="Override test.pkl path for per-scenario evaluation. "
+                         "If None, uses {data}/test.pkl as usual.")
 parser.add_argument("--main_model", default="hades", choices=["hades", "join-hades", "concat-hades", "sep-hades", "agn-hades", "one-hades", "met-hades", "anno-hades"])
 
 params = vars(parser.parse_args())
@@ -139,26 +146,20 @@ def main(var_nums):
     logging.info("^^^^^^^^^^ Current Model:"+params["main_model"]+", "+str(params["hash_id"])+" ^^^^^^^^^^")
 
     ###### Load data  ######
-    train_chunks, unlabel_chunks, test_chunks = load_sessions(data_dir=params["data"],**params)
-        
-    unsupervised_chunks={}
+    train_chunks, unlabel_chunks, val_chunks, test_chunks = load_sessions(data_dir=params["data"], **params)
+
+    unsupervised_chunks = {}
     for key, value in train_chunks.items():
-        if value["label"]==0:
-            unsupervised_chunks[key]=value
+        if value["label"] == 0:
+            unsupervised_chunks[key] = value
     for key, value in unlabel_chunks.items():
-        if value["label"]==0:
-            unsupervised_chunks[key]=value
-            
-    # all_chunks = {}
-    # all_chunks.update(train_chunks)
-    # all_chunks.update(test_chunks)
-    # res = get_dataset_distribution(all_chunks)
-    # print("zte "+'\n'.join(["{}:{}".format(k, v) for k,v in res.items()])+'\n\n')
-    
+        if value["label"] == 0:
+            unsupervised_chunks[key] = value
 
     if params["supervised"]:
         train_chunks.update(unlabel_chunks)
-    processed = Process(var_nums, train_chunks,unlabel_chunks,unsupervised_chunks, test_chunks, **params)
+    processed = Process(var_nums, train_chunks, unlabel_chunks, unsupervised_chunks,
+                        test_chunks, val_chunks=val_chunks or None, **params)
 
     for key, value in processed.test_chunks.items():
         params["kpi_c"] = len(value["kpis"])
@@ -167,23 +168,24 @@ def main(var_nums):
 
     print(params)
     bz = params["batch_size"]
-    # train_loader = DataLoader(processed.dataset["train"], batch_size=bz, shuffle=True, pin_memory=True)
-    unlabel_loader = DataLoader(processed.dataset["unlabel"],batch_size=bz, shuffle=True, pin_memory=True)
-    test_loader = DataLoader(processed.dataset["test"], batch_size=bz, shuffle=False, pin_memory=True)
+    unlabel_loader = DataLoader(processed.dataset["unlabel"], batch_size=bz, shuffle=True,  pin_memory=True)
+    test_loader    = DataLoader(processed.dataset["test"],    batch_size=bz, shuffle=False, pin_memory=True)
+    val_loader     = DataLoader(processed.dataset["val"],     batch_size=bz, shuffle=False, pin_memory=True) \
+                     if processed.dataset.get("val") else None
 
     ##### Build/Train model #####
     if params['data_type'] != 'kpi':
         vocab_size = processed.ext.meta_data["vocab_size"]
         logging.info("Known word number: {}".format(vocab_size))
-    else: vocab_size=300
+    else:
+        vocab_size = 300
     model = BaseModel(device=device, var_nums=var_nums, vocab_size=vocab_size, **params)
 
-    if params["pre_model"] is None: #train
+    if params["pre_model"] is None:  # train
         if params["supervised"]:
-            # scores = model.supervised_fit(train_loader, test_loader)
             pass
         else:
-            scores = model.unsupervised_fit(unlabel_loader, test_loader)
+            scores = model.unsupervised_fit(unlabel_loader, test_loader, val_loader=val_loader)
     else:
         model.load_model(params["pre_model"])
         scores = model.evaluate(test_loader)
@@ -194,6 +196,7 @@ def main(var_nums):
 
 for run_times in range(params["run_start"], params["run_end"]):
     params["run_times"] = run_times
+    seed_everything(params["random_seed"] + run_times)   # different seed per run
     if params["dataset"] == 'yzh':
         params["open_kpi_select"] = False
     else:
