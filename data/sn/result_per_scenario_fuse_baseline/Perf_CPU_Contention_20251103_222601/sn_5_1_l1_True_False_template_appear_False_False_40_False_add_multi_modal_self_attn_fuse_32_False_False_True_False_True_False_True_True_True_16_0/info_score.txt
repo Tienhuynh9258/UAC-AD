@@ -1,0 +1,4 @@
+Experiment sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0: 2026/04/16-06:26:31
+Train time/epoch 0.4584
+* Test -- f1:0.7143	rc:0.8333	pc:0.6250
+

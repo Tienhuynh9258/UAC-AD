@@ -170,7 +170,8 @@ class BaseModel(nn.Module):
         self.log_c = kwargs["log_c"]
         self.kpi_c = kwargs["kpi_c"]
         self.hidden_size = kwargs["hidden_size"]
-        self.anomaly_rate = kwargs["anomaly_rate"]
+        self.anomaly_rate    = kwargs["anomaly_rate"]
+        self.val_percentile  = kwargs.get("val_percentile", None)
         self.open_trace = kwargs.get("open_trace", False)
         self.num_services = kwargs.get("num_services", 0)
         self.trace_c = kwargs.get("trace_c", 0)
@@ -228,7 +229,7 @@ class BaseModel(nn.Module):
         logging.info("Inference delay {:.4f}".format(np.mean(inference_time)))
         return pseudo_Dataset(data)
 
-    def evaluate(self, test_loader, datatype="Test"):
+    def evaluate(self, test_loader, datatype="Test", threshold=None):
         res = defaultdict(list)
         kpi_inputs = []
         log_inputs = []
@@ -266,22 +267,31 @@ class BaseModel(nn.Module):
         log_outputs = np.concatenate(log_outputs,axis=0).reshape(-1,self.log_c)
         test_embeds = {"embeds":embeds,"distance":res["loss"],"labels":res["true"]}
         
-        # anomaly_ratio= range(1, 101) # [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,]
-        anomaly_ratio= range(1, self.anomaly_rate)
-        best_res = {"f1":-1}
-        best_pred = []
-        for ano in anomaly_ratio:
-            threshold= np.percentile(res["loss"],100-ano)
-            pred=[1 if d>threshold  else 0 for d in res["loss"]]
-            pred = adjustment_decision(pred,res["true"])  # 增加adjustment_decision
-            eval_results = {
+        if threshold is not None:
+            # Fixed threshold from normal (train) distribution — no data leakage, no point_adjust
+            pred = [1 if d > threshold else 0 for d in res["loss"]]
+            best_res = {
+                "f1": f1_score(res["true"], pred, zero_division=0),
+                "rc": recall_score(res["true"], pred, zero_division=0),
+                "pc": precision_score(res["true"], pred, zero_division=0),
+            }
+        else:
+            # Original sweep on test losses (backward compat for non-SN datasets)
+            anomaly_ratio = range(1, self.anomaly_rate)
+            best_res = {"f1": -1}
+            best_pred = []
+            for ano in anomaly_ratio:
+                threshold_i = np.percentile(res["loss"], 100 - ano)
+                pred = [1 if d > threshold_i else 0 for d in res["loss"]]
+                pred = adjustment_decision(pred, res["true"])
+                eval_results = {
                     "f1": f1_score(res["true"], pred),
                     "rc": recall_score(res["true"], pred),
                     "pc": precision_score(res["true"], pred),
                 }
-            if eval_results["f1"] > best_res["f1"]:
-                best_res = eval_results
-                best_pred = pred
+                if eval_results["f1"] > best_res["f1"]:
+                    best_res = eval_results
+                    best_pred = pred
                 
         # plot_labeled_2curve(kpi_outputs,kpi_inputs,best_pred,res["true"],f"test_kpi_pred_gt_label_{self.current_epoch}")
         # plot_labeled_2curve(log_outputs,log_inputs,best_pred,res["true"],f"test_log_pred_gt_label_{self.current_epoch}")
@@ -454,7 +464,7 @@ class BaseModel(nn.Module):
         logging.info("Best f1: test f1 {:.4f}".format(best_f1))
         return best_test_scores
 
-    def unsupervised_fit(self,unlabel_loader, test_loader):
+    def unsupervised_fit(self, unlabel_loader, test_loader, val_loader=None):
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
         optimizer2 = torch.optim.Adam(self.discriminator.parameters(), lr=self.learning_rate)
         best_res = {"f1":-1}
@@ -575,13 +585,31 @@ class BaseModel(nn.Module):
 
         self.save_model(best_state)
         self.load_model(self.model_save_file)
-        
 
-        test_results,test_embeds = self.evaluate(test_loader, datatype="Test")
-       
+        if self.val_percentile is not None:
+            # Compute threshold from unseen normal (val) losses — no test data leakage
+            # Fall back to unlabel_loader if val_loader not provided
+            threshold_loader = val_loader if val_loader is not None else unlabel_loader
+            source = "val" if val_loader is not None else "unlabel(fallback)"
+            normal_losses = []
+            self.model.eval()
+            self.loss_fusion.eval()
+            with torch.no_grad():
+                for batch_input in threshold_loader:
+                    result = self.model.forward(self.__input2device(batch_input))
+                    if self.data_type == "fuse":
+                        distance = result["fusion_loss"]
+                    else:
+                        distance = result["loss"]
+                    normal_losses.extend(distance.cpu().numpy().reshape(-1).tolist())
+            val_threshold = np.percentile(normal_losses, self.val_percentile)
+            logging.info(f"Threshold (p={self.val_percentile}, src={source}): {val_threshold:.6f}")
+            test_results, test_embeds = self.evaluate(test_loader, threshold=val_threshold)
+        else:
+            test_results, test_embeds = self.evaluate(test_loader)
+
         logging.info("*** Test F1 {:.4f}  of unsupervised traning".format(test_results["f1"]))
         logging.info(f"*** Best F1 {best_test_scores}  of unsupervised traning")
-
 
         return best_test_scores
     

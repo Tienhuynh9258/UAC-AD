@@ -1,0 +1,110 @@
+2026-04-14 08:11:29,697 P8568 INFO ^^^^^^^^^^ Current Model:hades, sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0 ^^^^^^^^^^
+2026-04-14 08:11:29,697 P8568 INFO Load from ../data/sn
+2026-04-14 08:11:30,092 P8568 INFO 375 unique log templates found.
+2026-04-14 08:11:30,092 P8568 INFO Transforming unlabel train data.
+2026-04-14 08:11:30,139 P8568 INFO Transforming test data.
+2026-04-14 08:11:30,155 P8568 INFO 197 new templates show.
+2026-04-14 08:11:30,187 P8568 INFO Transforming val data.
+2026-04-14 08:11:30,187 P8568 INFO 77 new templates show.
+2026-04-14 08:11:30,203 P8568 INFO Data loaded done!
+2026-04-14 08:14:08,719 P10104 INFO ^^^^^^^^^^ Current Model:hades, sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0 ^^^^^^^^^^
+2026-04-14 08:14:08,719 P10104 INFO Load from ../data/sn
+2026-04-14 08:14:09,036 P10104 INFO 375 unique log templates found.
+2026-04-14 08:14:09,051 P10104 INFO Transforming unlabel train data.
+2026-04-14 08:14:09,083 P10104 INFO Transforming test data.
+2026-04-14 08:14:09,115 P10104 INFO 197 new templates show.
+2026-04-14 08:14:09,146 P10104 INFO Transforming val data.
+2026-04-14 08:14:09,146 P10104 INFO 77 new templates show.
+2026-04-14 08:14:09,146 P10104 INFO Data loaded done!
+2026-04-14 08:14:09,178 P10104 INFO Known word number: 375
+2026-04-14 08:14:12,082 P10104 INFO Epoch 0/10, train generator loss: 1.28553
+2026-04-14 08:14:12,191 P10104 INFO Epoch 0/10, train discriminator loss: 2.78278
+2026-04-14 08:14:12,366 P10104 INFO *** Test time is 0.1756584644317627
+2026-04-14 08:14:12,366 P10104 INFO Epoch 0/10, test f1: 0.90909 rc: 0.83333 pc: 1.00000. [0.63s]
+2026-04-14 08:14:12,482 P10104 INFO Epoch 1/10, train generator loss: 1.20447
+2026-04-14 08:14:12,556 P10104 INFO Epoch 1/10, train discriminator loss: 2.27436
+2026-04-14 08:14:12,714 P10104 INFO *** Test time is 0.1578989028930664
+2026-04-14 08:14:12,714 P10104 INFO Epoch 1/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.19s]
+2026-04-14 08:14:12,839 P10104 INFO Epoch 2/10, train generator loss: 1.22174
+2026-04-14 08:14:12,927 P10104 INFO Epoch 2/10, train discriminator loss: 1.90384
+2026-04-14 08:14:13,075 P10104 INFO *** Test time is 0.14617586135864258
+2026-04-14 08:14:13,075 P10104 INFO Epoch 2/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.22s]
+2026-04-14 08:14:13,075 P10104 INFO early stopping epoch 1/5
+2026-04-14 08:14:13,188 P10104 INFO Epoch 3/10, train generator loss: 1.28449
+2026-04-14 08:14:13,267 P10104 INFO Epoch 3/10, train discriminator loss: 1.60817
+2026-04-14 08:14:13,409 P10104 INFO *** Test time is 0.14179372787475586
+2026-04-14 08:14:13,409 P10104 INFO Epoch 3/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.19s]
+2026-04-14 08:14:13,602 P10104 INFO Epoch 4/10, train generator loss: 1.37251
+2026-04-14 08:14:13,741 P10104 INFO Epoch 4/10, train discriminator loss: 1.37108
+2026-04-14 08:14:13,930 P10104 INFO *** Test time is 0.18944644927978516
+2026-04-14 08:14:13,930 P10104 INFO Epoch 4/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.30s]
+2026-04-14 08:14:13,930 P10104 INFO early stopping epoch 1/5
+2026-04-14 08:14:14,057 P10104 INFO Epoch 5/10, train generator loss: 1.47913
+2026-04-14 08:14:14,184 P10104 INFO Epoch 5/10, train discriminator loss: 1.19090
+2026-04-14 08:14:14,374 P10104 INFO *** Test time is 0.19005751609802246
+2026-04-14 08:14:14,374 P10104 INFO Epoch 5/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.25s]
+2026-04-14 08:14:14,374 P10104 INFO early stopping epoch 2/5
+2026-04-14 08:14:14,533 P10104 INFO Epoch 6/10, train generator loss: 1.58953
+2026-04-14 08:14:14,660 P10104 INFO Epoch 6/10, train discriminator loss: 1.05787
+2026-04-14 08:14:14,850 P10104 INFO *** Test time is 0.1900634765625
+2026-04-14 08:14:14,850 P10104 INFO Epoch 6/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.29s]
+2026-04-14 08:14:14,850 P10104 INFO early stopping epoch 3/5
+2026-04-14 08:14:15,012 P10104 INFO Epoch 7/10, train generator loss: 1.69504
+2026-04-14 08:14:15,135 P10104 INFO Epoch 7/10, train discriminator loss: 0.96920
+2026-04-14 08:14:15,325 P10104 INFO *** Test time is 0.18982291221618652
+2026-04-14 08:14:15,325 P10104 INFO Epoch 7/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.29s]
+2026-04-14 08:14:15,341 P10104 INFO early stopping epoch 4/5
+2026-04-14 08:14:15,492 P10104 INFO Epoch 8/10, train generator loss: 1.80001
+2026-04-14 08:14:15,611 P10104 INFO Epoch 8/10, train discriminator loss: 0.92248
+2026-04-14 08:14:15,803 P10104 INFO *** Test time is 0.19196486473083496
+2026-04-14 08:14:15,803 P10104 INFO Epoch 8/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.27s]
+2026-04-14 08:14:15,803 P10104 INFO early stopping epoch 5/5
+2026-04-14 08:14:15,803 P10104 INFO Early stopping
+2026-04-14 08:14:15,961 P10104 INFO Threshold (p=95.0, src=val): 1.344012
+2026-04-14 08:14:15,978 P10104 INFO *** Test F1 0.6667  of unsupervised traning
+2026-04-14 08:14:15,978 P10104 INFO *** Best F1 {'f1': 1.0, 'rc': 1.0, 'pc': 1.0}  of unsupervised traning
+2026-04-14 08:14:15,994 P10104 INFO Current hash id sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0
+2026-04-14 22:35:56,267 P9132 INFO ^^^^^^^^^^ Current Model:hades, sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0 ^^^^^^^^^^
+2026-04-14 22:35:56,267 P9132 INFO Load from ../data/sn
+2026-04-14 22:35:56,626 P9132 INFO 375 unique log templates found.
+2026-04-14 22:35:56,626 P9132 INFO Transforming unlabel train data.
+2026-04-14 22:35:56,674 P9132 INFO Transforming test data.
+2026-04-14 22:35:56,705 P9132 INFO 197 new templates show.
+2026-04-14 22:35:56,723 P9132 INFO Transforming val data.
+2026-04-14 22:35:56,723 P9132 INFO 77 new templates show.
+2026-04-14 22:35:56,737 P9132 INFO Data loaded done!
+2026-04-14 22:35:56,753 P9132 INFO Known word number: 375
+2026-04-14 22:35:59,681 P9132 INFO Epoch 0/10, train generator loss: 1.22756
+2026-04-14 22:35:59,775 P9132 INFO Epoch 0/10, train discriminator loss: 4.21888
+2026-04-14 22:35:59,917 P9132 INFO *** Test time is 0.14195775985717773
+2026-04-14 22:35:59,917 P9132 INFO Epoch 0/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.63s]
+2026-04-14 22:36:00,075 P9132 INFO Epoch 1/10, train generator loss: 1.16315
+2026-04-14 22:36:00,170 P9132 INFO Epoch 1/10, train discriminator loss: 3.68827
+2026-04-14 22:36:00,325 P9132 INFO *** Test time is 0.15462803840637207
+2026-04-14 22:36:00,325 P9132 INFO Epoch 1/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.24s]
+2026-04-14 22:36:00,325 P9132 INFO early stopping epoch 1/5
+2026-04-14 22:36:00,442 P9132 INFO Epoch 2/10, train generator loss: 1.13034
+2026-04-14 22:36:00,538 P9132 INFO Epoch 2/10, train discriminator loss: 3.36845
+2026-04-14 22:36:00,691 P9132 INFO *** Test time is 0.15180516242980957
+2026-04-14 22:36:00,691 P9132 INFO Epoch 2/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.21s]
+2026-04-14 22:36:00,691 P9132 INFO early stopping epoch 2/5
+2026-04-14 22:36:00,827 P9132 INFO Epoch 3/10, train generator loss: 1.12709
+2026-04-14 22:36:00,938 P9132 INFO Epoch 3/10, train discriminator loss: 3.13334
+2026-04-14 22:36:01,080 P9132 INFO *** Test time is 0.14159774780273438
+2026-04-14 22:36:01,080 P9132 INFO Epoch 3/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.25s]
+2026-04-14 22:36:01,080 P9132 INFO early stopping epoch 3/5
+2026-04-14 22:36:01,223 P9132 INFO Epoch 4/10, train generator loss: 1.13147
+2026-04-14 22:36:01,337 P9132 INFO Epoch 4/10, train discriminator loss: 2.95223
+2026-04-14 22:36:01,517 P9132 INFO *** Test time is 0.17969965934753418
+2026-04-14 22:36:01,517 P9132 INFO Epoch 4/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.26s]
+2026-04-14 22:36:01,517 P9132 INFO early stopping epoch 4/5
+2026-04-14 22:36:01,706 P9132 INFO Epoch 5/10, train generator loss: 1.15475
+2026-04-14 22:36:01,877 P9132 INFO Epoch 5/10, train discriminator loss: 2.82270
+2026-04-14 22:36:02,083 P9132 INFO *** Test time is 0.20550036430358887
+2026-04-14 22:36:02,083 P9132 INFO Epoch 5/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.36s]
+2026-04-14 22:36:02,083 P9132 INFO early stopping epoch 5/5
+2026-04-14 22:36:02,083 P9132 INFO Early stopping
+2026-04-14 22:36:02,226 P9132 INFO Threshold (p=95.0, src=val): 1.354068
+2026-04-14 22:36:02,301 P9132 INFO *** Test F1 0.5714  of unsupervised traning
+2026-04-14 22:36:02,301 P9132 INFO *** Best F1 {'f1': 1.0, 'rc': 1.0, 'pc': 1.0}  of unsupervised traning
+2026-04-14 22:36:02,304 P9132 INFO Current hash id sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0

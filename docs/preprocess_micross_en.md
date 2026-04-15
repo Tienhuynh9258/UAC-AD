@@ -1,41 +1,41 @@
-# Xử lý Dataset MicroSS — `preprocess_micross.py`
+# MicroSS Dataset Preprocessing — `preprocess_micross.py`
 
-## 1. Cấu trúc dữ liệu đầu vào
+## 1. Input Data Structure
 
 ```
 D:\GAIA-DataSet\MicroSS\
   ├── trace/
-  │   └── trace/                  ← 10 file CSV (~7.5 GB tổng)
+  │   └── trace/                  ← 10 CSV files (~7.5 GB total)
   │       ├── trace_table_dbservice1_2021-07.csv
   │       ├── trace_table_dbservice2_2021-07.csv
   │       ├── trace_table_redisservice1_2021-07.csv
   │       └── ...
   ├── metric/
-  │   └── metric/                 ← 10,817 file CSV (metric × date-split)
+  │   └── metric/                 ← 10,817 CSV files (metric × date-split)
   │       ├── dbservice1_..._2021-07-01_2021-07-15.csv
   │       ├── dbservice1_..._2021-07-15_2021-07-31.csv
-  │       ├── dbservice1_..._2021-08-01_2021-08-31.csv  ← bị skip (Aug)
+  │       ├── dbservice1_..._2021-08-01_2021-08-31.csv  ← skipped (Aug)
   │       └── ...
   ├── business/
-  │   └── business/               ← 2 file CSV (business logs)
-  │       ├── business_table_2021-08.csv          (22.7 GB → bị skip)
-  │       └── business_table_webservice1_2021-07.csv  (1.5 GB → load)
+  │   └── business/               ← 2 CSV files (business logs)
+  │       ├── business_table_2021-08.csv          (22.7 GB → skipped)
+  │       └── business_table_webservice1_2021-07.csv  (1.5 GB → loaded)
   └── run/
       └── run.zip                 ← anomaly injection records
 ```
 
-**Schema các file CSV:**
+**CSV file schemas:**
 
-| File     | Các cột chính                                                                              |
-|:---------|:-------------------------------------------------------------------------------------------|
-| trace    | `timestamp`, `service_name`, `span_id`, `parent_id`, `start_time`, `end_time`, `status_code` |
-| metric   | `timestamp` (Unix ms 13 chữ số), `value`                                                   |
-| business | `datetime` (YYYY-MM-DD HH:MM:SS), `service`, `message`                                     |
-| run      | `datetime`, `service`, `message` (anomaly info nhúng trong text)                           |
+| File     | Main columns                                                                                    |
+|:---------|:------------------------------------------------------------------------------------------------|
+| trace    | `timestamp`, `service_name`, `span_id`, `parent_id`, `start_time`, `end_time`, `status_code`   |
+| metric   | `timestamp` (Unix ms 13 digits), `value`                                                        |
+| business | `datetime` (YYYY-MM-DD HH:MM:SS), `service`, `message`                                         |
+| run      | `datetime`, `service`, `message` (anomaly info embedded in text)                               |
 
 ---
 
-## 2. Sơ đồ tổng quan luồng xử lý
+## 2. Processing Pipeline Overview
 
 ```
 D:\GAIA-DataSet\MicroSS\
@@ -75,21 +75,21 @@ D:\GAIA-DataSet\MicroSS\
 
 ---
 
-## 3. Chi tiết từng bước
+## 3. Step-by-Step Details
 
 ### Step 1 — Scan Time Range
 
 ```
-Với mỗi trace CSV:
+For each trace CSV:
   pd.read_csv(path, usecols=["timestamp"], chunksize=500K)
-  → tìm min/max timestamp
+  → find min/max timestamp
 
-Kết quả:
-  t_min = 2021-07-01 09:57:00  (floor theo phút)
+Result:
+  t_min = 2021-07-01 09:57:00  (floored to minute)
   t_max = 2021-08-01 00:00:00
 
-→ Dùng làm filter cho metric và log ở các bước sau
-  (chỉ lấy dữ liệu tháng 7, bỏ qua tháng 8)
+→ Used as filter for metrics and logs in subsequent steps
+  (only July data is kept, August is skipped)
 ```
 
 ---
@@ -97,11 +97,11 @@ Kết quả:
 ### Step 2 — Build Service Index
 
 ```
-Với mỗi trace CSV:
+For each trace CSV:
   pd.read_csv(path, nrows=10,000, usecols=["service_name"])
-  → đếm tần suất xuất hiện mỗi service
+  → count occurrence frequency per service
 
-Top 10 services → sắp xếp alphabetically:
+Top 10 services → sorted alphabetically:
   service2idx = {
     "dbservice1":   0,
     "dbservice2":   1,
@@ -121,22 +121,22 @@ Top 10 services → sắp xếp alphabetically:
 ### Step 3 — Build Static Adjacency
 
 ```
-Pass 1 — xây dựng span_id → service map:
-  Đọc 50K rows/file: {span_id → service_name}
+Pass 1 — build span_id → service map:
+  Read 50K rows/file: {span_id → service_name}
 
-Pass 2 — xây dựng call graph:
-  Đọc 50K rows/file: với mỗi span có parent_id != "0":
+Pass 2 — build call graph:
+  Read 50K rows/file: for each span with parent_id != "0":
     parent_svc = span_svc[parent_id]
     child_svc  = service_name
     adj[parent_svc_idx, child_svc_idx] = 1.0
 
-Kết quả: adj [10×10] — ma trận liền kề có hướng
-  30 directed edges (ai gọi ai trong hệ thống microservice)
+Result: adj [10×10] — directed adjacency matrix
+  30 directed edges (who calls whom in the microservice system)
 
-Ví dụ (minh họa):
-  webservice → dbservice    (web gọi DB)
-  webservice → redisservice (web gọi cache)
-  mobservice → logservice   (mobile gọi log)
+Example (illustrative):
+  webservice → dbservice    (web calls DB)
+  webservice → redisservice (web calls cache)
+  mobservice → logservice   (mobile calls log)
   ...
 ```
 
@@ -145,16 +145,16 @@ Ví dụ (minh họa):
 ### Step 4 — Load Anomaly Periods
 
 ```
-Mở run/run.zip → đọc CSV bên trong
-  Cột "message" chứa text dạng:
+Open run/run.zip → read CSV inside
+  Column "message" contains text of the form:
   "... start at 2021-07-01 11:44:26.882752 and lasts 600 seconds ..."
 
 Regex:
   r'start at (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\d.]*) and lasts (\d+) seconds'
 
-→ Parse thành: (start_timestamp, end_timestamp)
+→ Parsed into: (start_timestamp, end_timestamp)
 → 1,367 anomaly periods
-→ Khoảng đầu tiên: 2021-07-01 11:44:26 → 11:54:26 (10 phút)
+→ First interval: 2021-07-01 11:44:26 → 11:54:26 (10 minutes)
 ```
 
 ---
@@ -168,8 +168,8 @@ while current < t_max:
     current += 60s
 
 → 44,043 windows
-→ win_starts_ns [44043] — timestamp dạng int64 nanoseconds
-   (dùng cho np.searchsorted ở các bước sau)
+→ win_starts_ns [44043] — timestamps as int64 nanoseconds
+   (used for np.searchsorted in subsequent steps)
 ```
 
 ---
@@ -181,19 +181,19 @@ Input:  trace CSV files (10 files, ~7.5 GB)
 Output: node_feats [W=44043, S=10, C=5]
 
 ┌─────────────────────────────────────────────────────────────────┐
-│  Với mỗi file trace, đọc chunk 500K rows:                       │
+│  For each trace file, read chunks of 500K rows:                 │
 │                                                                 │
-│  Tính toán:                                                     │
+│  Compute:                                                       │
 │    duration  = end_time - start_time  (milliseconds)            │
 │    is_error  = (status_code != "200")                           │
 │    is_root   = (parent_id == "0")                               │
 │    si        = service2idx[service_name]                        │
 │                                                                 │
-│  Gán vào window bằng binary search:                             │
+│  Assign to window via binary search:                            │
 │    wi = searchsorted(win_starts_ns, ts_ns, side="right") - 1    │
 │    valid = (wi >= 0) & (wi < W)                                 │
 │                                                                 │
-│  Tích lũy bằng np.add.at / np.maximum.at:                      │
+│  Accumulate using np.add.at / np.maximum.at:                   │
 │    acc_count[wi, si]    += 1                                    │
 │    acc_dur_sum[wi, si]  += duration                             │
 │    acc_max_dur[wi, si]   = max(acc_max_dur, duration)           │
@@ -203,16 +203,16 @@ Output: node_feats [W=44043, S=10, C=5]
               │
               ▼
 node_feats [W, S, 5]:
-  dim 0 — call_count   (số lần gọi trong window, normalized)
-  dim 1 — avg_dur_ms   (thời gian phản hồi trung bình, normalized)
-  dim 2 — max_dur_ms   (thời gian phản hồi tối đa, normalized)
-  dim 3 — error_rate   (tỉ lệ lỗi status != 200)
-  dim 4 — root_rate    (tỉ lệ span là root call)
+  dim 0 — call_count   (number of calls within window, normalized)
+  dim 1 — avg_dur_ms   (average response time, normalized)
+  dim 2 — max_dur_ms   (maximum response time, normalized)
+  dim 3 — error_rate   (fraction of spans with status != 200)
+  dim 4 — root_rate    (fraction of spans that are root calls)
 ```
 
-> **Tại sao dùng `np.add.at` thay vì vòng lặp?**
-> Dataset có hàng chục triệu spans. Nếu dùng Python loop sẽ mất nhiều giờ.
-> `np.add.at` tích lũy trực tiếp vào mảng NumPy, toàn bộ bước này hoàn thành trong ~6 phút.
+> **Why use `np.add.at` instead of a loop?**
+> The dataset contains tens of millions of spans. A Python loop would take many hours.
+> `np.add.at` accumulates directly into a NumPy array; this entire step completes in ~6 minutes.
 
 ---
 
@@ -225,21 +225,21 @@ Output: kpi_matrix [W=44043, M=50]
 ┌─────────────────────────────────────────────────────────────────┐
 │  _discover_metric_groups()                                      │
 │                                                                 │
-│  10,817 files có tên dạng:                                      │
+│  10,817 files with names like:                                  │
 │    dbservice1_0.0.0.4_docker_cpu_core_0_2021-07-01_2021-07-15  │
 │    dbservice1_0.0.0.4_docker_cpu_core_0_2021-07-15_2021-07-31  │
 │    dbservice1_0.0.0.4_docker_cpu_core_0_2021-08-01_2021-08-31  │
 │                                           ↑                     │
 │  Strip suffix _YYYY-MM-DD_YYYY-MM-DD ────┘                      │
 │  → 4,967 unique metrics                                         │
-│  → Chọn top 50 (nhiều date-split nhất)                          │
+│  → Select top 50 (most date-splits)                             │
 └─────────────────────────────────────────────────────────────────┘
               │
               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  _file_overlaps_range()  — chỉ load July, skip August           │
+│  _file_overlaps_range()  — load July only, skip August          │
 │                                                                 │
-│  Với mỗi file, đọc suffix _YYYY-MM-DD_YYYY-MM-DD:               │
+│  For each file, read suffix _YYYY-MM-DD_YYYY-MM-DD:             │
 │    file_start = 2021-08-01  →  file_start >= t_max  → SKIP      │
 │    file_start = 2021-07-01  →  overlaps July range  → LOAD      │
 └─────────────────────────────────────────────────────────────────┘
@@ -252,11 +252,11 @@ Output: kpi_matrix [W=44043, M=50]
 │    np.add.at(kpi_sum[:, j], wi, value)                          │
 │    np.add.at(kpi_cnt[:, j], wi, 1.0)                            │
 │                                                                 │
-│  kpi_matrix = kpi_sum / kpi_cnt  (0 nếu không có data)         │
+│  kpi_matrix = kpi_sum / kpi_cnt  (0 if no data)                │
 └─────────────────────────────────────────────────────────────────┘
 
 Coverage: 83.2%
-(~16.8% windows không có metric data → fill 0)
+(~16.8% of windows have no metric data → filled with 0)
 ```
 
 ---
@@ -264,33 +264,33 @@ Coverage: 83.2%
 ### Step 8 — Load Business Logs
 
 ```
-Danh sách file trong business/business/:
+Files in business/business/:
   business_table_2021-08.csv          (22.7 GB)  → SKIP (> 5 GB limit)
   business_table_webservice1_2021-07.csv (1.5 GB) → LOAD
 
 ┌─────────────────────────────────────────────────────────────────┐
 │  Try C engine (chunk 300K rows):                                │
 │    ❌ "EOF inside string at row 7,285,312"                       │
-│       (embedded newline \n trong quoted field, chunk bị cắt     │
-│        đúng giữa field → C engine không xử lý được)            │
+│       (embedded newline \n in quoted field, chunk cut           │
+│        in the middle of a field → C engine cannot handle)      │
 │                                                                 │
 │  Fallback: Python engine:                                       │
-│    ⚠️  Load thành công phần lớn file                            │
-│       Dừng khi gặp row bị lỗi gần cuối file                     │
+│    ⚠️  Successfully loads most of the file                      │
+│       Stops when encountering a malformed row near end of file  │
 └─────────────────────────────────────────────────────────────────┘
               │
               ▼
-  Filter: chỉ giữ rows có datetime ∈ [t_min, t_max]
+  Filter: keep only rows with datetime ∈ [t_min, t_max]
   Sort by datetime
   → 7,051,685 log entries (ts_ns[], msgs[])
 
               │
               ▼  _build_log_lists() — binary search
-  Với mỗi window i:
+  For each window i:
     lo = searchsorted(log_ts_ns, win_start)
     hi = searchsorted(log_ts_ns, win_start + 60s)
     win_logs[i] = msgs[lo:hi]
-                  (hoặc ["padding"] nếu không có log trong window)
+                  (or ["padding"] if no logs in window)
 ```
 
 ---
@@ -298,13 +298,13 @@ Danh sách file trong business/business/:
 ### Step 9 — Assemble & Save
 
 ```
-Với mỗi window i trong 44,043:
+For each window i in 44,043:
 ┌─────────────────────────────────────────────────────────────────┐
-│  Gán nhãn anomaly:                                              │
-│    Kiểm tra [t_start, t_end) có overlap với anomaly period?     │
-│    label = 1 nếu có, 0 nếu không                                │
+│  Assign anomaly label:                                          │
+│    Check if [t_start, t_end) overlaps with any anomaly period   │
+│    label = 1 if overlap, 0 otherwise                            │
 │                                                                 │
-│  Tạo sample dict:                                               │
+│  Create sample dict:                                            │
 │  {                                                              │
 │    "label":               0 or 1,                               │
 │    "kpis":                kpi_matrix[i],           shape [50]   │
@@ -315,36 +315,36 @@ Với mỗi window i trong 44,043:
 └─────────────────────────────────────────────────────────────────┘
 
 Split 70% / 30%:
-  i < 30,830  →  train:  chỉ lấy normal samples (label=0)
-  i >= 30,830 →  test:   lấy tất cả
+  i < 30,830  →  train:  only normal samples (label=0)
+  i >= 30,830 →  test:   all samples
 
-Kết quả:
+Result:
   train.pkl   — 26,235 normal samples
-  unlabel.pkl — (giống train, dùng cho semi-supervised)
+  unlabel.pkl — (same as train, used for semi-supervised)
   test.pkl    — 13,213 samples (2,064 anomaly = 15.6%)
   meta.pkl    — {num_services:10, kpi_c:50, trace_c:5, window_sec:60, ...}
 ```
 
 ---
 
-## 4. Thống kê kết quả
+## 4. Output Statistics
 
-| Thông số              | Giá trị        |
+| Parameter             | Value          |
 |:----------------------|---------------:|
-| Thời gian xử lý       |        ~8 phút |
-| Tổng số windows       |         44,043 |
-| Window size           |        60 giây |
+| Processing time       |        ~8 min  |
+| Total windows         |         44,043 |
+| Window size           |        60 sec  |
 | Services              |             10 |
 | Metrics (KPI)         |             50 |
 | Log entries loaded    |      7,051,685 |
 | Anomaly periods       |          1,367 |
-| Anomaly rate (tổng)   |          15.1% |
+| Anomaly rate (total)  |          15.1% |
 | Anomaly rate (test)   |          15.6% |
 | KPI coverage          |          83.2% |
 
 ---
 
-## 5. Chạy lại preprocessing
+## 5. Re-running Preprocessing
 
 ```bash
 python preprocess_micross.py \
@@ -357,7 +357,7 @@ python preprocess_micross.py \
     --max_metrics 50
 ```
 
-**Sau khi xong, chạy model:**
+**After completion, run the model:**
 
 ```bash
 python run.py \
@@ -371,17 +371,17 @@ python run.py \
 
 ---
 
-## 6. Sơ đồ dữ liệu đầu ra cho model
+## 6. Model Input Data Schema
 
 ```
 train.pkl / test.pkl
   {
     block_id_xxxx: {
       "label":               int (0=normal, 1=anomaly)
-      "kpis":                float32 [50]        ← từ metric CSV
-      "logs":                list[str]            ← từ business log CSV
-      "trace_node_features": float32 [10, 5]     ← từ trace CSV
-      "trace_adj":           float32 [10, 10]    ← từ trace CSV (static)
+      "kpis":                float32 [50]        ← from metric CSV
+      "logs":                list[str]            ← from business log CSV
+      "trace_node_features": float32 [10, 5]     ← from trace CSV
+      "trace_adj":           float32 [10, 10]    ← from trace CSV (static)
     },
     block_id_yyyy: { ... },
     ...
@@ -397,5 +397,3 @@ meta.pkl
     "window_sec":   60,
   }
 ```
-
-

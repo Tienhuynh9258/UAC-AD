@@ -24,9 +24,14 @@ def load_sessions(data_dir, **keywds):  # both log and kpi
     else:
         with open(os.path.join(data_dir, "unlabel.pkl"), "rb") as fr:
             unlabel = pickle.load(fr)
-    with open(os.path.join(data_dir, "test.pkl"), "rb") as fr:
+    # Allow --test_pkl override for per-scenario evaluation
+    test_pkl_path = keywds.get("test_pkl") or os.path.join(data_dir, "test.pkl")
+    with open(test_pkl_path, "rb") as fr:
         test = pickle.load(fr)
-    return train, unlabel, test
+    # Load val.pkl if present (unseen normal windows for threshold estimation)
+    val_pkl_path = os.path.join(data_dir, "val.pkl")
+    val = pickle.load(open(val_pkl_path, "rb")) if os.path.exists(val_pkl_path) else {}
+    return train, unlabel, val, test
 
 class myDataset(Dataset):
     def __init__(self, sessions, window_size=100, test_flag=False):
@@ -166,47 +171,43 @@ def reconstruction_chunks(features,chunks):
     return new_chunks
     
 
-def normalization(train_chunks, unlabel_chunks, test_chunks,**params):
-    train_features = get_features(train_chunks)
+def normalization(train_chunks, unlabel_chunks, test_chunks, val_chunks=None, **params):
+    train_features   = get_features(train_chunks)
     unlabel_features = get_features(unlabel_chunks)
-    test_features = get_features(test_chunks)
-    
+    test_features    = get_features(test_chunks)
+    val_features     = get_features(val_chunks) if val_chunks else None
+
     if params["dataset"] == "original":
-        # Original dataset stores kpis as [num_subwindows, num_metrics]; average over time
-        train_features["kpis"] = np.mean(train_features["kpis"],axis=-2)
-        unlabel_features["kpis"] = np.mean(unlabel_features["kpis"],axis=-2)
-        test_features["kpis"] = np.mean(test_features["kpis"],axis=-2)
-    # For "micross" and other datasets, kpis are already 1-D per sample — no averaging needed
-        
-    
-    # plt.figure(figsize=(8*2,6*2))
-    # plot_labeled_curve(unlabel_kpi,train_labels,"train_kpis")
-    # plot_labeled_curve(train_kpis,train_labels,"train_kpis")
-    # plot_labeled_curve(test_kpi,test_labels,"test_kpi")
-    
+        train_features["kpis"]   = np.mean(train_features["kpis"],   axis=-2)
+        unlabel_features["kpis"] = np.mean(unlabel_features["kpis"], axis=-2)
+        test_features["kpis"]    = np.mean(test_features["kpis"],    axis=-2)
+        if val_features:
+            val_features["kpis"] = np.mean(val_features["kpis"], axis=-2)
+
     if params["open_kpi_normalization"]:
-        train_features["kpis"], scaler = normalize_data(train_features["kpis"], scaler=None) # 此处假设训练集的分布与测试集分布相似，但是目前C的数据并不符合这个假设
-        unlabel_features["kpis"], _ = normalize_data(unlabel_features["kpis"], scaler=scaler)
-        test_features["kpis"], _ = normalize_data(test_features["kpis"], scaler=scaler)
-    
+        train_features["kpis"],   scaler = normalize_data(train_features["kpis"],   scaler=None)
+        unlabel_features["kpis"], _      = normalize_data(unlabel_features["kpis"], scaler=scaler)
+        test_features["kpis"],    _      = normalize_data(test_features["kpis"],    scaler=scaler)
+        if val_features:
+            val_features["kpis"], _      = normalize_data(val_features["kpis"],     scaler=scaler)
+
     if params["open_log_normalization"]:
-        train_features["logs"], scaler = normalize_data(train_features["logs"], scaler=None)
-        unlabel_features["logs"], _ = normalize_data(unlabel_features["logs"], scaler=scaler)
-        test_features["logs"], _ = normalize_data(test_features["logs"], scaler=scaler)
-    
-    # params["scaler"] = scaler
-    # plot_curve(train_kpis,"train_kpis_norm")
-    # plot_curve(test_kpi,"test_kpi_norm")
-    
-    # 标准差过滤
+        train_features["logs"],   scaler = normalize_data(train_features["logs"],   scaler=None)
+        unlabel_features["logs"], _      = normalize_data(unlabel_features["logs"], scaler=scaler)
+        test_features["logs"],    _      = normalize_data(test_features["logs"],    scaler=scaler)
+        if val_features:
+            val_features["logs"], _      = normalize_data(val_features["logs"],     scaler=scaler)
+
     if params["open_kpi_select"]:
-        train_features["kpis"],unlabel_features["kpis"],test_features["kpis"] = kpi_selection(train_features["kpis"],unlabel_features["kpis"],test_features["kpis"],**params)
- 
-    new_train_chunks = reconstruction_chunks(train_features,train_chunks)
-    new_unlabel_chunks = reconstruction_chunks(unlabel_features,unlabel_chunks)
-    new_test_chunks = reconstruction_chunks(test_features,test_chunks)
-   
-    return new_train_chunks,new_unlabel_chunks,new_test_chunks
+        train_features["kpis"], unlabel_features["kpis"], test_features["kpis"] = \
+            kpi_selection(train_features["kpis"], unlabel_features["kpis"], test_features["kpis"], **params)
+
+    new_train_chunks   = reconstruction_chunks(train_features,   train_chunks)
+    new_unlabel_chunks = reconstruction_chunks(unlabel_features, unlabel_chunks)
+    new_test_chunks    = reconstruction_chunks(test_features,    test_chunks)
+    new_val_chunks     = reconstruction_chunks(val_features, val_chunks) if val_chunks else None
+
+    return new_train_chunks, new_unlabel_chunks, new_test_chunks, new_val_chunks
 
 def construct_unmatched_data(data, params):
     temp_data = []
@@ -234,37 +235,38 @@ def construct_unmatched_data(data, params):
     return data
 
 class Process():
-    def __init__(self, var_nums, labeled_train, unlabel_train, unsupervised_train,test_chunks, supervised=False, **kwargs):
+    def __init__(self, var_nums, labeled_train, unlabel_train, unsupervised_train, test_chunks, val_chunks=None, supervised=False, **kwargs):
         self.var_nums = var_nums
-        self.kpi_kns=None
-        self.log_kns=None
+        self.kpi_kns = None
+        self.log_kns = None
         self.ext = FeatureExtractor(**kwargs)
         self.__train_ext(labeled_train, unlabel_train)
-        
+
         del labeled_train
-        # unlabel_train = unsupervised_train
-        # labeled_train = self.ext.transform(labeled_train)
-        
+
         if not supervised:
             unlabel_train = self.ext.transform(unsupervised_train, datatype="unlabel train")
-            # unlabel_train = self.__transform_kpi(unlabel_train)
-            # unlabel_train=self.__transform_cluster(unlabel_train)
 
         test_chunks = self.ext.transform(test_chunks, datatype="test")
-        # # labeled_train = self.__transform_kpi(labeled_train)
-        # test_chunks = self.__transform_cluster(test_chunks)
-        
-        labeled_train, unlabel_train, test_chunks = normalization(unlabel_train, unlabel_train, test_chunks,**kwargs)
+        if val_chunks:
+            val_chunks = self.ext.transform(val_chunks, datatype="val")
+
+        labeled_train, unlabel_train, test_chunks, val_chunks = normalization(
+            unlabel_train, unlabel_train, test_chunks, val_chunks, **kwargs
+        )
 
         logging.info('Data loaded done!')
-        
+
         self.unlabel_train = construct_unmatched_data(unlabel_train, kwargs)
-        self.test_chunks = construct_unmatched_data(test_chunks, kwargs)
-        
+        self.test_chunks   = construct_unmatched_data(test_chunks,   kwargs)
+        if val_chunks:
+            val_chunks = construct_unmatched_data(val_chunks, kwargs)
+
+        ws = kwargs["window_size"]
         self.dataset = {
-            # 'train': myDataset(labeled_train),
-            'unlabel': myDataset(self.unlabel_train,window_size=kwargs["window_size"]) if not supervised else None,
-            'test':  myDataset(self.test_chunks,window_size=kwargs["window_size"],test_flag=True),
+            'unlabel': myDataset(self.unlabel_train, window_size=ws) if not supervised else None,
+            'test':    myDataset(self.test_chunks,   window_size=ws, test_flag=True),
+            'val':     myDataset(val_chunks, window_size=ws) if val_chunks else None,
         }
         
     def __train_ext(self, a, b):

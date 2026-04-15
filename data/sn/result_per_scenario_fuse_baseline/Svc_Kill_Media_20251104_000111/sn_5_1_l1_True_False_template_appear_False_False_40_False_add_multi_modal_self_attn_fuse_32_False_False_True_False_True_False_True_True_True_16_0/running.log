@@ -1,0 +1,52 @@
+2026-04-15 22:27:37,277 P7300 INFO ^^^^^^^^^^ Current Model:hades, sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0 ^^^^^^^^^^
+2026-04-15 22:27:37,279 P7300 INFO Load from ../data/sn
+2026-04-15 22:27:38,072 P7300 INFO 375 unique log templates found.
+2026-04-15 22:27:38,087 P7300 INFO Transforming unlabel train data.
+2026-04-15 22:27:38,204 P7300 INFO Transforming test data.
+2026-04-15 22:27:38,287 P7300 INFO 197 new templates show.
+2026-04-15 22:27:38,372 P7300 INFO Transforming val data.
+2026-04-15 22:27:38,372 P7300 INFO 77 new templates show.
+2026-04-15 22:27:38,376 P7300 INFO Data loaded done!
+2026-04-15 22:27:38,420 P7300 INFO Known word number: 375
+2026-04-15 22:27:45,190 P7300 INFO Epoch 0/10, train generator loss: 1.25593
+2026-04-15 22:27:45,389 P7300 INFO Epoch 0/10, train discriminator loss: 2.85083
+2026-04-15 22:27:45,654 P7300 INFO *** Test time is 0.26543354988098145
+2026-04-15 22:27:45,654 P7300 INFO Epoch 0/10, test f1: 0.90909 rc: 0.83333 pc: 1.00000. [1.55s]
+2026-04-15 22:27:45,952 P7300 INFO Epoch 1/10, train generator loss: 1.18757
+2026-04-15 22:27:46,174 P7300 INFO Epoch 1/10, train discriminator loss: 2.33443
+2026-04-15 22:27:46,545 P7300 INFO *** Test time is 0.3711118698120117
+2026-04-15 22:27:46,546 P7300 INFO Epoch 1/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.50s]
+2026-04-15 22:27:47,169 P7300 INFO Epoch 2/10, train generator loss: 1.20968
+2026-04-15 22:27:47,494 P7300 INFO Epoch 2/10, train discriminator loss: 1.93148
+2026-04-15 22:27:47,945 P7300 INFO *** Test time is 0.44925904273986816
+2026-04-15 22:27:47,945 P7300 INFO Epoch 2/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.89s]
+2026-04-15 22:27:48,255 P7300 INFO Epoch 3/10, train generator loss: 1.28156
+2026-04-15 22:27:48,466 P7300 INFO Epoch 3/10, train discriminator loss: 1.61097
+2026-04-15 22:27:49,217 P7300 INFO *** Test time is 0.7505931854248047
+2026-04-15 22:27:49,217 P7300 INFO Epoch 3/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.49s]
+2026-04-15 22:27:49,217 P7300 INFO early stopping epoch 1/5
+2026-04-15 22:27:49,535 P7300 INFO Epoch 4/10, train generator loss: 1.37184
+2026-04-15 22:27:49,743 P7300 INFO Epoch 4/10, train discriminator loss: 1.38624
+2026-04-15 22:27:50,095 P7300 INFO *** Test time is 0.3521850109100342
+2026-04-15 22:27:50,095 P7300 INFO Epoch 4/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.53s]
+2026-04-15 22:27:50,095 P7300 INFO early stopping epoch 2/5
+2026-04-15 22:27:50,362 P7300 INFO Epoch 5/10, train generator loss: 1.46873
+2026-04-15 22:27:50,546 P7300 INFO Epoch 5/10, train discriminator loss: 1.24997
+2026-04-15 22:27:50,872 P7300 INFO *** Test time is 0.32605624198913574
+2026-04-15 22:27:50,872 P7300 INFO Epoch 5/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.45s]
+2026-04-15 22:27:50,874 P7300 INFO early stopping epoch 3/5
+2026-04-15 22:27:51,118 P7300 INFO Epoch 6/10, train generator loss: 1.57070
+2026-04-15 22:27:51,296 P7300 INFO Epoch 6/10, train discriminator loss: 1.15383
+2026-04-15 22:27:51,575 P7300 INFO *** Test time is 0.2781529426574707
+2026-04-15 22:27:51,575 P7300 INFO Epoch 6/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.42s]
+2026-04-15 22:27:51,575 P7300 INFO early stopping epoch 4/5
+2026-04-15 22:27:51,816 P7300 INFO Epoch 7/10, train generator loss: 1.68267
+2026-04-15 22:27:52,024 P7300 INFO Epoch 7/10, train discriminator loss: 1.06971
+2026-04-15 22:27:52,367 P7300 INFO *** Test time is 0.34322333335876465
+2026-04-15 22:27:52,367 P7300 INFO Epoch 7/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.45s]
+2026-04-15 22:27:52,367 P7300 INFO early stopping epoch 5/5
+2026-04-15 22:27:52,367 P7300 INFO Early stopping
+2026-04-15 22:27:52,562 P7300 INFO Threshold (p=95.0, src=val): 1.348429
+2026-04-15 22:27:52,626 P7300 INFO *** Test F1 0.6000  of unsupervised traning
+2026-04-15 22:27:52,626 P7300 INFO *** Best F1 {'f1': 1.0, 'rc': 1.0, 'pc': 1.0}  of unsupervised traning
+2026-04-15 22:27:52,644 P7300 INFO Current hash id sn_5_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_0
