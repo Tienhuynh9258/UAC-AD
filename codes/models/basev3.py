@@ -604,7 +604,13 @@ class BaseModel(nn.Module):
                     normal_losses.extend(distance.cpu().numpy().reshape(-1).tolist())
             val_threshold = np.percentile(normal_losses, self.val_percentile)
             logging.info(f"Threshold (p={self.val_percentile}, src={source}): {val_threshold:.6f}")
-            test_results, test_embeds = self.evaluate(test_loader, threshold=val_threshold)
+            val_test_results, test_embeds = self.evaluate(test_loader, threshold=val_threshold)
+            # Val-threshold F1 is the honest metric (no test-data leakage).
+            # Oracle F1 (best_test_scores) is logged for reference only.
+            logging.info("*** Test F1 (val-threshold) {:.4f}  rc:{:.4f}  pc:{:.4f}".format(
+                val_test_results["f1"], val_test_results["rc"], val_test_results["pc"]))
+            logging.info(f"*** Best F1 (oracle) {best_test_scores}  of unsupervised training")
+            return val_test_results   # honest val-threshold score → written to info_score.txt
         else:
             test_results, test_embeds = self.evaluate(test_loader)
 
