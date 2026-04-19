@@ -199,6 +199,11 @@ for run_times in range(params["run_start"], params["run_end"]):
     seed_everything(params["random_seed"] + run_times)   # different seed per run
     if params["dataset"] == 'yzh':
         params["open_kpi_select"] = False
+    elif params["dataset"] == "rcaeval_re3_ob":
+        params["open_kpi_select"] = False
+        params.setdefault("open_kpi_normalization", True)
+        params.setdefault("feature_type", "template_appear")
+        params.setdefault("kpi_ratio", 40)
     else:
         params["open_kpi_select"] = False
     params["hash_id"] = dump_params(params)
