@@ -1,0 +1,36 @@
+2026-04-19 15:39:09,525 P7232 INFO ^^^^^^^^^^ Current Model:hades, eb18d930 ^^^^^^^^^^
+2026-04-19 15:39:09,525 P7232 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-04-19 15:39:13,683 P7232 INFO 301 unique log templates found.
+2026-04-19 15:39:13,698 P7232 INFO Transforming unlabel train data.
+2026-04-19 15:39:14,364 P7232 INFO Transforming test data.
+2026-04-19 15:39:14,483 P7232 INFO 18 new templates show.
+2026-04-19 15:39:15,407 P7232 INFO Data loaded done!
+2026-04-19 15:39:42,048 P7232 INFO Known word number: 301
+2026-04-19 15:40:27,142 P7232 INFO Epoch 0/5, train generator loss: 0.18907
+2026-04-19 15:41:09,260 P7232 INFO Epoch 0/5, train discriminator loss: 0.19556
+2026-04-19 15:41:11,863 P7232 INFO *** Test time is 2.598761796951294
+2026-04-19 15:41:11,863 P7232 INFO Epoch 0/5, test f1: 0.91578 rc: 0.90932 pc: 0.92234. [83.35s]
+2026-04-19 15:41:51,062 P7232 INFO Epoch 1/5, train generator loss: 0.12714
+2026-04-19 15:42:29,157 P7232 INFO Epoch 1/5, train discriminator loss: 0.24964
+2026-04-19 15:42:31,801 P7232 INFO *** Test time is 2.6402676105499268
+2026-04-19 15:42:31,801 P7232 INFO Epoch 1/5, test f1: 0.92507 rc: 0.91811 pc: 0.93213. [77.27s]
+2026-04-19 15:43:11,236 P7232 INFO Epoch 2/5, train generator loss: 0.15859
+2026-04-19 15:43:50,286 P7232 INFO Epoch 2/5, train discriminator loss: 0.33718
+2026-04-19 15:43:53,112 P7232 INFO *** Test time is 2.8225135803222656
+2026-04-19 15:43:53,112 P7232 INFO Epoch 2/5, test f1: 0.87626 rc: 0.87555 pc: 0.87697. [78.45s]
+2026-04-19 15:43:53,113 P7232 INFO early stopping epoch 1/3
+2026-04-19 15:44:32,609 P7232 INFO Epoch 3/5, train generator loss: 0.14449
+2026-04-19 15:45:13,742 P7232 INFO Epoch 3/5, train discriminator loss: 0.34598
+2026-04-19 15:45:16,259 P7232 INFO *** Test time is 2.5164482593536377
+2026-04-19 15:45:16,259 P7232 INFO Epoch 3/5, test f1: 0.91870 rc: 0.91233 pc: 0.92517. [80.63s]
+2026-04-19 15:45:16,260 P7232 INFO early stopping epoch 2/3
+2026-04-19 15:45:55,649 P7232 INFO Epoch 4/5, train generator loss: 0.15071
+2026-04-19 15:46:33,950 P7232 INFO Epoch 4/5, train discriminator loss: 0.49529
+2026-04-19 15:46:36,395 P7232 INFO *** Test time is 2.4429972171783447
+2026-04-19 15:46:36,395 P7232 INFO Epoch 4/5, test f1: 0.84751 rc: 0.84918 pc: 0.84585. [77.69s]
+2026-04-19 15:46:36,395 P7232 INFO early stopping epoch 3/3
+2026-04-19 15:46:36,395 P7232 INFO Early stopping
+2026-04-19 15:46:59,360 P7232 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.200478
+2026-04-19 15:47:00,267 P7232 INFO *** Test F1 0.8868  of unsupervised traning
+2026-04-19 15:47:00,267 P7232 INFO *** Best F1 {'f1': 0.9250670085071669, 'rc': 0.9181124219292158, 'pc': 0.9321277595115077}  of unsupervised traning
+2026-04-19 15:47:00,498 P7232 INFO Current hash id eb18d930

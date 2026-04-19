@@ -1,0 +1,32 @@
+2026-04-19 15:07:20,909 P25032 INFO ^^^^^^^^^^ Current Model:hades, 9de63f0c ^^^^^^^^^^
+2026-04-19 15:07:20,909 P25032 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-04-19 15:07:29,837 P25032 INFO 301 unique log templates found.
+2026-04-19 15:07:29,871 P25032 INFO Transforming unlabel train data.
+2026-04-19 15:07:30,392 P25032 INFO Transforming test data.
+2026-04-19 15:07:30,565 P25032 INFO 20 new templates show.
+2026-04-19 15:07:31,948 P25032 INFO Data loaded done!
+2026-04-19 15:08:04,045 P25032 INFO Known word number: 301
+2026-04-19 15:08:56,428 P25032 INFO Epoch 0/5, train generator loss: 0.19580
+2026-04-19 15:09:36,686 P25032 INFO Epoch 0/5, train discriminator loss: 0.19455
+2026-04-19 15:09:41,150 P25032 INFO *** Test time is 4.45808219909668
+2026-04-19 15:09:41,152 P25032 INFO Epoch 0/5, test f1: 0.84026 rc: 0.75624 pc: 0.94527. [86.85s]
+2026-04-19 15:10:19,327 P25032 INFO Epoch 1/5, train generator loss: 0.12788
+2026-04-19 15:11:03,740 P25032 INFO Epoch 1/5, train discriminator loss: 0.21419
+2026-04-19 15:11:09,578 P25032 INFO *** Test time is 5.835766792297363
+2026-04-19 15:11:09,579 P25032 INFO Epoch 1/5, test f1: 0.83967 rc: 0.75578 pc: 0.94451. [82.53s]
+2026-04-19 15:11:09,579 P25032 INFO early stopping epoch 1/3
+2026-04-19 15:11:48,398 P25032 INFO Epoch 2/5, train generator loss: 0.14788
+2026-04-19 15:12:33,425 P25032 INFO Epoch 2/5, train discriminator loss: 0.33154
+2026-04-19 15:12:36,545 P25032 INFO *** Test time is 3.1159610748291016
+2026-04-19 15:12:36,545 P25032 INFO Epoch 2/5, test f1: 0.83823 rc: 0.75455 pc: 0.94279. [83.85s]
+2026-04-19 15:12:36,546 P25032 INFO early stopping epoch 2/3
+2026-04-19 15:13:14,991 P25032 INFO Epoch 3/5, train generator loss: 0.13989
+2026-04-19 15:13:59,032 P25032 INFO Epoch 3/5, train discriminator loss: 0.29153
+2026-04-19 15:14:02,113 P25032 INFO *** Test time is 3.078399181365967
+2026-04-19 15:14:02,114 P25032 INFO Epoch 3/5, test f1: 0.83957 rc: 0.75563 pc: 0.94450. [82.49s]
+2026-04-19 15:14:02,114 P25032 INFO early stopping epoch 3/3
+2026-04-19 15:14:02,114 P25032 INFO Early stopping
+2026-04-19 15:14:25,072 P25032 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.200102
+2026-04-19 15:14:26,190 P25032 INFO *** Test F1 0.7667  of unsupervised traning
+2026-04-19 15:14:26,191 P25032 INFO *** Best F1 {'f1': 0.8402569593147752, 'rc': 0.7562442183163737, 'pc': 0.9452688379263827}  of unsupervised traning
+2026-04-19 15:14:26,329 P25032 INFO Current hash id 9de63f0c

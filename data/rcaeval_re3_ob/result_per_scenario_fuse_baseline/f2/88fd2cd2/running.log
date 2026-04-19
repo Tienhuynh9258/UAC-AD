@@ -1,0 +1,34 @@
+2026-04-19 15:14:44,837 P25772 INFO ^^^^^^^^^^ Current Model:hades, 88fd2cd2 ^^^^^^^^^^
+2026-04-19 15:14:44,837 P25772 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-04-19 15:14:47,654 P25772 INFO 301 unique log templates found.
+2026-04-19 15:14:47,679 P25772 INFO Transforming unlabel train data.
+2026-04-19 15:14:48,688 P25772 INFO Transforming test data.
+2026-04-19 15:14:48,750 P25772 INFO 7 new templates show.
+2026-04-19 15:14:49,641 P25772 INFO Data loaded done!
+2026-04-19 15:15:14,696 P25772 INFO Known word number: 301
+2026-04-19 15:15:59,542 P25772 INFO Epoch 0/5, train generator loss: 0.19117
+2026-04-19 15:16:42,711 P25772 INFO Epoch 0/5, train discriminator loss: 0.20253
+2026-04-19 15:16:44,199 P25772 INFO *** Test time is 1.483032464981079
+2026-04-19 15:16:44,200 P25772 INFO Epoch 0/5, test f1: 0.94409 rc: 0.93513 pc: 0.95324. [84.71s]
+2026-04-19 15:17:22,633 P25772 INFO Epoch 1/5, train generator loss: 0.12704
+2026-04-19 15:18:02,553 P25772 INFO Epoch 1/5, train discriminator loss: 0.24769
+2026-04-19 15:18:04,102 P25772 INFO *** Test time is 1.544431447982788
+2026-04-19 15:18:04,102 P25772 INFO Epoch 1/5, test f1: 0.94431 rc: 0.93513 pc: 0.95369. [78.33s]
+2026-04-19 15:18:43,103 P25772 INFO Epoch 2/5, train generator loss: 0.15134
+2026-04-19 15:19:19,507 P25772 INFO Epoch 2/5, train discriminator loss: 0.42365
+2026-04-19 15:19:21,272 P25772 INFO *** Test time is 1.7645716667175293
+2026-04-19 15:19:21,272 P25772 INFO Epoch 2/5, test f1: 0.94145 rc: 0.93142 pc: 0.95170. [75.37s]
+2026-04-19 15:19:21,273 P25772 INFO early stopping epoch 1/3
+2026-04-19 15:20:00,246 P25772 INFO Epoch 3/5, train generator loss: 0.14265
+2026-04-19 15:20:38,133 P25772 INFO Epoch 3/5, train discriminator loss: 0.32139
+2026-04-19 15:20:39,632 P25772 INFO *** Test time is 1.4943006038665771
+2026-04-19 15:20:39,632 P25772 INFO Epoch 3/5, test f1: 0.94446 rc: 0.93373 pc: 0.95543. [76.86s]
+2026-04-19 15:21:18,964 P25772 INFO Epoch 4/5, train generator loss: 0.14864
+2026-04-19 15:21:57,736 P25772 INFO Epoch 4/5, train discriminator loss: 0.85457
+2026-04-19 15:21:59,146 P25772 INFO *** Test time is 1.4087746143341064
+2026-04-19 15:21:59,146 P25772 INFO Epoch 4/5, test f1: 0.94269 rc: 0.93373 pc: 0.95182. [78.07s]
+2026-04-19 15:21:59,146 P25772 INFO early stopping epoch 1/3
+2026-04-19 15:22:24,689 P25772 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.201817
+2026-04-19 15:22:25,156 P25772 INFO *** Test F1 0.8965  of unsupervised traning
+2026-04-19 15:22:25,156 P25772 INFO *** Best F1 {'f1': 0.9444574642606046, 'rc': 0.9337349397590361, 'pc': 0.9554291133238502}  of unsupervised traning
+2026-04-19 15:22:25,320 P25772 INFO Current hash id 88fd2cd2
