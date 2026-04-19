@@ -1,0 +1,32 @@
+2026-04-19 08:02:24,623 P25704 INFO ^^^^^^^^^^ Current Model:hades, 7a20e3e8 ^^^^^^^^^^
+2026-04-19 08:02:24,624 P25704 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 08:02:27,668 P25704 INFO 40 unique log templates found.
+2026-04-19 08:02:27,687 P25704 INFO Transforming unlabel train data.
+2026-04-19 08:02:29,026 P25704 INFO Transforming test data.
+2026-04-19 08:02:29,375 P25704 INFO 1 new templates show.
+2026-04-19 08:02:30,753 P25704 INFO Data loaded done!
+2026-04-19 08:04:16,539 P25704 INFO Known word number: 40
+2026-04-19 08:07:22,940 P25704 INFO Epoch 0/5, train generator loss: 0.22447
+2026-04-19 08:10:11,554 P25704 INFO Epoch 0/5, train discriminator loss: 0.42234
+2026-04-19 08:10:18,386 P25704 INFO *** Test time is 6.825469970703125
+2026-04-19 08:10:18,386 P25704 INFO Epoch 0/5, test f1: 0.70997 rc: 0.56959 pc: 0.94218. [351.31s]
+2026-04-19 08:13:23,677 P25704 INFO Epoch 1/5, train generator loss: 0.11403
+2026-04-19 08:16:16,416 P25704 INFO Epoch 1/5, train discriminator loss: 0.27155
+2026-04-19 08:16:22,935 P25704 INFO *** Test time is 6.513195037841797
+2026-04-19 08:16:22,935 P25704 INFO Epoch 1/5, test f1: 0.66409 rc: 0.56423 pc: 0.80690. [357.99s]
+2026-04-19 08:16:22,935 P25704 INFO early stopping epoch 1/3
+2026-04-19 08:19:28,451 P25704 INFO Epoch 2/5, train generator loss: 0.10424
+2026-04-19 08:22:16,938 P25704 INFO Epoch 2/5, train discriminator loss: 0.21568
+2026-04-19 08:22:22,905 P25704 INFO *** Test time is 5.962290287017822
+2026-04-19 08:22:22,905 P25704 INFO Epoch 2/5, test f1: 0.65749 rc: 0.55859 pc: 0.79894. [354.01s]
+2026-04-19 08:22:22,905 P25704 INFO early stopping epoch 2/3
+2026-04-19 08:25:31,121 P25704 INFO Epoch 3/5, train generator loss: 0.09524
+2026-04-19 08:28:17,934 P25704 INFO Epoch 3/5, train discriminator loss: 0.57868
+2026-04-19 08:28:24,445 P25704 INFO *** Test time is 6.5053184032440186
+2026-04-19 08:28:24,446 P25704 INFO Epoch 3/5, test f1: 0.66108 rc: 0.57588 pc: 0.77585. [355.03s]
+2026-04-19 08:28:24,446 P25704 INFO early stopping epoch 3/3
+2026-04-19 08:28:24,446 P25704 INFO Early stopping
+2026-04-19 08:30:09,259 P25704 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.711054
+2026-04-19 08:30:12,442 P25704 INFO *** Test F1 0.5442  of unsupervised traning
+2026-04-19 08:30:12,443 P25704 INFO *** Best F1 {'f1': 0.709971181556196, 'rc': 0.5695921575880885, 'pc': 0.9421753097751262}  of unsupervised traning
+2026-04-19 08:30:12,563 P25704 INFO Current hash id 7a20e3e8

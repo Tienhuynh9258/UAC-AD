@@ -1,0 +1,4 @@
+Experiment a83d0f41: 2026/04/19-18:05:04
+Train time/epoch 340.3215
+* Test -- f1:0.7879	rc:0.7982	pc:0.7778
+

@@ -1,0 +1,284 @@
+10:35:17  INFO     Found 6 scenarios.
+10:35:17  INFO     Results will be saved under: D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline/
+
+10:35:17  INFO     ============================================================
+10:35:17  INFO     Scenario: cpu
+10:35:18  INFO       test_pkl : D:\UAC-AD\data\rcaeval_ob\test_cpu.pkl
+10:35:18  INFO       result   : D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline\cpu
+2026-04-19 10:35:33,867 P26984 INFO ^^^^^^^^^^ Current Model:hades, 64902234 ^^^^^^^^^^
+2026-04-19 10:35:33,867 P26984 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 10:35:38,879 P26984 INFO 40 unique log templates found.
+2026-04-19 10:35:38,890 P26984 INFO Transforming unlabel train data.
+  0%|          | 0/65314 [00:00<?, ?it/s]  9%|9         | 5888/65314 [00:00<00:01, 58658.39it/s] 18%|#7        | 11754/65314 [00:00<00:00, 57978.22it/s] 27%|##6       | 17553/65314 [00:00<00:00, 56531.38it/s] 36%|###5      | 23235/65314 [00:00<00:00, 56643.05it/s] 44%|####4     | 29013/65314 [00:00<00:00, 56844.97it/s] 53%|#####3    | 34700/65314 [00:00<00:00, 53102.96it/s] 62%|######1   | 40267/65314 [00:00<00:00, 53897.19it/s] 70%|#######   | 45857/65314 [00:00<00:00, 54511.50it/s] 79%|#######8  | 51569/65314 [00:00<00:00, 55300.64it/s] 88%|########7 | 57220/65314 [00:01<00:00, 55666.89it/s] 96%|#########6| 62922/65314 [00:01<00:00, 55914.12it/s]100%|##########| 65314/65314 [00:01<00:00, 55679.05it/s]
+2026-04-19 10:35:40,074 P26984 INFO Transforming test data.
+2026-04-19 10:35:40,387 P26984 INFO 1 new templates show.
+  0%|          | 0/51520 [00:00<?, ?it/s] 17%|#6        | 8566/51520 [00:00<00:00, 85081.96it/s] 33%|###3      | 17075/51520 [00:00<00:00, 83668.73it/s] 49%|####9     | 25444/51520 [00:00<00:00, 83678.29it/s] 66%|######5   | 33813/51520 [00:00<00:00, 83355.91it/s] 82%|########1 | 42149/51520 [00:00<00:00, 82179.83it/s] 98%|#########7| 50397/51520 [00:00<00:00, 82280.19it/s]100%|##########| 51520/51520 [00:00<00:00, 82886.49it/s]
+2026-04-19 10:35:41,677 P26984 INFO Data loaded done!
+2026-04-19 10:37:37,243 P26984 INFO Known word number: 40
+2026-04-19 10:39:27,843 P26984 INFO Epoch 0/5, train generator loss: 0.20474
+2026-04-19 10:41:07,322 P26984 INFO Epoch 0/5, train discriminator loss: 0.15510
+2026-04-19 10:41:12,777 P26984 INFO *** Test time is 5.449734926223755
+2026-04-19 10:41:12,784 P26984 INFO Epoch 0/5, test f1: 0.44302 rc: 0.45200 pc: 0.43438. [206.71s]
+2026-04-19 10:43:02,321 P26984 INFO Epoch 1/5, train generator loss: 0.12135
+2026-04-19 10:44:38,679 P26984 INFO Epoch 1/5, train discriminator loss: 0.47067
+2026-04-19 10:44:43,200 P26984 INFO *** Test time is 4.518320083618164
+2026-04-19 10:44:43,200 P26984 INFO Epoch 1/5, test f1: 0.42648 rc: 0.43463 pc: 0.41862. [205.85s]
+2026-04-19 10:44:43,200 P26984 INFO early stopping epoch 1/3
+2026-04-19 10:46:31,291 P26984 INFO Epoch 2/5, train generator loss: 0.12226
+2026-04-19 10:48:07,847 P26984 INFO Epoch 2/5, train discriminator loss: 0.42198
+2026-04-19 10:48:12,406 P26984 INFO *** Test time is 4.555899143218994
+2026-04-19 10:48:12,407 P26984 INFO Epoch 2/5, test f1: 0.45222 rc: 0.46181 pc: 0.44302. [204.65s]
+2026-04-19 10:50:01,420 P26984 INFO Epoch 3/5, train generator loss: 0.12022
+2026-04-19 10:51:55,923 P26984 INFO Epoch 3/5, train discriminator loss: 0.49169
+2026-04-19 10:52:01,202 P26984 INFO *** Test time is 5.27228569984436
+2026-04-19 10:52:01,203 P26984 INFO Epoch 3/5, test f1: 0.52669 rc: 0.53683 pc: 0.51692. [223.45s]
+2026-04-19 10:53:58,593 P26984 INFO Epoch 4/5, train generator loss: 0.08885
+2026-04-19 10:55:54,042 P26984 INFO Epoch 4/5, train discriminator loss: 0.55584
+2026-04-19 10:55:59,640 P26984 INFO *** Test time is 5.588089466094971
+2026-04-19 10:55:59,640 P26984 INFO Epoch 4/5, test f1: 0.53692 rc: 0.54770 pc: 0.52655. [232.81s]
+D:\UAC-AD\codes\models\basev3.py:204: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model.load_state_dict(torch.load(model_save_file, map_location=self.device))
+2026-04-19 10:57:06,021 P26984 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.267996
+2026-04-19 10:57:07,993 P26984 INFO *** Test F1 0.4790  of unsupervised traning
+2026-04-19 10:57:07,994 P26984 INFO *** Best F1 {'f1': 0.5369172216936251, 'rc': 0.547704552072212, 'pc': 0.5265466081925912}  of unsupervised traning
+2026-04-19 10:57:08,110 P26984 INFO Current hash id 64902234
+{'supervised': False, 'gpu': True, 'epoches': [5, 5], 'batch_size': 128, 'confidence': 0.92, 'alpha': 0.5, 'learning_rate': 0.001, 'patience': 3, 'random_seed': 42, 'optim': -1, 'weight_decay': 0, 'kpi_ratio': 40, 'k': 1, 'kpi_with_high_std': False, 'gpu_device': '0', 'open_kpi_select': False, 'open_min_max': False, 'open_position_embedding': False, 'sigma_matrix': False, 'feature_type': 'template_appear', 'data': 'D:\\UAC-AD\\data\\rcaeval_ob', 'dataset': 'rcaeval_ob', 'open_kpi_normalization': True, 'open_log_normalization': False, 'open_narrowing_modal_gap': True, 'open_feature2': False, 'open_expand_anomaly_gap': True, 'evaluation_sep': False, 'open_gan_sep': True, 'open_gan': True, 'open_unmatch_zoomout': True, 'unmatch_k': 16, 'run_times': 0, 'run_start': 0, 'run_end': 1, 'theta': 0.15, 'anomaly_rate': 20, 'val_percentile': 95.0, 'criterion': 'l1', 'window_size': 30, 'hidden_size': 32, 'data_type': 'fuse', 'open_trace': False, 'num_services': 11, 'trace_c': 5, 'trace_dropout': 0.1, 'fuse_type': 'multi_modal_self_attn', 'attn_type': 'add', 'inner_dropout': 0.5, 'log_layer_num': 4, 'log_dropout': 0.1, 'transformer_hidden': 1024, 'word2vec_model_type': 'fasttext', 'word_embedding_dim': 32, 'word_window': 5, 'word2vec_epoch': 50, 'pre_model': None, 'word2vec_save_dir': '../trained_wv/', 'result_dir': 'D:\\UAC-AD\\data\\rcaeval_ob\\result_per_scenario_fuse_baseline\\cpu', 'test_pkl': 'D:\\UAC-AD\\data\\rcaeval_ob\\test_cpu.pkl', 'main_model': 'hades', 'hash_id': '64902234', 'kpi_c': 86, 'log_c': 40}
+10:57:15  INFO       \u2192 F1=0.5369  P=0.5265  R=0.5477
+10:57:15  INFO     ============================================================
+10:57:15  INFO     Scenario: delay
+10:57:15  INFO       test_pkl : D:\UAC-AD\data\rcaeval_ob\test_delay.pkl
+10:57:15  INFO       result   : D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline\delay
+2026-04-19 10:57:29,451 P27708 INFO ^^^^^^^^^^ Current Model:hades, 46c4a5dc ^^^^^^^^^^
+2026-04-19 10:57:29,451 P27708 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 10:57:36,768 P27708 INFO 40 unique log templates found.
+2026-04-19 10:57:36,780 P27708 INFO Transforming unlabel train data.
+  0%|          | 0/65314 [00:00<?, ?it/s]  9%|9         | 5943/65314 [00:00<00:01, 58917.34it/s] 21%|##        | 13453/65314 [00:00<00:00, 68014.72it/s] 32%|###1      | 20719/65314 [00:00<00:00, 70043.95it/s] 42%|####2     | 27724/65314 [00:00<00:00, 60730.54it/s] 52%|#####1    | 33954/65314 [00:00<00:00, 50357.02it/s] 60%|######    | 39291/65314 [00:00<00:00, 41228.01it/s] 67%|######7   | 43784/65314 [00:00<00:00, 41226.08it/s] 74%|#######3  | 48313/65314 [00:01<00:00, 42245.87it/s] 81%|########  | 52734/65314 [00:01<00:00, 41420.11it/s] 89%|########8 | 58098/65314 [00:01<00:00, 44587.51it/s] 97%|#########7| 63357/65314 [00:01<00:00, 46797.75it/s]100%|##########| 65314/65314 [00:01<00:00, 48329.61it/s]
+2026-04-19 10:57:38,143 P27708 INFO Transforming test data.
+2026-04-19 10:57:38,513 P27708 INFO 1 new templates show.
+  0%|          | 0/54075 [00:00<?, ?it/s] 16%|#5        | 8461/54075 [00:00<00:00, 84226.73it/s] 31%|###1      | 16884/54075 [00:00<00:00, 82866.51it/s] 47%|####6     | 25172/54075 [00:00<00:00, 79756.60it/s] 62%|######1   | 33365/54075 [00:00<00:00, 80589.67it/s] 77%|#######7  | 41826/54075 [00:00<00:00, 81805.49it/s] 93%|#########2| 50132/54075 [00:00<00:00, 81994.64it/s]100%|##########| 54075/54075 [00:00<00:00, 78208.82it/s]
+2026-04-19 10:57:39,977 P27708 INFO Data loaded done!
+2026-04-19 10:59:50,867 P27708 INFO Known word number: 40
+2026-04-19 11:01:54,833 P27708 INFO Epoch 0/5, train generator loss: 0.28415
+2026-04-19 11:03:50,582 P27708 INFO Epoch 0/5, train discriminator loss: 0.10806
+2026-04-19 11:03:55,640 P27708 INFO *** Test time is 5.053127765655518
+2026-04-19 11:03:55,641 P27708 INFO Epoch 0/5, test f1: 0.49030 rc: 0.50264 pc: 0.47856. [235.76s]
+2026-04-19 11:05:47,844 P27708 INFO Epoch 1/5, train generator loss: 0.15704
+2026-04-19 11:07:52,646 P27708 INFO Epoch 1/5, train discriminator loss: 0.47671
+2026-04-19 11:07:58,856 P27708 INFO *** Test time is 6.196143388748169
+2026-04-19 11:07:58,857 P27708 INFO Epoch 1/5, test f1: 0.69685 rc: 0.55933 pc: 0.92406. [236.98s]
+2026-04-19 11:10:01,868 P27708 INFO Epoch 2/5, train generator loss: 0.10811
+2026-04-19 11:12:04,932 P27708 INFO Epoch 2/5, train discriminator loss: 0.57397
+2026-04-19 11:12:10,771 P27708 INFO *** Test time is 5.827897548675537
+2026-04-19 11:12:10,772 P27708 INFO Epoch 2/5, test f1: 0.64443 rc: 0.57181 pc: 0.73818. [245.99s]
+2026-04-19 11:12:10,772 P27708 INFO early stopping epoch 1/3
+2026-04-19 11:14:17,183 P27708 INFO Epoch 3/5, train generator loss: 0.09218
+2026-04-19 11:16:30,031 P27708 INFO Epoch 3/5, train discriminator loss: 0.74624
+2026-04-19 11:16:35,029 P27708 INFO *** Test time is 4.992090225219727
+2026-04-19 11:16:35,030 P27708 INFO Epoch 3/5, test f1: 0.66790 rc: 0.56589 pc: 0.81478. [259.26s]
+2026-04-19 11:16:35,030 P27708 INFO early stopping epoch 2/3
+2026-04-19 11:18:32,234 P27708 INFO Epoch 4/5, train generator loss: 0.09411
+2026-04-19 11:20:22,560 P27708 INFO Epoch 4/5, train discriminator loss: 0.11045
+2026-04-19 11:20:30,164 P27708 INFO *** Test time is 7.595505475997925
+2026-04-19 11:20:30,167 P27708 INFO Epoch 4/5, test f1: 0.65990 rc: 0.56839 pc: 0.78654. [227.54s]
+2026-04-19 11:20:30,168 P27708 INFO early stopping epoch 3/3
+2026-04-19 11:20:30,169 P27708 INFO Early stopping
+D:\UAC-AD\codes\models\basev3.py:204: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model.load_state_dict(torch.load(model_save_file, map_location=self.device))
+2026-04-19 11:21:44,733 P27708 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.730709
+2026-04-19 11:21:47,158 P27708 INFO *** Test F1 0.5404  of unsupervised traning
+2026-04-19 11:21:47,161 P27708 INFO *** Best F1 {'f1': 0.6968544763221569, 'rc': 0.559326736335892, 'pc': 0.9240641711229947}  of unsupervised traning
+2026-04-19 11:21:47,447 P27708 INFO Current hash id 46c4a5dc
+{'supervised': False, 'gpu': True, 'epoches': [5, 5], 'batch_size': 128, 'confidence': 0.92, 'alpha': 0.5, 'learning_rate': 0.001, 'patience': 3, 'random_seed': 42, 'optim': -1, 'weight_decay': 0, 'kpi_ratio': 40, 'k': 1, 'kpi_with_high_std': False, 'gpu_device': '0', 'open_kpi_select': False, 'open_min_max': False, 'open_position_embedding': False, 'sigma_matrix': False, 'feature_type': 'template_appear', 'data': 'D:\\UAC-AD\\data\\rcaeval_ob', 'dataset': 'rcaeval_ob', 'open_kpi_normalization': True, 'open_log_normalization': False, 'open_narrowing_modal_gap': True, 'open_feature2': False, 'open_expand_anomaly_gap': True, 'evaluation_sep': False, 'open_gan_sep': True, 'open_gan': True, 'open_unmatch_zoomout': True, 'unmatch_k': 16, 'run_times': 0, 'run_start': 0, 'run_end': 1, 'theta': 0.15, 'anomaly_rate': 20, 'val_percentile': 95.0, 'criterion': 'l1', 'window_size': 30, 'hidden_size': 32, 'data_type': 'fuse', 'open_trace': False, 'num_services': 11, 'trace_c': 5, 'trace_dropout': 0.1, 'fuse_type': 'multi_modal_self_attn', 'attn_type': 'add', 'inner_dropout': 0.5, 'log_layer_num': 4, 'log_dropout': 0.1, 'transformer_hidden': 1024, 'word2vec_model_type': 'fasttext', 'word_embedding_dim': 32, 'word_window': 5, 'word2vec_epoch': 50, 'pre_model': None, 'word2vec_save_dir': '../trained_wv/', 'result_dir': 'D:\\UAC-AD\\data\\rcaeval_ob\\result_per_scenario_fuse_baseline\\delay', 'test_pkl': 'D:\\UAC-AD\\data\\rcaeval_ob\\test_delay.pkl', 'main_model': 'hades', 'hash_id': '46c4a5dc', 'kpi_c': 86, 'log_c': 40}
+11:21:54  INFO       \u2192 F1=0.6969  P=0.9241  R=0.5593
+11:21:54  INFO     ============================================================
+11:21:54  INFO     Scenario: disk
+11:21:54  INFO       test_pkl : D:\UAC-AD\data\rcaeval_ob\test_disk.pkl
+11:21:54  INFO       result   : D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline\disk
+2026-04-19 11:22:06,161 P27568 INFO ^^^^^^^^^^ Current Model:hades, ca2de1df ^^^^^^^^^^
+2026-04-19 11:22:06,161 P27568 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 11:22:14,054 P27568 INFO 40 unique log templates found.
+2026-04-19 11:22:14,070 P27568 INFO Transforming unlabel train data.
+  0%|          | 0/65314 [00:00<?, ?it/s] 11%|#         | 7152/65314 [00:00<00:00, 71511.71it/s] 22%|##1       | 14304/65314 [00:00<00:00, 68688.61it/s] 34%|###4      | 22331/65314 [00:00<00:00, 73750.21it/s] 46%|####5     | 29721/65314 [00:00<00:00, 72675.85it/s] 57%|#####7    | 37270/65314 [00:00<00:00, 73458.26it/s] 68%|######8   | 44624/65314 [00:00<00:00, 70938.06it/s] 79%|#######9  | 51736/65314 [00:00<00:00, 69199.93it/s] 90%|########9 | 58672/65314 [00:00<00:00, 65260.88it/s]100%|#########9| 65240/65314 [00:00<00:00, 62228.00it/s]100%|##########| 65314/65314 [00:00<00:00, 67299.79it/s]
+2026-04-19 11:22:15,052 P27568 INFO Transforming test data.
+2026-04-19 11:22:15,469 P27568 INFO 1 new templates show.
+  0%|          | 0/54075 [00:00<?, ?it/s] 14%|#3        | 7412/54075 [00:00<00:00, 73876.12it/s] 27%|##7       | 14800/54075 [00:00<00:00, 69258.22it/s] 42%|####1     | 22656/54075 [00:00<00:00, 73043.47it/s] 55%|#####5    | 29983/54075 [00:00<00:00, 69633.48it/s] 68%|######8   | 36976/54075 [00:00<00:00, 63224.06it/s] 80%|########  | 43388/54075 [00:00<00:00, 59813.66it/s] 91%|#########1| 49437/54075 [00:00<00:00, 58138.12it/s]100%|##########| 54075/54075 [00:00<00:00, 62034.89it/s]
+2026-04-19 11:22:17,737 P27568 INFO Data loaded done!
+2026-04-19 11:24:25,838 P27568 INFO Known word number: 40
+2026-04-19 11:26:34,858 P27568 INFO Epoch 0/5, train generator loss: 0.24502
+2026-04-19 11:28:43,020 P27568 INFO Epoch 0/5, train discriminator loss: 0.17054
+2026-04-19 11:28:50,125 P27568 INFO *** Test time is 7.09684944152832
+2026-04-19 11:28:50,127 P27568 INFO Epoch 0/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [252.89s]
+2026-04-19 11:30:44,753 P27568 INFO Epoch 1/5, train generator loss: 0.11591
+2026-04-19 11:32:26,924 P27568 INFO Epoch 1/5, train discriminator loss: 0.39677
+2026-04-19 11:32:35,325 P27568 INFO *** Test time is 8.394570350646973
+2026-04-19 11:32:35,325 P27568 INFO Epoch 1/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [216.76s]
+2026-04-19 11:32:35,325 P27568 INFO early stopping epoch 1/3
+2026-04-19 11:34:26,333 P27568 INFO Epoch 2/5, train generator loss: 0.12324
+2026-04-19 11:36:07,828 P27568 INFO Epoch 2/5, train discriminator loss: 0.22468
+2026-04-19 11:36:13,952 P27568 INFO *** Test time is 6.119542598724365
+2026-04-19 11:36:13,953 P27568 INFO Epoch 2/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [212.51s]
+2026-04-19 11:36:13,953 P27568 INFO early stopping epoch 2/3
+2026-04-19 11:38:07,571 P27568 INFO Epoch 3/5, train generator loss: 0.13955
+2026-04-19 11:39:55,191 P27568 INFO Epoch 3/5, train discriminator loss: 0.47499
+2026-04-19 11:40:00,288 P27568 INFO *** Test time is 5.092593669891357
+2026-04-19 11:40:00,289 P27568 INFO Epoch 3/5, test f1: 0.98421 rc: 0.96892 pc: 1.00000. [221.24s]
+2026-04-19 11:40:00,289 P27568 INFO early stopping epoch 3/3
+2026-04-19 11:40:00,289 P27568 INFO Early stopping
+D:\UAC-AD\codes\models\basev3.py:204: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model.load_state_dict(torch.load(model_save_file, map_location=self.device))
+2026-04-19 11:41:03,920 P27568 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.745475
+2026-04-19 11:41:05,996 P27568 INFO *** Test F1 0.5034  of unsupervised traning
+2026-04-19 11:41:05,997 P27568 INFO *** Best F1 {'f1': 0.9842612168193563, 'rc': 0.9690101757631823, 'pc': 1.0}  of unsupervised traning
+2026-04-19 11:41:06,107 P27568 INFO Current hash id ca2de1df
+{'supervised': False, 'gpu': True, 'epoches': [5, 5], 'batch_size': 128, 'confidence': 0.92, 'alpha': 0.5, 'learning_rate': 0.001, 'patience': 3, 'random_seed': 42, 'optim': -1, 'weight_decay': 0, 'kpi_ratio': 40, 'k': 1, 'kpi_with_high_std': False, 'gpu_device': '0', 'open_kpi_select': False, 'open_min_max': False, 'open_position_embedding': False, 'sigma_matrix': False, 'feature_type': 'template_appear', 'data': 'D:\\UAC-AD\\data\\rcaeval_ob', 'dataset': 'rcaeval_ob', 'open_kpi_normalization': True, 'open_log_normalization': False, 'open_narrowing_modal_gap': True, 'open_feature2': False, 'open_expand_anomaly_gap': True, 'evaluation_sep': False, 'open_gan_sep': True, 'open_gan': True, 'open_unmatch_zoomout': True, 'unmatch_k': 16, 'run_times': 0, 'run_start': 0, 'run_end': 1, 'theta': 0.15, 'anomaly_rate': 20, 'val_percentile': 95.0, 'criterion': 'l1', 'window_size': 30, 'hidden_size': 32, 'data_type': 'fuse', 'open_trace': False, 'num_services': 11, 'trace_c': 5, 'trace_dropout': 0.1, 'fuse_type': 'multi_modal_self_attn', 'attn_type': 'add', 'inner_dropout': 0.5, 'log_layer_num': 4, 'log_dropout': 0.1, 'transformer_hidden': 1024, 'word2vec_model_type': 'fasttext', 'word_embedding_dim': 32, 'word_window': 5, 'word2vec_epoch': 50, 'pre_model': None, 'word2vec_save_dir': '../trained_wv/', 'result_dir': 'D:\\UAC-AD\\data\\rcaeval_ob\\result_per_scenario_fuse_baseline\\disk', 'test_pkl': 'D:\\UAC-AD\\data\\rcaeval_ob\\test_disk.pkl', 'main_model': 'hades', 'hash_id': 'ca2de1df', 'kpi_c': 86, 'log_c': 40}
+11:41:10  INFO       \u2192 F1=0.9843  P=1.0000  R=0.9690
+11:41:10  INFO     ============================================================
+11:41:10  INFO     Scenario: loss
+11:41:10  INFO       test_pkl : D:\UAC-AD\data\rcaeval_ob\test_loss.pkl
+11:41:10  INFO       result   : D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline\loss
+2026-04-19 11:41:38,617 P23116 INFO ^^^^^^^^^^ Current Model:hades, f0a20a6d ^^^^^^^^^^
+2026-04-19 11:41:38,617 P23116 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 11:41:48,542 P23116 INFO 40 unique log templates found.
+2026-04-19 11:41:48,559 P23116 INFO Transforming unlabel train data.
+  0%|          | 0/65314 [00:00<?, ?it/s]  9%|8         | 5794/65314 [00:00<00:01, 57765.01it/s] 18%|#7        | 11747/65314 [00:00<00:00, 58800.99it/s] 27%|##6       | 17628/65314 [00:00<00:00, 58274.48it/s] 36%|###5      | 23457/65314 [00:00<00:00, 57602.12it/s] 45%|####4     | 29219/65314 [00:00<00:00, 57404.05it/s] 54%|#####3    | 34961/65314 [00:00<00:00, 57216.77it/s] 63%|######2   | 40838/65314 [00:00<00:00, 57533.62it/s] 71%|#######1  | 46693/65314 [00:00<00:00, 57672.42it/s] 80%|########  | 52566/65314 [00:00<00:00, 57999.21it/s] 89%|########9 | 58367/65314 [00:01<00:00, 57826.28it/s] 98%|#########8| 64150/65314 [00:01<00:00, 57657.71it/s]100%|##########| 65314/65314 [00:01<00:00, 57733.47it/s]
+2026-04-19 11:41:49,710 P23116 INFO Transforming test data.
+2026-04-19 11:41:50,027 P23116 INFO 108 new templates show.
+  0%|          | 0/54075 [00:00<?, ?it/s] 17%|#7        | 9262/54075 [00:00<00:00, 91688.84it/s] 34%|###4      | 18431/54075 [00:00<00:00, 88084.80it/s] 51%|#####     | 27494/54075 [00:00<00:00, 88823.21it/s] 68%|######7   | 36559/54075 [00:00<00:00, 89185.88it/s] 84%|########4 | 45525/54075 [00:00<00:00, 89354.33it/s]100%|##########| 54075/54075 [00:00<00:00, 89380.06it/s]
+2026-04-19 11:41:51,290 P23116 INFO Data loaded done!
+2026-04-19 11:43:36,225 P23116 INFO Known word number: 40
+2026-04-19 11:45:33,099 P23116 INFO Epoch 0/5, train generator loss: 0.21932
+2026-04-19 11:47:23,007 P23116 INFO Epoch 0/5, train discriminator loss: 0.16029
+2026-04-19 11:47:29,223 P23116 INFO *** Test time is 6.210041284561157
+2026-04-19 11:47:29,231 P23116 INFO Epoch 0/5, test f1: 0.64225 rc: 0.48104 pc: 0.96600. [223.20s]
+2026-04-19 11:49:23,028 P23116 INFO Epoch 1/5, train generator loss: 0.09759
+2026-04-19 11:51:06,261 P23116 INFO Epoch 1/5, train discriminator loss: 0.36658
+2026-04-19 11:51:11,168 P23116 INFO *** Test time is 4.906243085861206
+2026-04-19 11:51:11,169 P23116 INFO Epoch 1/5, test f1: 0.63768 rc: 0.50953 pc: 0.85197. [216.99s]
+2026-04-19 11:51:11,169 P23116 INFO early stopping epoch 1/3
+2026-04-19 11:53:02,603 P23116 INFO Epoch 2/5, train generator loss: 0.08411
+2026-04-19 11:54:41,828 P23116 INFO Epoch 2/5, train discriminator loss: 0.29158
+2026-04-19 11:54:46,505 P23116 INFO *** Test time is 4.672927618026733
+2026-04-19 11:54:46,506 P23116 INFO Epoch 2/5, test f1: 0.70853 rc: 0.56735 pc: 0.94325. [210.66s]
+2026-04-19 11:56:37,231 P23116 INFO Epoch 3/5, train generator loss: 0.08739
+2026-04-19 11:58:19,805 P23116 INFO Epoch 3/5, train discriminator loss: 0.42416
+2026-04-19 11:58:24,391 P23116 INFO *** Test time is 4.581536769866943
+2026-04-19 11:58:24,391 P23116 INFO Epoch 3/5, test f1: 0.71994 rc: 0.57586 pc: 0.96020. [213.27s]
+2026-04-19 12:00:15,052 P23116 INFO Epoch 4/5, train generator loss: 0.09050
+2026-04-19 12:01:56,625 P23116 INFO Epoch 4/5, train discriminator loss: 0.32183
+2026-04-19 12:02:02,699 P23116 INFO *** Test time is 6.070295333862305
+2026-04-19 12:02:02,700 P23116 INFO Epoch 4/5, test f1: 0.71938 rc: 0.57530 pc: 0.95972. [212.22s]
+2026-04-19 12:02:02,700 P23116 INFO early stopping epoch 1/3
+D:\UAC-AD\codes\models\basev3.py:204: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model.load_state_dict(torch.load(model_save_file, map_location=self.device))
+2026-04-19 12:03:06,707 P23116 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.288503
+2026-04-19 12:03:08,705 P23116 INFO *** Test F1 0.4488  of unsupervised traning
+2026-04-19 12:03:08,706 P23116 INFO *** Best F1 {'f1': 0.7199444862082923, 'rc': 0.5758556891766883, 'pc': 0.960203609440074}  of unsupervised traning
+2026-04-19 12:03:08,919 P23116 INFO Current hash id f0a20a6d
+{'supervised': False, 'gpu': True, 'epoches': [5, 5], 'batch_size': 128, 'confidence': 0.92, 'alpha': 0.5, 'learning_rate': 0.001, 'patience': 3, 'random_seed': 42, 'optim': -1, 'weight_decay': 0, 'kpi_ratio': 40, 'k': 1, 'kpi_with_high_std': False, 'gpu_device': '0', 'open_kpi_select': False, 'open_min_max': False, 'open_position_embedding': False, 'sigma_matrix': False, 'feature_type': 'template_appear', 'data': 'D:\\UAC-AD\\data\\rcaeval_ob', 'dataset': 'rcaeval_ob', 'open_kpi_normalization': True, 'open_log_normalization': False, 'open_narrowing_modal_gap': True, 'open_feature2': False, 'open_expand_anomaly_gap': True, 'evaluation_sep': False, 'open_gan_sep': True, 'open_gan': True, 'open_unmatch_zoomout': True, 'unmatch_k': 16, 'run_times': 0, 'run_start': 0, 'run_end': 1, 'theta': 0.15, 'anomaly_rate': 20, 'val_percentile': 95.0, 'criterion': 'l1', 'window_size': 30, 'hidden_size': 32, 'data_type': 'fuse', 'open_trace': False, 'num_services': 11, 'trace_c': 5, 'trace_dropout': 0.1, 'fuse_type': 'multi_modal_self_attn', 'attn_type': 'add', 'inner_dropout': 0.5, 'log_layer_num': 4, 'log_dropout': 0.1, 'transformer_hidden': 1024, 'word2vec_model_type': 'fasttext', 'word_embedding_dim': 32, 'word_window': 5, 'word2vec_epoch': 50, 'pre_model': None, 'word2vec_save_dir': '../trained_wv/', 'result_dir': 'D:\\UAC-AD\\data\\rcaeval_ob\\result_per_scenario_fuse_baseline\\loss', 'test_pkl': 'D:\\UAC-AD\\data\\rcaeval_ob\\test_loss.pkl', 'main_model': 'hades', 'hash_id': 'f0a20a6d', 'kpi_c': 86, 'log_c': 40}
+12:03:15  INFO       \u2192 F1=0.7199  P=0.9602  R=0.5759
+12:03:15  INFO     ============================================================
+12:03:15  INFO     Scenario: mem
+12:03:15  INFO       test_pkl : D:\UAC-AD\data\rcaeval_ob\test_mem.pkl
+12:03:15  INFO       result   : D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline\mem
+2026-04-19 12:03:24,932 P19084 INFO ^^^^^^^^^^ Current Model:hades, 2ab0ca82 ^^^^^^^^^^
+2026-04-19 12:03:24,932 P19084 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 12:03:31,694 P19084 INFO 40 unique log templates found.
+2026-04-19 12:03:31,705 P19084 INFO Transforming unlabel train data.
+  0%|          | 0/65314 [00:00<?, ?it/s] 13%|#2        | 8353/65314 [00:00<00:00, 83494.84it/s] 26%|##5       | 16703/65314 [00:00<00:00, 83009.87it/s] 38%|###8      | 25005/65314 [00:00<00:00, 82265.39it/s] 51%|#####     | 33233/65314 [00:00<00:00, 80071.88it/s] 63%|######3   | 41248/65314 [00:00<00:00, 79930.49it/s] 76%|#######5  | 49368/65314 [00:00<00:00, 80177.39it/s] 88%|########7 | 57390/65314 [00:00<00:00, 80191.11it/s]100%|##########| 65314/65314 [00:00<00:00, 80702.87it/s]
+2026-04-19 12:03:32,517 P19084 INFO Transforming test data.
+2026-04-19 12:03:32,783 P19084 INFO 7 new templates show.
+  0%|          | 0/51889 [00:00<?, ?it/s] 16%|#6        | 8423/51889 [00:00<00:00, 83833.73it/s] 33%|###2      | 17011/51889 [00:00<00:00, 84539.19it/s] 49%|####9     | 25465/51889 [00:00<00:00, 84447.50it/s] 65%|######5   | 33910/51889 [00:00<00:00, 84116.97it/s] 82%|########1 | 42419/51889 [00:00<00:00, 84164.11it/s] 98%|#########7| 50836/51889 [00:00<00:00, 83882.28it/s]100%|##########| 51889/51889 [00:00<00:00, 84137.77it/s]
+2026-04-19 12:03:34,082 P19084 INFO Data loaded done!
+2026-04-19 12:05:18,116 P19084 INFO Known word number: 40
+2026-04-19 12:07:12,147 P19084 INFO Epoch 0/5, train generator loss: 0.21361
+2026-04-19 12:09:00,454 P19084 INFO Epoch 0/5, train discriminator loss: 0.17079
+2026-04-19 12:09:05,794 P19084 INFO *** Test time is 5.335570573806763
+2026-04-19 12:09:05,802 P19084 INFO Epoch 0/5, test f1: 0.67560 rc: 0.52217 pc: 0.95673. [218.69s]
+2026-04-19 12:10:57,348 P19084 INFO Epoch 1/5, train generator loss: 0.10071
+2026-04-19 12:12:38,485 P19084 INFO Epoch 1/5, train discriminator loss: 0.45115
+2026-04-19 12:12:43,983 P19084 INFO *** Test time is 5.494100093841553
+2026-04-19 12:12:43,984 P19084 INFO Epoch 1/5, test f1: 0.85501 rc: 0.84104 pc: 0.86946. [212.65s]
+2026-04-19 12:14:35,346 P19084 INFO Epoch 2/5, train generator loss: 0.08789
+2026-04-19 12:16:16,752 P19084 INFO Epoch 2/5, train discriminator loss: 0.32005
+2026-04-19 12:16:21,287 P19084 INFO *** Test time is 4.530263423919678
+2026-04-19 12:16:21,287 P19084 INFO Epoch 2/5, test f1: 0.76610 rc: 0.64488 pc: 0.94345. [212.68s]
+2026-04-19 12:16:21,287 P19084 INFO early stopping epoch 1/3
+2026-04-19 12:18:15,493 P19084 INFO Epoch 3/5, train generator loss: 0.09148
+2026-04-19 12:19:56,107 P19084 INFO Epoch 3/5, train discriminator loss: 0.42576
+2026-04-19 12:20:01,346 P19084 INFO *** Test time is 5.233790397644043
+2026-04-19 12:20:01,347 P19084 INFO Epoch 3/5, test f1: 0.78274 rc: 0.66021 pc: 0.96113. [214.82s]
+2026-04-19 12:20:01,347 P19084 INFO early stopping epoch 2/3
+2026-04-19 12:21:52,589 P19084 INFO Epoch 4/5, train generator loss: 0.07956
+2026-04-19 12:23:30,809 P19084 INFO Epoch 4/5, train discriminator loss: 0.77249
+2026-04-19 12:23:35,738 P19084 INFO *** Test time is 4.924047231674194
+2026-04-19 12:23:35,739 P19084 INFO Epoch 4/5, test f1: 0.78008 rc: 0.67631 pc: 0.92146. [209.47s]
+2026-04-19 12:23:35,739 P19084 INFO early stopping epoch 3/3
+2026-04-19 12:23:35,739 P19084 INFO Early stopping
+D:\UAC-AD\codes\models\basev3.py:204: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model.load_state_dict(torch.load(model_save_file, map_location=self.device))
+2026-04-19 12:24:39,421 P19084 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.260646
+2026-04-19 12:24:41,381 P19084 INFO *** Test F1 0.8502  of unsupervised traning
+2026-04-19 12:24:41,382 P19084 INFO *** Best F1 {'f1': 0.8550149443872801, 'rc': 0.8410449199922884, 'pc': 0.8694569008470354}  of unsupervised traning
+2026-04-19 12:24:41,652 P19084 INFO Current hash id 2ab0ca82
+{'supervised': False, 'gpu': True, 'epoches': [5, 5], 'batch_size': 128, 'confidence': 0.92, 'alpha': 0.5, 'learning_rate': 0.001, 'patience': 3, 'random_seed': 42, 'optim': -1, 'weight_decay': 0, 'kpi_ratio': 40, 'k': 1, 'kpi_with_high_std': False, 'gpu_device': '0', 'open_kpi_select': False, 'open_min_max': False, 'open_position_embedding': False, 'sigma_matrix': False, 'feature_type': 'template_appear', 'data': 'D:\\UAC-AD\\data\\rcaeval_ob', 'dataset': 'rcaeval_ob', 'open_kpi_normalization': True, 'open_log_normalization': False, 'open_narrowing_modal_gap': True, 'open_feature2': False, 'open_expand_anomaly_gap': True, 'evaluation_sep': False, 'open_gan_sep': True, 'open_gan': True, 'open_unmatch_zoomout': True, 'unmatch_k': 16, 'run_times': 0, 'run_start': 0, 'run_end': 1, 'theta': 0.15, 'anomaly_rate': 20, 'val_percentile': 95.0, 'criterion': 'l1', 'window_size': 30, 'hidden_size': 32, 'data_type': 'fuse', 'open_trace': False, 'num_services': 11, 'trace_c': 5, 'trace_dropout': 0.1, 'fuse_type': 'multi_modal_self_attn', 'attn_type': 'add', 'inner_dropout': 0.5, 'log_layer_num': 4, 'log_dropout': 0.1, 'transformer_hidden': 1024, 'word2vec_model_type': 'fasttext', 'word_embedding_dim': 32, 'word_window': 5, 'word2vec_epoch': 50, 'pre_model': None, 'word2vec_save_dir': '../trained_wv/', 'result_dir': 'D:\\UAC-AD\\data\\rcaeval_ob\\result_per_scenario_fuse_baseline\\mem', 'test_pkl': 'D:\\UAC-AD\\data\\rcaeval_ob\\test_mem.pkl', 'main_model': 'hades', 'hash_id': '2ab0ca82', 'kpi_c': 86, 'log_c': 40}
+12:24:48  INFO       \u2192 F1=0.8550  P=0.8695  R=0.8410
+12:24:48  INFO     ============================================================
+12:24:48  INFO     Scenario: socket
+12:24:48  INFO       test_pkl : D:\UAC-AD\data\rcaeval_ob\test_socket.pkl
+12:24:48  INFO       result   : D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline\socket
+2026-04-19 12:24:57,695 P29652 INFO ^^^^^^^^^^ Current Model:hades, ff230f38 ^^^^^^^^^^
+2026-04-19 12:24:57,695 P29652 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 12:25:03,518 P29652 INFO 40 unique log templates found.
+2026-04-19 12:25:03,530 P29652 INFO Transforming unlabel train data.
+  0%|          | 0/65314 [00:00<?, ?it/s] 12%|#2        | 8136/65314 [00:00<00:00, 81247.53it/s] 25%|##4       | 16261/65314 [00:00<00:00, 80304.65it/s] 38%|###7      | 24517/65314 [00:00<00:00, 80960.47it/s] 50%|####9     | 32614/65314 [00:00<00:00, 80963.71it/s] 62%|######2   | 40711/65314 [00:00<00:00, 80389.19it/s] 75%|#######4  | 48837/65314 [00:00<00:00, 80411.93it/s] 87%|########7 | 56979/65314 [00:00<00:00, 80738.90it/s]100%|#########9| 65054/65314 [00:00<00:00, 79790.45it/s]100%|##########| 65314/65314 [00:00<00:00, 80247.84it/s]
+2026-04-19 12:25:04,347 P29652 INFO Transforming test data.
+2026-04-19 12:25:04,666 P29652 INFO 1 new templates show.
+  0%|          | 0/54075 [00:00<?, ?it/s] 14%|#4        | 7781/54075 [00:00<00:00, 77036.64it/s] 29%|##8       | 15659/54075 [00:00<00:00, 77606.73it/s] 43%|####3     | 23459/54075 [00:00<00:00, 77784.28it/s] 58%|#####8    | 31538/54075 [00:00<00:00, 78656.67it/s] 73%|#######2  | 39404/54075 [00:00<00:00, 78097.68it/s] 87%|########7 | 47215/54075 [00:00<00:00, 77319.37it/s]100%|##########| 54075/54075 [00:00<00:00, 77336.18it/s]
+2026-04-19 12:25:06,190 P29652 INFO Data loaded done!
+2026-04-19 12:27:06,915 P29652 INFO Known word number: 40
+2026-04-19 12:29:00,737 P29652 INFO Epoch 0/5, train generator loss: 0.23645
+2026-04-19 12:30:44,989 P29652 INFO Epoch 0/5, train discriminator loss: 0.15528
+2026-04-19 12:30:50,170 P29652 INFO *** Test time is 5.176661014556885
+2026-04-19 12:30:50,171 P29652 INFO Epoch 0/5, test f1: 0.35396 rc: 0.34992 pc: 0.35810. [214.68s]
+2026-04-19 12:32:40,792 P29652 INFO Epoch 1/5, train generator loss: 0.11273
+2026-04-19 12:34:19,033 P29652 INFO Epoch 1/5, train discriminator loss: 0.36827
+2026-04-19 12:34:23,851 P29652 INFO *** Test time is 4.817014455795288
+2026-04-19 12:34:23,851 P29652 INFO Epoch 1/5, test f1: 0.37282 rc: 0.37895 pc: 0.36688. [208.82s]
+2026-04-19 12:36:14,962 P29652 INFO Epoch 2/5, train generator loss: 0.12859
+2026-04-19 12:37:52,599 P29652 INFO Epoch 2/5, train discriminator loss: 0.48297
+2026-04-19 12:37:57,525 P29652 INFO *** Test time is 4.918907880783081
+2026-04-19 12:37:57,525 P29652 INFO Epoch 2/5, test f1: 0.37350 rc: 0.28389 pc: 0.54578. [208.72s]
+2026-04-19 12:39:55,640 P29652 INFO Epoch 3/5, train generator loss: 0.10058
+2026-04-19 12:41:41,717 P29652 INFO Epoch 3/5, train discriminator loss: 0.41646
+2026-04-19 12:41:47,030 P29652 INFO *** Test time is 5.312619924545288
+2026-04-19 12:41:47,030 P29652 INFO Epoch 3/5, test f1: 0.55102 rc: 0.53782 pc: 0.56488. [224.16s]
+2026-04-19 12:43:38,646 P29652 INFO Epoch 4/5, train generator loss: 0.08838
+2026-04-19 12:45:18,400 P29652 INFO Epoch 4/5, train discriminator loss: 0.57754
+2026-04-19 12:45:23,338 P29652 INFO *** Test time is 4.932451248168945
+2026-04-19 12:45:23,338 P29652 INFO Epoch 4/5, test f1: 0.56457 rc: 0.56473 pc: 0.56442. [211.35s]
+D:\UAC-AD\codes\models\basev3.py:204: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  self.model.load_state_dict(torch.load(model_save_file, map_location=self.device))
+2026-04-19 12:46:27,186 P29652 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.278901
+2026-04-19 12:46:29,160 P29652 INFO *** Test F1 0.3501  of unsupervised traning
+2026-04-19 12:46:29,168 P29652 INFO *** Best F1 {'f1': 0.5645742812239992, 'rc': 0.5647309043832069, 'pc': 0.5644177449168207}  of unsupervised traning
+2026-04-19 12:46:29,372 P29652 INFO Current hash id ff230f38
+{'supervised': False, 'gpu': True, 'epoches': [5, 5], 'batch_size': 128, 'confidence': 0.92, 'alpha': 0.5, 'learning_rate': 0.001, 'patience': 3, 'random_seed': 42, 'optim': -1, 'weight_decay': 0, 'kpi_ratio': 40, 'k': 1, 'kpi_with_high_std': False, 'gpu_device': '0', 'open_kpi_select': False, 'open_min_max': False, 'open_position_embedding': False, 'sigma_matrix': False, 'feature_type': 'template_appear', 'data': 'D:\\UAC-AD\\data\\rcaeval_ob', 'dataset': 'rcaeval_ob', 'open_kpi_normalization': True, 'open_log_normalization': False, 'open_narrowing_modal_gap': True, 'open_feature2': False, 'open_expand_anomaly_gap': True, 'evaluation_sep': False, 'open_gan_sep': True, 'open_gan': True, 'open_unmatch_zoomout': True, 'unmatch_k': 16, 'run_times': 0, 'run_start': 0, 'run_end': 1, 'theta': 0.15, 'anomaly_rate': 20, 'val_percentile': 95.0, 'criterion': 'l1', 'window_size': 30, 'hidden_size': 32, 'data_type': 'fuse', 'open_trace': False, 'num_services': 11, 'trace_c': 5, 'trace_dropout': 0.1, 'fuse_type': 'multi_modal_self_attn', 'attn_type': 'add', 'inner_dropout': 0.5, 'log_layer_num': 4, 'log_dropout': 0.1, 'transformer_hidden': 1024, 'word2vec_model_type': 'fasttext', 'word_embedding_dim': 32, 'word_window': 5, 'word2vec_epoch': 50, 'pre_model': None, 'word2vec_save_dir': '../trained_wv/', 'result_dir': 'D:\\UAC-AD\\data\\rcaeval_ob\\result_per_scenario_fuse_baseline\\socket', 'test_pkl': 'D:\\UAC-AD\\data\\rcaeval_ob\\test_socket.pkl', 'main_model': 'hades', 'hash_id': 'ff230f38', 'kpi_c': 86, 'log_c': 40}
+12:46:34  INFO       \u2192 F1=0.5646  P=0.5644  R=0.5647
+12:46:34  INFO     Summary saved \u2192 D:\UAC-AD\data\rcaeval_ob\result_per_scenario_fuse_baseline\summary.json
+
+========================================================
+  RE2-OB Per-Scenario Results  (fuse, open_trace=False)
+========================================================
+  Fault           F1  Precision  Recall
+  --------------------------------------------
+  cpu         0.5369     0.5265  0.5477
+  delay       0.6969     0.9241  0.5593
+  disk        0.9843     1.0000  0.9690
+  loss        0.7199     0.9602  0.5759
+  mem         0.8550     0.8695  0.8410
+  socket      0.5646     0.5644  0.5647
+  --------------------------------------------
+  Mean        0.7263     0.8075  0.6763
+  Std         0.1560     0.1897  0.1661
+========================================================
+

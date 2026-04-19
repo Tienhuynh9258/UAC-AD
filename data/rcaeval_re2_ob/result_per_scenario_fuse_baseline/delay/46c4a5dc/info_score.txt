@@ -1,0 +1,4 @@
+Experiment 46c4a5dc: 2026/04/19-19:21:47
+Train time/epoch 241.1060
+* Test -- f1:0.6969	rc:0.5593	pc:0.9241
+

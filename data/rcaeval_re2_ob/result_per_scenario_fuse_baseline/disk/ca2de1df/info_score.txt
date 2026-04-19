@@ -1,0 +1,4 @@
+Experiment ca2de1df: 2026/04/19-19:41:06
+Train time/epoch 225.8508
+* Test -- f1:0.9843	rc:0.9690	pc:1.0000
+

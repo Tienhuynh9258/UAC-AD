@@ -1,0 +1,32 @@
+2026-04-19 12:24:57,695 P29652 INFO ^^^^^^^^^^ Current Model:hades, ff230f38 ^^^^^^^^^^
+2026-04-19 12:24:57,695 P29652 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 12:25:03,518 P29652 INFO 40 unique log templates found.
+2026-04-19 12:25:03,530 P29652 INFO Transforming unlabel train data.
+2026-04-19 12:25:04,347 P29652 INFO Transforming test data.
+2026-04-19 12:25:04,666 P29652 INFO 1 new templates show.
+2026-04-19 12:25:06,190 P29652 INFO Data loaded done!
+2026-04-19 12:27:06,915 P29652 INFO Known word number: 40
+2026-04-19 12:29:00,737 P29652 INFO Epoch 0/5, train generator loss: 0.23645
+2026-04-19 12:30:44,989 P29652 INFO Epoch 0/5, train discriminator loss: 0.15528
+2026-04-19 12:30:50,170 P29652 INFO *** Test time is 5.176661014556885
+2026-04-19 12:30:50,171 P29652 INFO Epoch 0/5, test f1: 0.35396 rc: 0.34992 pc: 0.35810. [214.68s]
+2026-04-19 12:32:40,792 P29652 INFO Epoch 1/5, train generator loss: 0.11273
+2026-04-19 12:34:19,033 P29652 INFO Epoch 1/5, train discriminator loss: 0.36827
+2026-04-19 12:34:23,851 P29652 INFO *** Test time is 4.817014455795288
+2026-04-19 12:34:23,851 P29652 INFO Epoch 1/5, test f1: 0.37282 rc: 0.37895 pc: 0.36688. [208.82s]
+2026-04-19 12:36:14,962 P29652 INFO Epoch 2/5, train generator loss: 0.12859
+2026-04-19 12:37:52,599 P29652 INFO Epoch 2/5, train discriminator loss: 0.48297
+2026-04-19 12:37:57,525 P29652 INFO *** Test time is 4.918907880783081
+2026-04-19 12:37:57,525 P29652 INFO Epoch 2/5, test f1: 0.37350 rc: 0.28389 pc: 0.54578. [208.72s]
+2026-04-19 12:39:55,640 P29652 INFO Epoch 3/5, train generator loss: 0.10058
+2026-04-19 12:41:41,717 P29652 INFO Epoch 3/5, train discriminator loss: 0.41646
+2026-04-19 12:41:47,030 P29652 INFO *** Test time is 5.312619924545288
+2026-04-19 12:41:47,030 P29652 INFO Epoch 3/5, test f1: 0.55102 rc: 0.53782 pc: 0.56488. [224.16s]
+2026-04-19 12:43:38,646 P29652 INFO Epoch 4/5, train generator loss: 0.08838
+2026-04-19 12:45:18,400 P29652 INFO Epoch 4/5, train discriminator loss: 0.57754
+2026-04-19 12:45:23,338 P29652 INFO *** Test time is 4.932451248168945
+2026-04-19 12:45:23,338 P29652 INFO Epoch 4/5, test f1: 0.56457 rc: 0.56473 pc: 0.56442. [211.35s]
+2026-04-19 12:46:27,186 P29652 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.278901
+2026-04-19 12:46:29,160 P29652 INFO *** Test F1 0.3501  of unsupervised traning
+2026-04-19 12:46:29,168 P29652 INFO *** Best F1 {'f1': 0.5645742812239992, 'rc': 0.5647309043832069, 'pc': 0.5644177449168207}  of unsupervised traning
+2026-04-19 12:46:29,372 P29652 INFO Current hash id ff230f38

@@ -1,0 +1,4 @@
+Experiment 42f8bdfc: 2026/04/19-16:58:18
+Train time/epoch 351.6585
+* Test -- f1:0.9843	rc:0.9691	pc:1.0000
+

@@ -1,0 +1,54 @@
+{
+  "config": {
+    "data_type": "fuse",
+    "open_trace": "False",
+    "val_percentile": 95,
+    "window_size": 30
+  },
+  "per_scenario": [
+    {
+      "fault": "cpu",
+      "f1": 0.5369,
+      "precision": 0.5265,
+      "recall": 0.5477
+    },
+    {
+      "fault": "delay",
+      "f1": 0.6969,
+      "precision": 0.9241,
+      "recall": 0.5593
+    },
+    {
+      "fault": "disk",
+      "f1": 0.9843,
+      "precision": 1.0,
+      "recall": 0.969
+    },
+    {
+      "fault": "loss",
+      "f1": 0.7199,
+      "precision": 0.9602,
+      "recall": 0.5759
+    },
+    {
+      "fault": "mem",
+      "f1": 0.855,
+      "precision": 0.8695,
+      "recall": 0.841
+    },
+    {
+      "fault": "socket",
+      "f1": 0.5646,
+      "precision": 0.5644,
+      "recall": 0.5647
+    }
+  ],
+  "aggregate": {
+    "f1_mean": 0.7262666666666666,
+    "f1_std": 0.15601936489494572,
+    "precision_mean": 0.8074500000000001,
+    "precision_std": 0.18968029901213604,
+    "recall_mean": 0.6762666666666667,
+    "recall_std": 0.16611294016087036
+  }
+}

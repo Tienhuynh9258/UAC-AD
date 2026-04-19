@@ -1,0 +1,32 @@
+2026-04-19 10:05:31,887 P23192 INFO ^^^^^^^^^^ Current Model:hades, 24973432 ^^^^^^^^^^
+2026-04-19 10:05:31,887 P23192 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 10:05:41,904 P23192 INFO 40 unique log templates found.
+2026-04-19 10:05:41,920 P23192 INFO Transforming unlabel train data.
+2026-04-19 10:05:42,883 P23192 INFO Transforming test data.
+2026-04-19 10:05:43,160 P23192 INFO 1 new templates show.
+2026-04-19 10:05:44,486 P23192 INFO Data loaded done!
+2026-04-19 10:07:41,725 P23192 INFO Known word number: 40
+2026-04-19 10:10:45,600 P23192 INFO Epoch 0/5, train generator loss: 0.21247
+2026-04-19 10:13:31,512 P23192 INFO Epoch 0/5, train discriminator loss: 0.43422
+2026-04-19 10:13:39,278 P23192 INFO *** Test time is 7.754346609115601
+2026-04-19 10:13:39,286 P23192 INFO Epoch 0/5, test f1: 0.46723 rc: 0.47734 pc: 0.45754. [345.73s]
+2026-04-19 10:16:36,340 P23192 INFO Epoch 1/5, train generator loss: 0.11344
+2026-04-19 10:19:19,649 P23192 INFO Epoch 1/5, train discriminator loss: 0.31406
+2026-04-19 10:19:27,857 P23192 INFO *** Test time is 8.201317310333252
+2026-04-19 10:19:27,858 P23192 INFO Epoch 1/5, test f1: 0.45031 rc: 0.44415 pc: 0.45665. [340.31s]
+2026-04-19 10:19:27,858 P23192 INFO early stopping epoch 1/3
+2026-04-19 10:22:27,039 P23192 INFO Epoch 2/5, train generator loss: 0.09165
+2026-04-19 10:25:06,266 P23192 INFO Epoch 2/5, train discriminator loss: 0.52672
+2026-04-19 10:25:12,402 P23192 INFO *** Test time is 6.134540796279907
+2026-04-19 10:25:12,402 P23192 INFO Epoch 2/5, test f1: 0.44050 rc: 0.44498 pc: 0.43611. [338.41s]
+2026-04-19 10:25:12,402 P23192 INFO early stopping epoch 2/3
+2026-04-19 10:28:13,131 P23192 INFO Epoch 3/5, train generator loss: 0.07291
+2026-04-19 10:30:51,174 P23192 INFO Epoch 3/5, train discriminator loss: 0.62359
+2026-04-19 10:30:57,621 P23192 INFO *** Test time is 6.447403192520142
+2026-04-19 10:30:57,621 P23192 INFO Epoch 3/5, test f1: 0.44283 rc: 0.44729 pc: 0.43845. [338.77s]
+2026-04-19 10:30:57,621 P23192 INFO early stopping epoch 3/3
+2026-04-19 10:30:57,621 P23192 INFO Early stopping
+2026-04-19 10:32:37,737 P23192 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.296830
+2026-04-19 10:32:40,849 P23192 INFO *** Test F1 0.3494  of unsupervised traning
+2026-04-19 10:32:40,857 P23192 INFO *** Best F1 {'f1': 0.4672338884866039, 'rc': 0.4773441834658776, 'pc': 0.4575429888317674}  of unsupervised traning
+2026-04-19 10:32:41,107 P23192 INFO Current hash id 24973432

@@ -1,0 +1,32 @@
+2026-04-19 08:30:32,129 P23284 INFO ^^^^^^^^^^ Current Model:hades, 42f8bdfc ^^^^^^^^^^
+2026-04-19 08:30:32,129 P23284 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 08:30:35,153 P23284 INFO 40 unique log templates found.
+2026-04-19 08:30:35,175 P23284 INFO Transforming unlabel train data.
+2026-04-19 08:30:36,830 P23284 INFO Transforming test data.
+2026-04-19 08:30:37,187 P23284 INFO 1 new templates show.
+2026-04-19 08:30:38,807 P23284 INFO Data loaded done!
+2026-04-19 08:32:33,216 P23284 INFO Known word number: 40
+2026-04-19 08:35:42,088 P23284 INFO Epoch 0/5, train generator loss: 0.19196
+2026-04-19 08:38:30,694 P23284 INFO Epoch 0/5, train discriminator loss: 0.43858
+2026-04-19 08:38:40,282 P23284 INFO *** Test time is 9.571063995361328
+2026-04-19 08:38:40,283 P23284 INFO Epoch 0/5, test f1: 0.98431 rc: 0.96910 pc: 1.00000. [354.24s]
+2026-04-19 08:41:40,514 P23284 INFO Epoch 1/5, train generator loss: 0.11341
+2026-04-19 08:44:27,005 P23284 INFO Epoch 1/5, train discriminator loss: 0.33672
+2026-04-19 08:44:33,821 P23284 INFO *** Test time is 6.810147285461426
+2026-04-19 08:44:33,821 P23284 INFO Epoch 1/5, test f1: 0.98431 rc: 0.96910 pc: 1.00000. [346.61s]
+2026-04-19 08:44:33,822 P23284 INFO early stopping epoch 1/3
+2026-04-19 08:47:39,618 P23284 INFO Epoch 2/5, train generator loss: 0.09010
+2026-04-19 08:50:23,945 P23284 INFO Epoch 2/5, train discriminator loss: 0.43366
+2026-04-19 08:50:30,303 P23284 INFO *** Test time is 6.351569652557373
+2026-04-19 08:50:30,303 P23284 INFO Epoch 2/5, test f1: 0.98431 rc: 0.96910 pc: 1.00000. [350.13s]
+2026-04-19 08:50:30,303 P23284 INFO early stopping epoch 2/3
+2026-04-19 08:53:37,220 P23284 INFO Epoch 3/5, train generator loss: 0.07300
+2026-04-19 08:56:25,944 P23284 INFO Epoch 3/5, train discriminator loss: 0.57403
+2026-04-19 08:56:33,656 P23284 INFO *** Test time is 7.707210540771484
+2026-04-19 08:56:33,657 P23284 INFO Epoch 3/5, test f1: 0.98431 rc: 0.96910 pc: 1.00000. [355.65s]
+2026-04-19 08:56:33,657 P23284 INFO early stopping epoch 3/3
+2026-04-19 08:56:33,657 P23284 INFO Early stopping
+2026-04-19 08:58:15,454 P23284 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.299910
+2026-04-19 08:58:18,476 P23284 INFO *** Test F1 0.3766  of unsupervised traning
+2026-04-19 08:58:18,477 P23284 INFO *** Best F1 {'f1': 0.9843089354505309, 'rc': 0.9691026827012026, 'pc': 1.0}  of unsupervised traning
+2026-04-19 08:58:18,722 P23284 INFO Current hash id 42f8bdfc

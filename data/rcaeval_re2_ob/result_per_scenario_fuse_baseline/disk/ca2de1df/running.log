@@ -1,0 +1,32 @@
+2026-04-19 11:22:06,161 P27568 INFO ^^^^^^^^^^ Current Model:hades, ca2de1df ^^^^^^^^^^
+2026-04-19 11:22:06,161 P27568 INFO Load from D:\UAC-AD\data\rcaeval_ob
+2026-04-19 11:22:14,054 P27568 INFO 40 unique log templates found.
+2026-04-19 11:22:14,070 P27568 INFO Transforming unlabel train data.
+2026-04-19 11:22:15,052 P27568 INFO Transforming test data.
+2026-04-19 11:22:15,469 P27568 INFO 1 new templates show.
+2026-04-19 11:22:17,737 P27568 INFO Data loaded done!
+2026-04-19 11:24:25,838 P27568 INFO Known word number: 40
+2026-04-19 11:26:34,858 P27568 INFO Epoch 0/5, train generator loss: 0.24502
+2026-04-19 11:28:43,020 P27568 INFO Epoch 0/5, train discriminator loss: 0.17054
+2026-04-19 11:28:50,125 P27568 INFO *** Test time is 7.09684944152832
+2026-04-19 11:28:50,127 P27568 INFO Epoch 0/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [252.89s]
+2026-04-19 11:30:44,753 P27568 INFO Epoch 1/5, train generator loss: 0.11591
+2026-04-19 11:32:26,924 P27568 INFO Epoch 1/5, train discriminator loss: 0.39677
+2026-04-19 11:32:35,325 P27568 INFO *** Test time is 8.394570350646973
+2026-04-19 11:32:35,325 P27568 INFO Epoch 1/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [216.76s]
+2026-04-19 11:32:35,325 P27568 INFO early stopping epoch 1/3
+2026-04-19 11:34:26,333 P27568 INFO Epoch 2/5, train generator loss: 0.12324
+2026-04-19 11:36:07,828 P27568 INFO Epoch 2/5, train discriminator loss: 0.22468
+2026-04-19 11:36:13,952 P27568 INFO *** Test time is 6.119542598724365
+2026-04-19 11:36:13,953 P27568 INFO Epoch 2/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [212.51s]
+2026-04-19 11:36:13,953 P27568 INFO early stopping epoch 2/3
+2026-04-19 11:38:07,571 P27568 INFO Epoch 3/5, train generator loss: 0.13955
+2026-04-19 11:39:55,191 P27568 INFO Epoch 3/5, train discriminator loss: 0.47499
+2026-04-19 11:40:00,288 P27568 INFO *** Test time is 5.092593669891357
+2026-04-19 11:40:00,289 P27568 INFO Epoch 3/5, test f1: 0.98421 rc: 0.96892 pc: 1.00000. [221.24s]
+2026-04-19 11:40:00,289 P27568 INFO early stopping epoch 3/3
+2026-04-19 11:40:00,289 P27568 INFO Early stopping
+2026-04-19 11:41:03,920 P27568 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.745475
+2026-04-19 11:41:05,996 P27568 INFO *** Test F1 0.5034  of unsupervised traning
+2026-04-19 11:41:05,997 P27568 INFO *** Best F1 {'f1': 0.9842612168193563, 'rc': 0.9690101757631823, 'pc': 1.0}  of unsupervised traning
+2026-04-19 11:41:06,107 P27568 INFO Current hash id ca2de1df
