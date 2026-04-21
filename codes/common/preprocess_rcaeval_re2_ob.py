@@ -37,7 +37,7 @@ Sample format (each pkl entry = 1 timestep):
     "seqs":                list[str],       # same as logs (compatibility)
     "log_features":        np.float32[1],   # placeholder; overwritten by semantics.py
     "metric_name":         list[str],       # 73 metric column names
-    "trace_node_features": np.float32[11,5],
+    "trace_node_features": np.float32[11,6],
     "trace_adj":           np.float32[11,11],
   }
 
@@ -82,7 +82,7 @@ SERVICE2IDX = {s: i for i, s in enumerate(SERVICES)}
 SERVICE_ALIASES = {"redis-cart": "redis"}
 
 NUM_SERVICES = len(SERVICES)
-TRACE_C = 5  # [call_count, avg_dur_ms, max_dur_ms, error_rate, root_rate]
+TRACE_C = 6  # [call_count, avg_dur_ms, max_dur_ms, error_rate, root_rate, latency_dev]
 
 
 # ── Preprocessor ─────────────────────────────────────────────────────────────
@@ -206,11 +206,21 @@ class RCAEvalOBPreprocessor:
 
     # ── Trace features ────────────────────────────────────────────────────────
 
-    def _build_trace_features(self, exp_dir: Path, timestamps: np.ndarray):
+    def _build_trace_features(self, exp_dir: Path, timestamps: np.ndarray,
+                               inject_time: int):
         """
         Returns:
-          node_feats [T, NUM_SERVICES, TRACE_C]
+          node_feats [T, NUM_SERVICES, TRACE_C]   (TRACE_C=6)
           adj        [T, NUM_SERVICES, NUM_SERVICES]  (row-normalized)
+
+        Node feature layout (col index):
+          0  call_count   — number of spans, normalized by global max
+          1  avg_dur_ms   — mean span duration, normalized by global max
+          2  max_dur_ms   — max span duration, normalized by global max
+          3  error_rate   — fraction of spans with non-zero statusCode ∈ [0,1]
+          4  root_rate    — fraction of root spans ∈ [0,1]
+          5  latency_dev  — z-score of avg_dur vs pre-fault baseline per service
+                            (positive = slower than normal, negative = faster)
         """
         T = len(timestamps)
         node_feats = np.zeros((T, NUM_SERVICES, TRACE_C), dtype=np.float32)
@@ -280,6 +290,14 @@ class RCAEvalOBPreprocessor:
                 if mx > 0:
                     node_feats[:, :, col] /= mx
 
+            # latency_dev (col 5): z-score of avg_dur vs pre-fault baseline per service
+            # Baseline = pre-injection window (before inject_time)
+            pre_fault_idx = max(int(np.searchsorted(timestamps, inject_time, side='left')), 1)
+            baseline_avg = node_feats[:pre_fault_idx, :, 1].mean(axis=0)  # [N]
+            baseline_std = node_feats[:pre_fault_idx, :, 1].std(axis=0) + 1e-6  # [N]
+            node_feats[:, :, 5] = (node_feats[:, :, 1] - baseline_avg[np.newaxis, :]) \
+                                   / baseline_std[np.newaxis, :]
+
             # ── Adjacency (parent → child edges, vectorised) ──────────────
             # Build spanID → (si, wi) lookup via merge
             span_df = df[["spanID", "si", "wi"]].copy()
@@ -331,7 +349,7 @@ class RCAEvalOBPreprocessor:
         inject_time = self._load_inject_time(exp_dir)
         timestamps, kpis, metric_names = self._load_kpi(exp_dir)
         logs_per_ts = self._build_log_features(exp_dir, timestamps)
-        node_feats, adj = self._build_trace_features(exp_dir, timestamps)
+        node_feats, adj = self._build_trace_features(exp_dir, timestamps, inject_time)
         labels = self._build_labels(timestamps, inject_time)
 
         normal_samples, anomaly_samples = {}, {}
@@ -467,7 +485,7 @@ class RCAEvalOBPreprocessor:
         meta = {
             "num_services": NUM_SERVICES,
             "service2idx":  SERVICE2IDX,
-            "trace_c":      TRACE_C,
+            "trace_c":      TRACE_C,   # 6: call_count, avg_dur, max_dur, error_rate, root_rate, latency_dev
             "kpi_c":        n_kpi,
             "log_c":        1,       # placeholder; updated by semantics.py at runtime
             "metric_names": self.canonical_metric_cols,

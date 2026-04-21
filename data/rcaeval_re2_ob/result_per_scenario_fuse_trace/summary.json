@@ -8,15 +8,15 @@
   "per_scenario": [
     {
       "fault": "cpu",
-      "f1": 0.5871,
-      "precision": 0.5772,
-      "recall": 0.5974
+      "f1": 0.7153,
+      "precision": 0.7376,
+      "recall": 0.6943
     },
     {
       "fault": "delay",
-      "f1": 0.71,
-      "precision": 0.9422,
-      "recall": 0.5696
+      "f1": 0.8508,
+      "precision": 0.9962,
+      "recall": 0.7424
     },
     {
       "fault": "disk",
@@ -26,29 +26,29 @@
     },
     {
       "fault": "loss",
-      "f1": 0.729,
-      "precision": 0.8912,
-      "recall": 0.6167
+      "f1": 0.7797,
+      "precision": 0.8811,
+      "recall": 0.6993
     },
     {
       "fault": "mem",
-      "f1": 0.7879,
-      "precision": 0.7778,
-      "recall": 0.7982
+      "f1": 0.8288,
+      "precision": 0.8214,
+      "recall": 0.8363
     },
     {
       "fault": "socket",
-      "f1": 0.4672,
-      "precision": 0.4575,
-      "recall": 0.4773
+      "f1": 0.6021,
+      "precision": 0.6362,
+      "recall": 0.5714
     }
   ],
   "aggregate": {
-    "f1_mean": 0.7109166666666665,
-    "f1_std": 0.1611009560975836,
-    "precision_mean": 0.7743166666666665,
-    "precision_std": 0.19664664092958434,
-    "recall_mean": 0.6713833333333333,
-    "recall_std": 0.16391546008706911
+    "f1_mean": 0.7935,
+    "f1_std": 0.11823258152190255,
+    "precision_mean": 0.8454166666666666,
+    "precision_std": 0.1315787269618037,
+    "recall_mean": 0.7521333333333334,
+    "recall_std": 0.1245350642277998
   }
 }

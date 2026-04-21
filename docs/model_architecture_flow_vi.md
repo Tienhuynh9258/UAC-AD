@@ -1,7 +1,7 @@
 # HADES + Trace — Luồng mô hình (Model Architecture Flow)
 
 > Tài liệu này mô tả kiến trúc và luồng dữ liệu của mô hình HADES được mở rộng với nhánh Trace (GAT Structure Autoencoder).
-> **Phiên bản**: `fuse_v3.py` với 5 thay đổi kiến trúc (dựa trên TraceDAE).
+> **Phiên bản**: `fuse_v3.py` với 7 thay đổi kiến trúc (dựa trên TraceDAE).
 
 ---
 
@@ -16,7 +16,8 @@ UAC-AD/
 │   │   ├── data_loads.py               ← Load & window data → DataLoader
 │   │   ├── semantics.py                ← Trích xuất log features (Word2Vec/template)
 │   │   ├── utils.py                    ← Tiện ích chung (seed, dump results...)
-│   │   └── preprocess_micross.py       ← Build pkl từ raw MicroSS CSV
+│   │   ├── preprocess_XX.py            ← Build pkl từ raw dataset XX
+|   |   └── eval_per_scenario_XX.py     ← Eval cho dataset XX có nhiều fault type/scenario
 │   └── models/
 │       ├── basev3.py                   ← Vòng lặp train/eval (BaseModel)
 │       ├── fuse_v3.py                  ← Model đa phương thức (log+metric+trace)
@@ -25,7 +26,7 @@ UAC-AD/
 │       ├── trace_model_v3.py           ← Trace encoder (GAT) + TraceModel
 │       └── utils.py                    ← Các module dùng chung (Attention, ...)
 └── data/
-    └── micross/
+    └── XX/
         ├── train.pkl / unlabel.pkl / test.pkl
         └── meta.pkl
 ```
@@ -40,12 +41,20 @@ UAC-AD/
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   log_features        [B, W, log_c]          ← log template features
   kpi_features        [B, W, kpi_c]          ← KPI metrics
-  trace_node_features [B, W, N, trace_c]     ← MicroSS: service node features
-  trace_adj           [B, W, N, N]           ← MicroSS: service call graph (STG)
+  trace_node_features [B, W, N, trace_c]     ← service node features (trace_c=6)
+  trace_adj           [B, W, N, N]           ← service call graph (STG)
   unmatched_kpi       [B, W, kpi_c]          ← shuffled KPI từ windows khác
 
-  B = batch size | W = window size (50) | N = num_services (4)
-  H = hidden_size (32)
+  B = batch size | W = window size (tùy dataset) | N = num_services (tùy dataset)
+  H = hidden_size (32) | trace_c = 6
+
+  Node feature layout (trace_c=6):
+    col 0: call_count   — số spans, normalized
+    col 1: avg_dur_ms   — mean duration, normalized
+    col 2: max_dur_ms   — max duration, normalized
+    col 3: error_rate   — fraction lỗi ∈ [0,1]
+    col 4: root_rate    — fraction root spans ∈ [0,1]
+    col 5: latency_dev  — z-score(avg_dur vs pre-fault baseline)
 ```
 
 ---
@@ -54,9 +63,8 @@ UAC-AD/
 
 ### 3.1 MultiEncoder — [CHANGE 1] Trace tách khỏi Self-Attention
 
-> **Thay đổi**: Trước đây trace được đưa vào Self-Attention cùng log+KPI → `[B,W,3H]`.
+> **Thay đổi**:
 > Giờ Self-Attention **chỉ** áp dụng trên log+KPI. Trace encoder chạy **riêng** → `ZV`.
-> Lý do: self-attention trên 3 modalities pha loãng quan hệ log↔KPI; đúng với thiết kế TraceDAE
 > (structural info nên guide **decoder**, không phải encoder attention).
 
 ```
@@ -103,37 +111,59 @@ UAC-AD/
 
 ---
 
-### 3.3 Trace Structure Autoencoder & adj_hat — [CHANGE 3]
+### 3.3 Trace Autoencoder — [CHANGE 3] adj_hat + [CHANGE 6] Attribute Reconstruction Loss
 
-> **Thay đổi**: `adj_hat` (adjacency matrix tái tạo) được return ra ngoài `MultiModel`
+> **CHANGE 3**: `adj_hat` (adjacency matrix tái tạo) được return ra ngoài `MultiModel`
 > để Discriminator có thể dùng làm "fake trace adjacency".
+>
+> **CHANGE 6**: TraceModel thêm **attribute decoder** và hai reconstruction loss bổ sung:
+> - `loss_latency`: MSE trên `latency_dev` (col 5) — phát hiện service chậm hơn baseline
+> - `loss_error`: BCE trên `error_rate` (col 3) — phát hiện service tăng lỗi
+>
+> Mục đích: buộc node embedding ZV encode cả thông tin topology lẫn attribute anomaly,
+> làm `trace_dis` discriminative hơn cho delay/loss/mem/socket fault.
 
 ```
-  trace_nodes ──► TraceEncoder (GAT) ──► ZV [B*W, N, H]
-                                              │
-                         A_hat = sigmoid(ZV · ZVᵀ)  [B*W, N, N]
-                                              │
-              trace_dis = BCE(A_hat, trace_adj).mean([N,N])  [B, W]
+  trace_nodes ──► TraceEncoder (2-layer GAT) ──► ZV [B*W, N, H]
+                                                       │
+                   ┌───────────────────────────────────┼─────────────────────────┐
+                   │                                   │                         │
+           Structural decoder                  Attribute decoder          adj_hat return
+           A_hat = sigmoid(ZV·ZVᵀ)            X_hat = Linear(ZV)
+           loss_struct = BCE(A_hat, adj)       loss_lat = MSE(X_hat[:,5], x[:,5])
+           .mean(dim=[-2,-1])  [B]             loss_err = BCE(σ(X_hat[:,3]),      [B]
+                                                              x[:,3].clamp(0,1))  [B]
+                   │
+  trace_dis = loss_struct + λ_lat × loss_lat + λ_err × loss_err    [B]
+              (λ_lat = λ_err = 0.5 mặc định)
 
-  adj_hat_4d = A_hat.reshape(B, W, N, N)   ← CHANGE 3: trả ra MultiModel output
+  adj_hat_4d   = A_hat.reshape(B, W, N, N)          ← CHANGE 3: trả ra MultiModel output
+  feats_hat_4d = feats_hat[:,:,[3,5]].reshape(B, W, N, 2)  ← CHANGE 7: trả ra cho attribute discriminator
 ```
 
 ---
 
-### 3.4 Fusion Loss — [CHANGE 4] Learnable trace_alpha
+### 3.4 Fusion Loss — [CHANGE 4] Variance-based Alpha (thay thế Learnable trace_alpha)
 
-> **Thay đổi**: `trace_weight` (float cố định, cần tuning tay) → `trace_alpha` (learnable parameter).
-> Khởi tạo: `nn.Parameter(tensor(-2.2))` → `sigmoid(-2.2) ≈ 0.10` (khớp với α=0.1 trong TraceDAE).
-> α được học từ dữ liệu, tự cân bằng giữa (log+KPI) reconstruction và trace structural loss.
+> **Thay đổi**: `trace_alpha = nn.Parameter(-2.2)` (learnable theo thiết kế TraceDAE) → Learnable alpha bị thay bằng **variance-based alpha** — không có parameter.
+>
+> **Vấn đề với learnable alpha**: Gradient đẩy `trace_alpha` converge để cân bằng *reconstruction error magnitude*
+> trên normal data — không phản ánh discriminativeness thực sự. Trên dataset trace yếu (e.g. RE3-OB),
+> `trace_dis` gần constant → alpha tăng lên để bù → noise injection.
+>
+> **Giải pháp variance-based**: α phản ánh trực tiếp discriminativeness của trace signal so với log+KPI.
+> Khi trace noise → var(trace_dis) thấp → α → 0 tự động.
 
 ```
   log_d   = log_dis  × expand_anomaly_gap(log_dis)
   kpi_d   = kpi_dis  × expand_anomaly_gap(kpi_dis)
   trace_d = trace_dis × expand_anomaly_gap(trace_dis)
 
-  α = sigmoid(trace_alpha)   ← học được, khởi tạo ≈ 0.10
-
   log_kpi_loss = log_d + kpi_d + narrow_modal_gap(|log_d − kpi_d|)
+
+  var_lk    = var(log_kpi_loss.detach())      ← không có gradient
+  var_trace = var(trace_dis.detach())
+  α = var_trace / (var_lk + var_trace + ε)    ← ∈ [0, 1], không học được
 
   fusion_loss = (1 − α) × log_kpi_loss + α × trace_d    [B, W]
                 └─────────────────────────────────────────────────────┘
@@ -152,13 +182,17 @@ UAC-AD/
 
 ---
 
-## 4. Discriminator — `MultiDiscriminator.get_loss()` — [CHANGE 5]
+## 4. Discriminator — `MultiDiscriminator.get_loss()`
 
-> **Thay đổi (bug fix quan trọng)**: Trước đây cả REAL và FAKE pass đều dùng `trace_adj` thật
-> → `trace_re == trace_re_fake` → CE loss yêu cầu cùng 1 vector phải là 1 VÀ 0 cùng lúc → gradient mâu thuẫn.
+### 4.1 Structural Trace Discrimination — [CHANGE 5] (không thay đổi)
+
+> **Thay đổi**: FAKE pass dùng `adj_hat` (adjacency tái tạo từ Structure AE) →
+> `trace_re_fake ≠ trace_re` → loss có ý nghĩa.
+> Tương tự như log_out/kpi_out là "fake" cho log/KPI, `adj_hat` là "fake" cho trace structure.
 >
-> Bây giờ FAKE pass dùng `adj_hat` (adjacency tái tạo từ Structure AE) → `trace_re_fake ≠ trace_re` → loss có ý nghĩa.
-> Tương tự như log_out/kpi_out là "fake" cho log/KPI, thì `adj_hat` là "fake" cho trace.
+> **Lưu ý về `trace_nodes`**: `trace_nodes` giống nhau trong cả REAL và FAKE → không đóng góp
+> discriminative signal. Nó chỉ đóng vai trò là input node feature cho GAT attention trong `encoder_low`.
+> Toàn bộ signal structural discrimination đến từ sự khác biệt giữa `adj` và `adj_hat`.
 
 ```
   MultiEncoder_low (lightweight, 1-layer GAT):
@@ -180,6 +214,46 @@ UAC-AD/
   deceive_loss = MSE(kpi_re, kpi_re_fake)
                + MSE(log_re, log_re_fake)
                + MSE(trace_re, trace_re_fake)
+```
+
+---
+
+### 4.2 Attribute Trace Discrimination — [CHANGE 7] (mới, hoàn toàn độc lập)
+
+> **Động lực**: Structural head (CHANGE 5) chỉ discriminate qua topology (adj vs adj_hat).
+> Node attributes giống nhau trong cả REAL và FAKE → attributes không đóng góp gì cho discrimination.
+> Thêm một attribute head riêng biệt so sánh ground-truth vs reconstructed node attributes
+> buộc Generator phải sinh ra `error_rate` và `latency_dev` thực tế hơn.
+>
+> **Tại sao chỉ dùng col 3 & col 5?**
+> - `error_rate` (col 3) và `latency_dev` (col 5) có supervision rõ ràng trong CHANGE 6
+>   → chất lượng của `feats_hat[:,:,[3,5]]` đáng tin cậy.
+> - 4 col còn lại (call_count, avg_dur_ms, max_dur_ms, root_rate) không có explicit loss
+>   → chất lượng reconstruction kém → dùng chúng sẽ inject noise.
+>
+> **Code structural cũ không cần sửa** — attribute head là hoàn toàn additive.
+
+```
+  Attribute head (độc lập với structural, không qua encoder_low):
+
+  REAL:  trace_nodes[:, :, [3, 5]]            [B, W, N, 2]
+         → mean over N → attr_real            [B*W, 2]
+
+  FAKE:  feats_hat[:, :, [3, 5]]              [B, W, N, 2]   ← từ TraceModel (CHANGE 7)
+         → mean over N → attr_fake            [B*W, 2]
+
+  attr_classifier: Linear(2, H) → ReLU → Linear(H, 1) → sigmoid
+                                                          [B*W, 1]
+
+  attr_disc_loss = BCE(attr_classifier(attr_real), real=1)
+                 + BCE(attr_classifier(attr_fake), fake=0)
+
+  attr_deceive_loss = MSE(attr_classifier(attr_real),
+                          attr_classifier(attr_fake))
+
+  Tổng hợp loss (cộng thêm vào):
+  disc_loss    += attr_disc_loss
+  deceive_loss += attr_deceive_loss
 ```
 
 ---
@@ -222,13 +296,15 @@ UAC-AD/
 
 ## 7. So sánh kiến trúc: Trước vs Sau (fuse_v3.py)
 
-| #   | Thành phần             | Trước (cũ)                                         | Sau (mới)                                                          |
-|:---:|:-----------------------|:---------------------------------------------------|:-------------------------------------------------------------------|
-|  1  | **Self-Attention**     | cat([log‖kpi‖trace]) → 3H                          | cat([log‖kpi]) → 2H, trace **tách riêng**                          |
-|  2  | **Decoder input**      | fused_modal [B,W,2H hoặc 3H]                       | cat([fused_modal, ZV]) → [B,W,3H]                                  |
-|  3  | **adj_hat**            | không dùng                                         | return ra ngoài MultiModel để Discriminator dùng                   |
-|  4  | **trace_weight**       | float cố định (hyperparameter)                     | `trace_alpha = nn.Parameter(−2.2)`, learned                        |
-|  5  | **Discriminator FAKE** | dùng `trace_adj` (thật) → contradiction            | dùng `adj_hat` (tái tạo) → valid loss                              |
+| #   | Thành phần                   | Trước (cũ)                                         | Sau (mới)                                                                             |
+|:---:|:-----------------------------|:---------------------------------------------------|:--------------------------------------------------------------------------------------|
+|  1  | **Self-Attention**           | cat([log‖kpi]) → 2H                               | cat([log‖kpi]) → 2H, trace **tách riêng**                                             |
+|  2  | **Decoder input**            | fused_modal [B,W,2H hoặc 3H]                       | cat([fused_modal, ZV]) → [B,W,3H]                                                     |
+|  3  | **adj_hat**                  | không dùng                                         | return ra ngoài MultiModel để Discriminator dùng                                      |
+|  4  | **trace_alpha**              | `nn.Parameter(−2.2)`, learned ≈ 0.10              | **variance-based**: `α = var(trace) / (var(lk) + var(trace) + ε)`                    |
+|  5  | **Discriminator FAKE**       | dùng `trace_adj` (thật) → contradiction            | dùng `adj_hat` (tái tạo) → valid loss                                                 |
+|  6  | **trace_dis**                | BCE(A_hat, adj) — chỉ structural loss              | + λ_lat×MSE(latency_dev) + λ_err×BCE(error_rate)                                     |
+|  7  | **Attribute Discriminator**  | không có — node attributes không được discriminate | head riêng: REAL=trace_nodes[:,:,[3,5]], FAKE=feats_hat[:,:,[3,5]] → Linear(2,H)→ReLU→Linear(H,1) |
 
 ---
 
@@ -243,7 +319,7 @@ UAC-AD/
                         │    (Self-Attn      │
   trace [B,W,N,C]    ──┘     log+KPI only)  └──► ZV [B,W,H]  (GAT)
   adj   [B,W,N,N]    ──────────────────────────────│
-                                                    │
+                                                   │
                         cat([fused_modal, ZV]) [B,W,3H]
                                     │
                              fuse_decoder (Linear)
@@ -254,12 +330,30 @@ UAC-AD/
          │                          │                          │
     kpi_dis [B,W]            log_dis [B,W]            trace_dis [B,W]
     L1(kpi_out, kpi_x)       L1(log_out, log_x)       BCE(A_hat, adj)
+                                                      + λ_lat×MSE(X_hat[:,5], x[:,5])
+                                                      + λ_err×BCE(σ(X_hat[:,3]), x[:,3])
          │                          │                          │
          └──────────────────────────┴──────────────────────────┘
                                     │
-                    α = sigmoid(trace_alpha)  ← learned
+                    α = var(trace_dis) / (var(log_kpi) + var(trace_dis) + ε)  ← variance-based
                     fusion_loss = (1-α)×(log+kpi) + α×trace    [B,W]
                              = Anomaly Score
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  DISCRIMINATOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Structural head (CHANGE 5):
+    REAL: encoder_low(log_x,   kpi_x,   trace_nodes, adj)     → trace_re
+    FAKE: encoder_low(log_out, kpi_out, trace_nodes, adj_hat) → trace_re_fake
+    disc_loss    += CE(trace_re, real=1) + CE(trace_re_fake, fake=0)
+    deceive_loss += MSE(trace_re, trace_re_fake)
+
+  Attribute head (CHANGE 7 — mới, hoàn toàn độc lập):
+    REAL: trace_nodes[:,:,[3,5]].mean(N) → attr_real  [B*W, 2]
+    FAKE: feats_hat[:,:,[3,5]].mean(N)  → attr_fake  [B*W, 2]
+    attr_classifier: Linear(2,H) → ReLU → Linear(H,1)
+    disc_loss    += BCE(attr_classifier(attr_real), 1) + BCE(attr_classifier(attr_fake), 0)
+    deceive_loss += MSE(attr_classifier(attr_real), attr_classifier(attr_fake))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   OUTPUT: F1 / Recall / Precision (với point-adjustment)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

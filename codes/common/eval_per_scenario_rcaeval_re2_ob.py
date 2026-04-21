@@ -99,7 +99,7 @@ def main():
     p.add_argument("--data_type",      default="fuse", choices=["fuse", "kpi", "log"])
     p.add_argument("--open_trace",     default="False")
     p.add_argument("--num_services",   default=11,  type=int)
-    p.add_argument("--trace_c",        default=5,   type=int)
+    p.add_argument("--trace_c",        default=6,   type=int)
     p.add_argument("--epoches",        default=[10, 10], nargs="+", type=int)
     p.add_argument("--batch_size",     default=256, type=int)
     p.add_argument("--patience",       default=5,   type=int)
