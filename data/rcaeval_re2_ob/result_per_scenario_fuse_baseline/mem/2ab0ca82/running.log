@@ -1,0 +1,36 @@
+2026-04-20 05:16:49,245 P12504 INFO ^^^^^^^^^^ Current Model:hades, 61ec419f ^^^^^^^^^^
+2026-04-20 05:16:49,245 P12504 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-04-20 05:16:51,596 P12504 INFO 40 unique log templates found.
+2026-04-20 05:16:51,611 P12504 INFO Transforming unlabel train data.
+2026-04-20 05:16:52,815 P12504 INFO Transforming test data.
+2026-04-20 05:16:53,181 P12504 INFO 7 new templates show.
+2026-04-20 05:16:54,687 P12504 INFO Data loaded done!
+2026-04-20 05:18:44,851 P12504 INFO Known word number: 40
+2026-04-20 05:20:39,503 P12504 INFO Epoch 0/5, train generator loss: 0.22510
+2026-04-20 05:22:19,419 P12504 INFO Epoch 0/5, train discriminator loss: 0.16008
+2026-04-20 05:22:23,766 P12504 INFO *** Test time is 4.346951961517334
+2026-04-20 05:22:23,766 P12504 INFO Epoch 0/5, test f1: 0.69169 rc: 0.60305 pc: 0.81089. [209.69s]
+2026-04-20 05:24:14,120 P12504 INFO Epoch 1/5, train generator loss: 0.11855
+2026-04-20 05:25:54,736 P12504 INFO Epoch 1/5, train discriminator loss: 0.45597
+2026-04-20 05:25:59,128 P12504 INFO *** Test time is 4.391537666320801
+2026-04-20 05:25:59,128 P12504 INFO Epoch 1/5, test f1: 0.70606 rc: 0.64854 pc: 0.77476. [210.94s]
+2026-04-20 05:27:49,543 P12504 INFO Epoch 2/5, train generator loss: 0.12434
+2026-04-20 05:29:26,732 P12504 INFO Epoch 2/5, train discriminator loss: 0.39227
+2026-04-20 05:29:31,219 P12504 INFO *** Test time is 4.474310636520386
+2026-04-20 05:29:31,219 P12504 INFO Epoch 2/5, test f1: 0.68016 rc: 0.52632 pc: 0.96110. [207.60s]
+2026-04-20 05:29:31,219 P12504 INFO early stopping epoch 1/3
+2026-04-20 05:31:25,019 P12504 INFO Epoch 3/5, train generator loss: 0.13116
+2026-04-20 05:33:04,441 P12504 INFO Epoch 3/5, train discriminator loss: 0.44662
+2026-04-20 05:33:08,939 P12504 INFO *** Test time is 4.495567798614502
+2026-04-20 05:33:08,939 P12504 INFO Epoch 3/5, test f1: 0.66758 rc: 0.51706 pc: 0.94171. [213.22s]
+2026-04-20 05:33:08,939 P12504 INFO early stopping epoch 2/3
+2026-04-20 05:34:59,802 P12504 INFO Epoch 4/5, train generator loss: 0.13225
+2026-04-20 05:36:37,150 P12504 INFO Epoch 4/5, train discriminator loss: 0.52968
+2026-04-20 05:36:41,598 P12504 INFO *** Test time is 4.432339906692505
+2026-04-20 05:36:41,598 P12504 INFO Epoch 4/5, test f1: 0.66483 rc: 0.62676 pc: 0.70782. [208.23s]
+2026-04-20 05:36:41,598 P12504 INFO early stopping epoch 3/3
+2026-04-20 05:36:41,614 P12504 INFO Early stopping
+2026-04-20 05:37:45,847 P12504 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.537882
+2026-04-20 05:37:47,845 P12504 INFO *** Test F1 0.4548  of unsupervised traning
+2026-04-20 05:37:47,845 P12504 INFO *** Best F1 {'f1': 0.7060551999160457, 'rc': 0.6485444380181222, 'pc': 0.7747581759557808}  of unsupervised traning
+2026-04-20 05:37:48,130 P12504 INFO Current hash id 61ec419f

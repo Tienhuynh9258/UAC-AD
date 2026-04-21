@@ -1,0 +1,4 @@
+Experiment 25a136b2: 2026/04/20-13:59:28
+Train time/epoch 213.3464
+* Test -- f1:0.4363	rc:0.4412	pc:0.4316
+

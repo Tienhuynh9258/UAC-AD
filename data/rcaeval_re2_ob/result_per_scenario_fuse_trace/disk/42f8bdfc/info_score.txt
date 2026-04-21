@@ -1,0 +1,4 @@
+Experiment b85dc74a: 2026/04/21-14:35:42
+Train time/epoch 358.8057
+* Test -- f1:0.9843	rc:0.9691	pc:1.0000
+

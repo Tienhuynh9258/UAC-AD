@@ -1,0 +1,4 @@
+Experiment 61ec419f: 2026/04/20-13:37:48
+Train time/epoch 209.9367
+* Test -- f1:0.7061	rc:0.6485	pc:0.7748
+

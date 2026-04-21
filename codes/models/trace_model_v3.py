@@ -102,16 +102,45 @@ class TraceEncoder_low(nn.Module):
 
 
 class TraceModel(nn.Module):
-    """Structure Autoencoder for trace data.
+    """Structure + Attribute Autoencoder for trace data.
 
     Encoder: two-layer GAT → node embeddings ZV.
-    Decoder: A_hat = sigmoid(ZV * ZV^T)  (equation 7 in TraceDAE).
-    Loss:    BCE(A_hat, A) — reconstruction of adjacency matrix.
+    Structural decoder:  A_hat = sigmoid(ZV * ZV^T)  (equation 7 in TraceDAE).
+    Attribute decoder:   X_hat = Linear(ZV) → reconstruct latency_dev and error_rate.
+
+    Combined anomaly score (trace_dis):
+        loss_struct  = BCE(A_hat, A)              — topology reconstruction
+        loss_latency = MSE(X_hat[:,5], X[:,5])    — latency_dev (z-score) reconstruction
+        loss_error   = BCE(X_hat[:,3], X[:,3])    — error_rate reconstruction
+        trace_dis    = loss_struct
+                     + lambda_lat * loss_latency
+                     + lambda_err * loss_error
+
+    Feature layout expected in x (col index):
+        0  call_count
+        1  avg_dur_ms
+        2  max_dur_ms
+        3  error_rate   ∈ [0,1]  ← attribute loss (BCE)
+        4  root_rate
+        5  latency_dev           ← attribute loss (MSE)
     """
+
+    # Feature column indices (must match preprocessing TRACE_C layout)
+    COL_ERROR_RATE  = 3
+    COL_LATENCY_DEV = 5
 
     def __init__(self, device, **kwargs):
         super(TraceModel, self).__init__()
-        self.encoder = TraceEncoder(device, **kwargs)
+        self.encoder    = TraceEncoder(device, **kwargs)
+        self.trace_c    = kwargs["trace_c"]
+        hidden_size     = kwargs["hidden_size"]
+
+        # Attribute decoder: Z [B,N,H] → X_hat [B,N,trace_c]
+        self.feat_decoder = nn.Linear(hidden_size, self.trace_c)
+
+        # Loss weights for attribute reconstruction terms
+        self.lambda_lat = kwargs.get("lambda_lat", 0.5)
+        self.lambda_err = kwargs.get("lambda_err", 0.5)
 
     def forward(self, x, adj):
         """
@@ -121,10 +150,40 @@ class TraceModel(nn.Module):
         Returns:
             z:       [B, N, hidden_size]  node embeddings
             adj_hat: [B, N, N]            reconstructed adjacency
-            loss:    [B]                  per-sample BCE reconstruction loss
+            loss:    [B]                  per-sample combined reconstruction loss
         """
         z = self.encoder(x, adj)                                    # [B, N, H]
+
+        # ── Structural decoder ────────────────────────────────────────────────
         adj_hat = torch.sigmoid(torch.bmm(z, z.transpose(1, 2)))   # [B, N, N]
-        loss = F.binary_cross_entropy(adj_hat, adj, reduction='none')
-        loss = loss.mean(dim=[-2, -1])                              # [B]
-        return z, adj_hat, loss
+        loss_struct = F.binary_cross_entropy(adj_hat, adj, reduction='none')
+        loss_struct = loss_struct.mean(dim=[-2, -1])                # [B]
+
+        # ── Attribute decoder ─────────────────────────────────────────────────
+        feats_hat = self.feat_decoder(z)                            # [B, N, trace_c]
+
+        # latency_dev (col 5) — MSE: z-score can be negative, no sigmoid needed
+        loss_latency = F.mse_loss(
+            feats_hat[:, :, self.COL_LATENCY_DEV],
+            x[:, :, self.COL_LATENCY_DEV],
+            reduction='none',
+        ).mean(dim=-1)                                              # [B]
+
+        # error_rate (col 3) — BCE: both in [0,1]
+        err_hat = torch.sigmoid(feats_hat[:, :, self.COL_ERROR_RATE])
+        loss_error = F.binary_cross_entropy(
+            err_hat,
+            x[:, :, self.COL_ERROR_RATE].clamp(0.0, 1.0),
+            reduction='none',
+        ).mean(dim=-1)                                              # [B]
+
+        # ── Combined trace_dis ────────────────────────────────────────────────
+        loss = (loss_struct
+                + self.lambda_lat * loss_latency
+                + self.lambda_err * loss_error)
+
+        # CHANGE 7: return feats_hat[:,:,[3,5]] for attribute discriminator
+        # Only cols with explicit supervision (error_rate=3, latency_dev=5)
+        feats_hat_slice = feats_hat[:, :, [self.COL_ERROR_RATE, self.COL_LATENCY_DEV]]  # [B, N, 2]
+
+        return z, adj_hat, loss, feats_hat_slice
