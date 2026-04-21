@@ -1,0 +1,33 @@
+2026-04-20 04:55:42,333 P19152 INFO ^^^^^^^^^^ Current Model:hades, b82ca767 ^^^^^^^^^^
+2026-04-20 04:55:42,333 P19152 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-04-20 04:55:44,508 P19152 INFO 40 unique log templates found.
+2026-04-20 04:55:44,524 P19152 INFO Transforming unlabel train data.
+2026-04-20 04:55:45,601 P19152 INFO Transforming test data.
+2026-04-20 04:55:45,996 P19152 INFO 108 new templates show.
+2026-04-20 04:55:47,794 P19152 INFO Data loaded done!
+2026-04-20 04:57:28,741 P19152 INFO Known word number: 40
+2026-04-20 04:59:21,848 P19152 INFO Epoch 0/5, train generator loss: 0.23914
+2026-04-20 05:01:03,105 P19152 INFO Epoch 0/5, train discriminator loss: 0.15979
+2026-04-20 05:01:07,774 P19152 INFO *** Test time is 4.665563106536865
+2026-04-20 05:01:07,790 P19152 INFO Epoch 0/5, test f1: 0.62922 rc: 0.58141 pc: 0.68561. [211.03s]
+2026-04-20 05:02:58,519 P19152 INFO Epoch 1/5, train generator loss: 0.12278
+2026-04-20 05:04:37,214 P19152 INFO Epoch 1/5, train discriminator loss: 0.36869
+2026-04-20 05:04:41,912 P19152 INFO *** Test time is 4.696340799331665
+2026-04-20 05:04:41,913 P19152 INFO Epoch 1/5, test f1: 0.60563 rc: 0.60398 pc: 0.60729. [209.39s]
+2026-04-20 05:04:41,913 P19152 INFO early stopping epoch 1/3
+2026-04-20 05:06:32,482 P19152 INFO Epoch 2/5, train generator loss: 0.10147
+2026-04-20 05:08:10,246 P19152 INFO Epoch 2/5, train discriminator loss: 0.30965
+2026-04-20 05:08:15,780 P19152 INFO *** Test time is 5.52995753288269
+2026-04-20 05:08:15,780 P19152 INFO Epoch 2/5, test f1: 0.65162 rc: 0.50490 pc: 0.91855. [208.34s]
+2026-04-20 05:10:06,720 P19152 INFO Epoch 3/5, train generator loss: 0.08947
+2026-04-20 05:11:47,395 P19152 INFO Epoch 3/5, train discriminator loss: 0.53443
+2026-04-20 05:11:52,999 P19152 INFO *** Test time is 5.604197025299072
+2026-04-20 05:11:52,999 P19152 INFO Epoch 3/5, test f1: 0.66559 rc: 0.51600 pc: 0.93732. [211.57s]
+2026-04-20 05:13:43,571 P19152 INFO Epoch 4/5, train generator loss: 0.08940
+2026-04-20 05:15:22,138 P19152 INFO Epoch 4/5, train discriminator loss: 0.36243
+2026-04-20 05:15:27,478 P19152 INFO *** Test time is 5.340392589569092
+2026-04-20 05:15:27,478 P19152 INFO Epoch 4/5, test f1: 0.68291 rc: 0.52905 pc: 0.96296. [209.10s]
+2026-04-20 05:16:31,046 P19152 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.277772
+2026-04-20 05:16:33,118 P19152 INFO *** Test F1 0.4275  of unsupervised traning
+2026-04-20 05:16:33,118 P19152 INFO *** Best F1 {'f1': 0.6829064421756523, 'rc': 0.5290471785383903, 'pc': 0.9629567267216703}  of unsupervised traning
+2026-04-20 05:16:33,308 P19152 INFO Current hash id b82ca767

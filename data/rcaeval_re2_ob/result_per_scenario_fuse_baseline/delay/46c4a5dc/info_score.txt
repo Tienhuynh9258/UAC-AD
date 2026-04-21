@@ -1,0 +1,4 @@
+Experiment 522fb4df: 2026/04/20-12:34:15
+Train time/epoch 213.4409
+* Test -- f1:0.7974	rc:0.8080	pc:0.7870
+

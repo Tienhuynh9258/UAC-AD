@@ -201,6 +201,9 @@ for run_times in range(params["run_start"], params["run_end"]):
         params["open_kpi_select"] = False
     elif params["dataset"] == "rcaeval_re3_ob":
         params["open_kpi_select"] = False
+    elif params["dataset"] == "rcaeval_re2_ob":
+        params["open_kpi_select"] = False
+        params.setdefault("window_size", 60)
         params.setdefault("open_kpi_normalization", True)
         params.setdefault("feature_type", "template_appear")
         params.setdefault("kpi_ratio", 40)

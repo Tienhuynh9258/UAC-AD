@@ -245,7 +245,14 @@ class MultiDiscriminator(nn.Module):
         self.decoder3     = nn.Linear(_W * _H, 2)   # log classifier
         self.decoder4     = nn.Linear(_W * _H, 2)   # kpi classifier
         if self.open_trace:
-            self.decoder5 = nn.Linear(_W * _H, 2)   # trace classifier
+            self.decoder5 = nn.Linear(_W * _H, 2)   # structural trace classifier
+            # CHANGE 7: attribute head — discriminate on error_rate & latency_dev
+            # Input: mean over N services of feats_hat[:,:,[3,5]] → [B*W, 2]
+            self.attr_classifier = nn.Sequential(
+                nn.Linear(2, _H),
+                nn.ReLU(),
+                nn.Linear(_H, 1),
+            )
         self.criterion  = nn.CrossEntropyLoss()
         self.criterion2 = nn.MSELoss()
 
@@ -337,6 +344,36 @@ class MultiDiscriminator(nn.Module):
         if trace_re is not None and trace_re_fake is not None:
             deceive_loss = deceive_loss + self.criterion2(trace_re, trace_re_fake)
 
+        # CHANGE 7: Attribute trace discrimination — error_rate (col 3) & latency_dev (col 5)
+        # REAL: ground-truth node attributes | FAKE: reconstructed by attribute decoder
+        if (self.open_trace
+                and trace_nodes is not None
+                and "feats_hat" in res_set
+                and res_set["feats_hat"] is not None):
+            feats_hat_4d = res_set["feats_hat"]          # [B, W, N, 2]
+            W = feats_hat_4d.shape[1]
+
+            # mean over N services → [B, W, 2] → [B*W, 2]
+            attr_real = (trace_nodes[:, :, :, [3, 5]]    # [B, W, N, 2]
+                         .mean(dim=2)                    # [B, W, 2]
+                         .reshape(b * W, 2))             # [B*W, 2]
+            attr_fake = (feats_hat_4d
+                         .mean(dim=2)                    # [B, W, 2]
+                         .reshape(b * W, 2))             # [B*W, 2]
+
+            # logits → BCEWithLogitsLoss (numerically stable, no manual sigmoid)
+            logits_real = self.attr_classifier(attr_real)   # [B*W, 1]
+            logits_fake = self.attr_classifier(attr_fake)   # [B*W, 1]
+
+            attr_disc_loss = (
+                F.binary_cross_entropy_with_logits(logits_real, torch.ones_like(logits_real)) +
+                F.binary_cross_entropy_with_logits(logits_fake, torch.zeros_like(logits_fake))
+            )
+            attr_deceive_loss = self.criterion2(logits_real, logits_fake)
+
+            loss         = loss + attr_disc_loss
+            deceive_loss = deceive_loss + attr_deceive_loss
+
         return {"loss": loss, "deceive_loss": deceive_loss}
 
 
@@ -344,7 +381,7 @@ class MultiDiscriminator(nn.Module):
 # CHANGE 2, 3, 4: MultiModel
 #   CHANGE 2: Decoder nhận cat([fused_modal, ZV]) thay vì concat_feature từ encoder
 #   CHANGE 3: Return thêm adj_hat [B,W,N,N] để Discriminator dùng
-#   CHANGE 4: trace_weight (fixed) → learnable trace_alpha = sigmoid(raw) ≈ 0.1
+#   CHANGE 4: trace_weight (fixed) → variance-based alpha (dynamic, no nn.Parameter)
 # ═══════════════════════════════════════════════════════════════════════════════
 class MultiModel(nn.Module):
     def __init__(self, var_nums, device, fuse_type="cross_attn", **kwargs):
@@ -385,9 +422,10 @@ class MultiModel(nn.Module):
 
         if self.open_trace:
             self.trace_model = TraceModel(device, **kwargs)
-            # CHANGE 4: learnable alpha cân bằng (log+KPI) vs trace
-            # sigmoid(-2.2) ≈ 0.10 → khởi tạo gần với α=0.1 trong TraceDAE
-            self.trace_alpha = nn.Parameter(torch.tensor(-2.2))
+            # CHANGE 4 (updated): variance-based alpha — không phải nn.Parameter
+            # alpha = var(trace_dis) / (var(log_kpi_loss) + var(trace_dis) + eps)
+            # Tự động cao khi trace discriminative, về ~0 khi trace là noise
+            self._alpha_eps = 1e-8
 
     def forward(self, input_dict, flag=False):
         trace_nodes = input_dict.get("trace_node_features", None)
@@ -432,23 +470,30 @@ class MultiModel(nn.Module):
         loss = log_dis.mean() + kpi_dis.mean()
 
         # ── Trace Structure Autoencoder ─────────────────────────────────────────
-        trace_dis  = None
-        adj_hat_4d = None   # [B,W,N,N] — để Discriminator dùng làm "fake trace_adj"
+        trace_dis    = None
+        adj_hat_4d   = None   # [B,W,N,N] — để Discriminator dùng làm "fake trace_adj"
+        feats_hat_4d = None   # [B,W,N,2] — error_rate & latency_dev (CHANGE 7)
 
         if self.open_trace and trace_nodes is not None and trace_adj is not None:
             B, W, N, _ = trace_nodes.shape
-            _, adj_hat, trace_dis_flat = self.trace_model(
+            _, adj_hat, trace_dis_flat, feats_hat_slice = self.trace_model(
                 trace_nodes.reshape(B * W, N, -1),
                 trace_adj.reshape(B * W, N, N)
-            )  # adj_hat: [B*W,N,N],  trace_dis_flat: [B*W]
+            )  # adj_hat: [B*W,N,N], trace_dis_flat: [B*W], feats_hat_slice: [B*W,N,2]
 
-            trace_dis  = trace_dis_flat.reshape(B, W)            # [B, W]
-            adj_hat_4d = adj_hat.reshape(B, W, N, N)             # [B, W, N, N]  (CHANGE 3)
+            trace_dis    = trace_dis_flat.reshape(B, W)           # [B, W]
+            adj_hat_4d   = adj_hat.reshape(B, W, N, N)            # [B, W, N, N]  (CHANGE 3)
+            feats_hat_4d = feats_hat_slice.reshape(B, W, N, 2)    # [B, W, N, 2]  (CHANGE 7)
 
             trace_d = trace_dis * self.expand_anomaly_gap(trace_dis)
 
-            # CHANGE 4: learnable α cân bằng (log+KPI) vs trace
-            alpha       = torch.sigmoid(self.trace_alpha)         # ∈ (0,1)
+            # CHANGE 4 (updated): variance-based alpha
+            # Đo relative discriminativeness: trace có phân biệt các timestep không?
+            # .detach() để alpha là hằng số per-batch, không tạo gradient path phức tạp
+            var_lk    = log_kpi_loss.detach().var()
+            var_trace = trace_dis.detach().var()
+            alpha     = var_trace / (var_lk + var_trace + self._alpha_eps)  # ∈ [0,1]
+
             fusion_loss = (1 - alpha) * log_kpi_loss + alpha * trace_d
             loss        = (1 - alpha) * loss + alpha * trace_dis.mean()
         else:
@@ -472,5 +517,6 @@ class MultiModel(nn.Module):
             "dis":         dis_tuple,
             "features":    (fused_log, fused_kpi, concat_feature),
             "output":      (log_out, kpi_out),
-            "adj_hat":     adj_hat_4d,   # CHANGE 3: [B,W,N,N] hoặc None
+            "adj_hat":     adj_hat_4d,    # CHANGE 3: [B,W,N,N] hoặc None
+            "feats_hat":   feats_hat_4d,  # CHANGE 7: [B,W,N,2] hoặc None
         }
