@@ -1,4 +1,0 @@
-Experiment 527f0e57: 2026/04/21-13:24:14
-Train time/epoch 364.9610
-* Test -- f1:0.7153	rc:0.6943	pc:0.7376
-

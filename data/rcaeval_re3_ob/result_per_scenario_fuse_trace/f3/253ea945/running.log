@@ -1,0 +1,33 @@
+2026-04-23 23:49:32,510 P2840 INFO ^^^^^^^^^^ Current Model:hades, 253ea945 ^^^^^^^^^^
+2026-04-23 23:49:32,510 P2840 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-04-23 23:49:35,747 P2840 INFO 301 unique log templates found.
+2026-04-23 23:49:35,763 P2840 INFO Transforming unlabel train data.
+2026-04-23 23:49:36,175 P2840 INFO Transforming test data.
+2026-04-23 23:49:36,270 P2840 INFO 14 new templates show.
+2026-04-23 23:49:37,149 P2840 INFO Data loaded done!
+2026-04-23 23:50:05,001 P2840 INFO Known word number: 301
+2026-04-23 23:51:13,037 P2840 INFO Epoch 0/5, train generator loss: 0.25043
+2026-04-23 23:52:18,818 P2840 INFO Epoch 0/5, train discriminator loss: 1.88360
+2026-04-23 23:52:22,157 P2840 INFO *** Test time is 3.3329482078552246
+2026-04-23 23:52:22,157 P2840 INFO Epoch 0/5, test f1: 0.63259 rc: 0.64854 pc: 0.61740. [130.43s]
+2026-04-23 23:53:24,322 P2840 INFO Epoch 1/5, train generator loss: 0.15221
+2026-04-23 23:54:28,707 P2840 INFO Epoch 1/5, train discriminator loss: 0.89081
+2026-04-23 23:54:31,867 P2840 INFO *** Test time is 3.1534674167633057
+2026-04-23 23:54:31,867 P2840 INFO Epoch 1/5, test f1: 0.65301 rc: 0.65294 pc: 0.65309. [126.51s]
+2026-04-23 23:55:33,712 P2840 INFO Epoch 2/5, train generator loss: 0.14789
+2026-04-23 23:56:38,332 P2840 INFO Epoch 2/5, train discriminator loss: 0.55643
+2026-04-23 23:56:42,213 P2840 INFO *** Test time is 3.8805458545684814
+2026-04-23 23:56:42,213 P2840 INFO Epoch 2/5, test f1: 0.65778 rc: 0.67399 pc: 0.64234. [126.40s]
+2026-04-23 23:57:47,949 P2840 INFO Epoch 3/5, train generator loss: 0.13732
+2026-04-23 23:58:53,888 P2840 INFO Epoch 3/5, train discriminator loss: 0.38328
+2026-04-23 23:58:57,217 P2840 INFO *** Test time is 3.328200578689575
+2026-04-23 23:58:57,217 P2840 INFO Epoch 3/5, test f1: 0.66832 rc: 0.68394 pc: 0.65340. [131.61s]
+2026-04-23 23:59:59,168 P2840 INFO Epoch 4/5, train generator loss: 0.13823
+2026-04-24 00:01:06,323 P2840 INFO Epoch 4/5, train discriminator loss: 0.51179
+2026-04-24 00:01:10,184 P2840 INFO *** Test time is 3.852757453918457
+2026-04-24 00:01:10,184 P2840 INFO Epoch 4/5, test f1: 0.66258 rc: 0.66312 pc: 0.66205. [129.07s]
+2026-04-24 00:01:10,184 P2840 INFO early stopping epoch 1/3
+2026-04-24 00:01:46,381 P2840 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.207247
+2026-04-24 00:01:47,851 P2840 INFO *** Test F1 0.5661  of unsupervised traning
+2026-04-24 00:01:47,851 P2840 INFO *** Best F1 {'f1': 0.6683246665159394, 'rc': 0.6839426191577973, 'pc': 0.6534040671971706}  of unsupervised traning
+2026-04-24 00:01:47,994 P2840 INFO Current hash id 253ea945

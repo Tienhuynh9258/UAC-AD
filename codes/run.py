@@ -90,6 +90,8 @@ parser.add_argument("--trace_c", default=5, type=int,
                     help="Feature dimension per node in the STG (e.g. response_time, cpu, mem, ...)")
 parser.add_argument("--trace_dropout", default=0.1, type=float,
                     help="Dropout rate inside GAT layers")
+parser.add_argument("--gate_lambda", default=0.01, type=float,
+                    help="L1 regularizer on residual-gated trace gate g (auto-applied when open_trace=True).")
 parser.add_argument("--fuse_type", default="multi_modal_self_attn", choices=["concat", "cross_attn", "sep_attn","multi_modal_self_attn"])
 parser.add_argument("--attn_type", default="add", choices=["dot", "add","qkv"])
 
@@ -198,6 +200,8 @@ for run_times in range(params["run_start"], params["run_end"]):
     params["run_times"] = run_times
     seed_everything(params["random_seed"] + run_times)   # different seed per run
     if params["dataset"] == 'yzh':
+        params["open_kpi_select"] = False
+    elif params["dataset"] == "rcaeval_re3_ob":
         params["open_kpi_select"] = False
     elif params["dataset"] == "rcaeval_re2_ob":
         params["open_kpi_select"] = False

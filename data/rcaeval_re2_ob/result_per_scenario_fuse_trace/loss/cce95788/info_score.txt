@@ -1,0 +1,4 @@
+Experiment cce95788: 2026/04/24-17:42:49
+Train time/epoch 363.4219
+* Test -- f1:0.8548	rc:0.8406	pc:0.8696
+

@@ -1,24 +1,24 @@
 """
-Per-scenario evaluation for RCAEval OnlineBoutique (RE2-OB) dataset.
+Per-scenario evaluation for RCAEval OnlineBoutique RE3-OB dataset.
 
-Runs UAC-AD on 6 fault-type scenarios (cpu, delay, disk, loss, mem, socket)
-and reports F1 / Precision / Recall per scenario plus mean±std.
+RE3-OB uses code-level fault injection with 5 fault types (f1–f5).
+Runs UAC-AD on each fault-type test file and reports F1/P/R per scenario.
 
 Run twice to compare baseline vs trace-enhanced:
 
   # Baseline: log + metric only
-  python codes/common/eval_per_scenario_rcaeval_re2_ob.py \\
-      --data data/rcaeval_re2_ob --dataset rcaeval_re2_ob --data_type fuse \\
+  python codes/common/eval_per_scenario_rcaeval_re3_ob.py \\
+      --data data/rcaeval_re3_ob --dataset rcaeval_re3_ob --data_type fuse \\
       --open_trace False --batch_size 128 --window_size 30 \\
-      --epoches 5 5 --patience 3 \\    
-      --result_dir data/rcaeval_re2_ob/result_per_scenario_fuse_baseline
+      --epoches 5 5 --patience 3 \\
+      --result_dir data/rcaeval_re3_ob/result_per_scenario_fuse_baseline
 
   # Trace: log + metric + trace (GAT)
-  python codes/common/eval_per_scenario_rcaeval_re2_ob.py \\
-      --data data/rcaeval_re2_ob --dataset rcaeval_re2_ob --data_type fuse \\
+  python codes/common/eval_per_scenario_rcaeval_re3_ob.py \\
+      --data data/rcaeval_re3_ob --dataset rcaeval_re3_ob --data_type fuse \\
       --open_trace True --batch_size 128 --window_size 30 \\
       --epoches 5 5 --patience 3 \\
-      --result_dir data/rcaeval_re2_ob/result_per_scenario_fuse_trace
+      --result_dir data/rcaeval_re3_ob/result_per_scenario_fuse_trace
 """
 
 import argparse
@@ -37,13 +37,13 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 
-FAULT_TYPES = ["cpu", "delay", "disk", "loss", "mem", "socket"]
+FAULT_TYPES = ["f1", "f2", "f3", "f4", "f5"]
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _find_scenario_files(data_dir: str):
-    """Return sorted list of (fault_type, test_pkl_path) for all 6 fault types."""
+    """Return sorted list of (fault_type, test_pkl_path) for all fault types."""
     entries = []
     for fault in FAULT_TYPES:
         path = os.path.join(data_dir, f"test_{fault}.pkl")
@@ -91,19 +91,19 @@ def _scan_latest_results(result_dir: str):
 
 def main():
     p = argparse.ArgumentParser(
-        description="Per-scenario evaluation for RCAEval OnlineBoutique dataset"
+        description="Per-scenario evaluation for RCAEval OnlineBoutique RE3-OB dataset"
     )
     # ── data / model args (passed through to run.py) ──
     p.add_argument("--data",           required=True)
-    p.add_argument("--dataset",        default="rcaeval_re2_ob")
+    p.add_argument("--dataset",        default="rcaeval_re3_ob")
     p.add_argument("--data_type",      default="fuse", choices=["fuse", "kpi", "log"])
     p.add_argument("--open_trace",     default="False")
     p.add_argument("--num_services",   default=11,  type=int)
     p.add_argument("--trace_c",        default=6,   type=int)
-    p.add_argument("--epoches",        default=[10, 10], nargs="+", type=int)
-    p.add_argument("--batch_size",     default=256, type=int)
-    p.add_argument("--patience",       default=5,   type=int)
-    p.add_argument("--window_size",    default=60,  type=int,
+    p.add_argument("--epoches",        default=[5, 5], nargs="+", type=int)
+    p.add_argument("--batch_size",     default=128, type=int)
+    p.add_argument("--patience",       default=3,   type=int)
+    p.add_argument("--window_size",    default=30,  type=int,
                    help="Sliding window size in timesteps (1 timestep = 1 second).")
     p.add_argument("--val_percentile", default=95,  type=float,
                    help="Percentile of normal training losses as anomaly threshold.")
@@ -121,7 +121,7 @@ def main():
                    help="Path to run.py (auto-detected if not set)")
     args = p.parse_args()
 
-    # Convert data path to absolute so run.py subprocess (cwd=codes/) resolves it correctly
+    # Convert data path to absolute so run.py subprocess (cwd=codes/) resolves it
     args.data = os.path.abspath(args.data)
     if args.result_dir:
         args.result_dir = os.path.abspath(args.result_dir)
@@ -143,7 +143,7 @@ def main():
 
     scenario_files = _find_scenario_files(args.data)
     if not scenario_files:
-        logging.error("No scenario test files found. Run preprocess_rcaeval_re2_ob.py first.")
+        logging.error("No scenario test files found. Run preprocess_rcaeval_re3_ob.py first.")
         sys.exit(1)
 
     logging.info(f"Found {len(scenario_files)} scenarios.")
@@ -217,7 +217,7 @@ def main():
     col = 10
     sep = "-" * (col + 34)
     print(f"\n{'='*56}")
-    print(f"  RE2-OB Per-Scenario Results  "
+    print(f"  RE3-OB Per-Scenario Results  "
           f"({args.data_type}, open_trace={args.open_trace})")
     print(f"{'='*56}")
     print(f"  {'Fault':<{col}}  {'F1':>6}  {'Precision':>9}  {'Recall':>6}")

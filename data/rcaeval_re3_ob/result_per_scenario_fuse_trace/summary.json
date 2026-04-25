@@ -1,0 +1,48 @@
+{
+  "config": {
+    "data_type": "fuse",
+    "open_trace": "True",
+    "val_percentile": 95,
+    "window_size": 30
+  },
+  "per_scenario": [
+    {
+      "fault": "f1",
+      "f1": 0.8307,
+      "precision": 0.9383,
+      "recall": 0.7453
+    },
+    {
+      "fault": "f2",
+      "f1": 0.9449,
+      "precision": 0.9516,
+      "recall": 0.9383
+    },
+    {
+      "fault": "f3",
+      "f1": 0.6683,
+      "precision": 0.6534,
+      "recall": 0.6839
+    },
+    {
+      "fault": "f4",
+      "f1": 0.3762,
+      "precision": 0.3689,
+      "recall": 0.3839
+    },
+    {
+      "fault": "f5",
+      "f1": 0.9206,
+      "precision": 0.9246,
+      "recall": 0.9166
+    }
+  ],
+  "aggregate": {
+    "f1_mean": 0.7481399999999999,
+    "f1_std": 0.209755520547136,
+    "precision_mean": 0.7673599999999999,
+    "precision_std": 0.22788002632964566,
+    "recall_mean": 0.7335999999999999,
+    "recall_std": 0.2001440281397374
+  }
+}

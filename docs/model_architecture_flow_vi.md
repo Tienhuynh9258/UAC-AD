@@ -182,6 +182,47 @@ UAC-AD/
 
 ---
 
+### 3.6 Residual-Gated Trace Fusion — [CHANGE 8] (luôn bật khi `open_trace=True`)
+
+> **Vấn đề**: Decoder cũ luôn dùng `cat([fused_modal, ZV])` → khi trace không có thông tin
+> (vd RE3-OB code-defect), ZV nhiễu rò vào `kpi_out` / `log_out`, kéo F1 *xuống dưới baseline*.
+> Variance-based α ở §3.4 chỉ re-weight **loss**, không chữa được output của decoder.
+>
+> **Giải pháp**: dạng residual với gate per-sample có thể đóng hoàn toàn đóng góp của trace.
+>
+> - `base_decoder`: `Linear(2H → H) → ReLU → Linear(H → kpi_c+log_c)` — đường baseline chỉ log+KPI
+> - `delta_head`:   `Linear(3H → 2H) → ReLU → Linear(2H → kpi_c+log_c)` — **zero-init lớp cuối**
+> - `trace_gate`:   `Linear(6 → 16) → ReLU → Linear(16 → 1) → sigmoid` — bias init `−2.0` → g₀ ≈ 0.12
+> - **Trace-quality features** (per B,W): mean call count, coverage (span khác 0), mean error_rate,
+>   mean |latency_dev|, adjacency density, call-count variance. Log1p-normalize.
+
+```
+  Trace-quality features [B, W, 6]
+         │
+   trace_gate (MLP, bias=-2.0) ──► g ∈ (0, 1)   [B, W, 1]
+                                          │
+  fused_modal [B,W,2H] ──► base_decoder ──► y_base [B,W,kpi_c+log_c]
+                                          │
+  cat([fm, ZV]) [B,W,3H] ─► delta_head ──► Δ [B,W,kpi_c+log_c]   (zero-init → Δ≈0 lúc đầu)
+                                          │
+                            fused_out = y_base + g · Δ    ← g=0 ⇒ đúng bằng baseline
+
+  fusion_loss = log_kpi_loss + g · trace_d + gate_lambda · g.mean()
+                                            └─── L1 reg giữ gate đóng mặc định
+```
+
+> **Bảo đảm**: khởi điểm `Δ ≈ 0` và `g ≈ 0.12`; gradient chỉ mở gate nếu
+> `Δ` giảm loss log+KPI hơn `gate_lambda` (mặc định 0.01).
+> Trên dataset mà trace nhiễu, gate đóng và mô hình *đúng bằng* baseline.
+>
+> **CLI**: `--gate_lambda 0.01` (tự động áp dụng khi `--open_trace True`).
+>
+> **Kiểm chứng**: Trên RE3-OB (5 fault type code-defect), residual-gated recover baseline F1
+> trong phạm vi 0.015 trên mọi fault type.
+> Xem `experiment_results_re3_ob_trace_vs_baseline_vi.md`.
+
+---
+
 ## 4. Discriminator — `MultiDiscriminator.get_loss()`
 
 ### 4.1 Structural Trace Discrimination — [CHANGE 5] (không thay đổi)
@@ -305,6 +346,7 @@ UAC-AD/
 |  5  | **Discriminator FAKE**       | dùng `trace_adj` (thật) → contradiction            | dùng `adj_hat` (tái tạo) → valid loss                                                 |
 |  6  | **trace_dis**                | BCE(A_hat, adj) — chỉ structural loss              | + λ_lat×MSE(latency_dev) + λ_err×BCE(error_rate)                                     |
 |  7  | **Attribute Discriminator**  | không có — node attributes không được discriminate | head riêng: REAL=trace_nodes[:,:,[3,5]], FAKE=feats_hat[:,:,[3,5]] → Linear(2,H)→ReLU→Linear(H,1) |
+|  8  | **Decoder fusion mode**      | luôn `cat([fm, ZV])` → noise rò vào kpi_out / log_out khi trace không informative | **Residual-gated**: `y_base(fm) + g · delta_head(cat[fm,ZV])`, `g∈[0,1]` per-sample từ 6 trace-quality features, `delta_head` zero-init, L1 reg trên g (`gate_lambda`) |
 
 ---
 
@@ -320,10 +362,17 @@ UAC-AD/
   trace [B,W,N,C]    ──┘     log+KPI only)  └──► ZV [B,W,H]  (GAT)
   adj   [B,W,N,N]    ──────────────────────────────│
                                                    │
-                        cat([fused_modal, ZV]) [B,W,3H]
-                                    │
-                             fuse_decoder (Linear)
-                                    │
+                        ┌─── base_decoder(fused_modal) ─────► y_base ─┐
+                        │                                                │
+                        │  cat([fused_modal, ZV]) [B,W,3H]              │
+                        │           │                                    │
+                        │    delta_head (zero-init) ─► Δ [B,W,out] ───►  +  ◄── g·Δ
+                        │                                    ▲           │
+                        │   trace-quality feats [B,W,6] ─► trace_gate → g│
+                        └──────────── (g→0 khi trace không informative → y ≡ baseline) ┘
+                                                         │
+                                                 fused_out = y_base + g·Δ
+                                                         │
                         kpi_out [B,W,kpi_c] + log_out [B,W,log_c]
                                     │
          ┌──────────────────────────┼──────────────────────────┐
@@ -358,3 +407,22 @@ UAC-AD/
   OUTPUT: F1 / Recall / Precision (với point-adjustment)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+---
+
+## 9. Khả năng đóng góp của Trace theo loại Fault
+
+> **Khi nào trace giúp ích?** Chỉ khi fault thay đổi **hành vi observable ở tầng service-to-service**
+> — tức là topology call graph, latency giữa các service, hoặc error_rate qua mạng.
+> Khi fault **nội bộ trong service** và không ảnh hưởng đến các pattern này, trace không discriminative
+> và CHANGE 8 (hard gate) tự động vô hiệu hoá nó hoàn toàn.
+
+| Loại fault                                        | Trace có ích? | Lý do |
+| **Network** (delay, packet loss, bandwidth limit) | ✅ Rõ ràng    | Latency spike trực tiếp + error_rate thay đổi giữa các service |
+| **Resource** (CPU, memory, disk overload)         | ✅ Vừa phải   | Overload → service chậm → latency_dev tăng |
+| **Service crash / OOM**                           | ✅ Rõ ràng    | Error rate spike, call count giảm |
+| **Code Logic / Defect**                           | ❌ Không      | Bug chạy nội bộ — call graph và latency không đổi |
+| **Configuration error**                           | ❌ Không      | Sai config nhưng service vẫn respond bình thường |
+| **Database internal** (slow query, deadlock)      | ⚠️ Một phần   | Chỉ thấy nếu DB trong service mesh; latency service gọi DB có thể tăng |
+| **Business logic** (tính sai, output sai)         | ❌ Không      | Output sai nhưng performance characteristics không đổi |
+| **Security** (auth bypass, injection)             | ❌ Không      | Call pattern và latency không thay đổi |

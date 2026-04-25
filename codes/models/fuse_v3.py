@@ -396,16 +396,13 @@ class MultiModel(nn.Module):
 
         self.open_trace = kwargs.get("open_trace", False)
 
-        # CHANGE 2: fuse_decoder — MLP thay vì Linear đơn
-        #   With trace:    cat([fused_modal(2H), ZV(H)]) = 3H → hidden(2H) → kpi_c+log_c
-        #   Without trace: fused_modal(2H)              = 2H → hidden(H)  → kpi_c+log_c
-        #   MLP giúp học tương tác phi tuyến giữa structural context (ZV) và attribute context
-        fuse_in_dim    = kwargs["hidden_size"] * 3 if self.open_trace else kwargs["hidden_size"] * 2
-        fuse_hidden_dim = kwargs["hidden_size"] * 2 if self.open_trace else kwargs["hidden_size"]
+        # Base decoder: log+KPI only (fused_modal 2H → H → kpi_c+log_c)
+        # Khi open_trace=True, nhánh trace được cộng qua residual-gated head (CHANGE 8).
+        H = kwargs["hidden_size"]
         self.fuse_decoder = nn.Sequential(
-            nn.Linear(fuse_in_dim, fuse_hidden_dim),
+            nn.Linear(2 * H, H),
             nn.ReLU(),
-            nn.Linear(fuse_hidden_dim, self.kpi_c + self.log_c)
+            nn.Linear(H, self.kpi_c + self.log_c),
         )
 
         if kwargs["criterion"] == "l1":
@@ -422,10 +419,62 @@ class MultiModel(nn.Module):
 
         if self.open_trace:
             self.trace_model = TraceModel(device, **kwargs)
-            # CHANGE 4 (updated): variance-based alpha — không phải nn.Parameter
-            # alpha = var(trace_dis) / (var(log_kpi_loss) + var(trace_dis) + eps)
-            # Tự động cao khi trace discriminative, về ~0 khi trace là noise
-            self._alpha_eps = 1e-8
+
+        # ── Residual-gated trace fusion (CHANGE 8) ──────────────────────────────
+        # y = fuse_decoder(fm) + g * Δ_trace, g∈[0,1] per-sample từ trace-quality.
+        # Δ-head zero-init + L1 trên g → khởi điểm chính xác bằng baseline log+KPI;
+        # gate chỉ mở khi có gradient ủng hộ (trace thực sự giảm reconstruction loss).
+        self.gate_lambda = float(kwargs.get("gate_lambda", 0.01))
+        if self.open_trace:
+            # Δ-head: nhận cat([fm, ZV]) = 3H, zero-init lớp cuối để khởi điểm Δ≈0
+            self.delta_head = nn.Sequential(
+                nn.Linear(3 * H, 2 * H), nn.ReLU(),
+                nn.Linear(2 * H, self.kpi_c + self.log_c),
+            )
+            nn.init.zeros_(self.delta_head[-1].weight)
+            nn.init.zeros_(self.delta_head[-1].bias)
+            # Gate MLP: 6 trace-quality features → g ∈ [0,1]
+            self.trace_gate = nn.Sequential(
+                nn.Linear(6, 16), nn.ReLU(),
+                nn.Linear(16, 1),
+            )
+            # Bias âm để g khởi điểm ≈ 0.12 (gate đóng) — chỉ mở khi có gradient ủng hộ
+            nn.init.zeros_(self.trace_gate[-1].weight)
+            nn.init.constant_(self.trace_gate[-1].bias, -2.0)
+
+    @staticmethod
+    def _trace_quality_feats(trace_nodes, trace_adj):
+        """Compute 6 per-(B,W) scalar features describing trace quality / informativeness.
+        trace_nodes: [B,W,N,C>=6] — cols: [0]call_count, [3]error_rate, [5]latency_dev
+        trace_adj:   [B,W,N,N]
+        Returns: [B, W, 6]
+        """
+        B, W, N, C = trace_nodes.shape
+        call_count   = trace_nodes[..., 0]                          # [B,W,N]
+        mean_calls   = call_count.mean(dim=-1)                      # [B,W]
+        coverage     = (call_count > 0).float().mean(dim=-1)        # [B,W]
+        if C > 3:
+            err_rate = trace_nodes[..., 3].mean(dim=-1)             # [B,W]
+        else:
+            err_rate = torch.zeros_like(mean_calls)
+        if C > 5:
+            lat_dev  = trace_nodes[..., 5].abs().mean(dim=-1)       # [B,W]
+        else:
+            lat_dev  = torch.zeros_like(mean_calls)
+        adj_density  = trace_adj.float().mean(dim=(-1, -2))         # [B,W]
+        call_var     = call_count.var(dim=-1, unbiased=False)       # [B,W]
+        feats = torch.stack([mean_calls, coverage, err_rate, lat_dev,
+                             adj_density, call_var], dim=-1)        # [B,W,6]
+        # robust normalize: log1p cho các đại lượng count-like
+        feats = torch.stack([
+            torch.log1p(feats[..., 0]),
+            feats[..., 1],
+            feats[..., 2],
+            torch.log1p(feats[..., 3]),
+            feats[..., 4],
+            torch.log1p(feats[..., 5]),
+        ], dim=-1)
+        return feats
 
     def forward(self, input_dict, flag=False):
         trace_nodes = input_dict.get("trace_node_features", None)
@@ -440,11 +489,20 @@ class MultiModel(nn.Module):
         fused_kpi_unmatched, fused_log_unmatched, fused_modal_unmatched, ZV_unmatched = self.encoder(
             input_dict["log_features"], input_dict["unmatched_kpi_features"], trace_nodes, trace_adj)
 
-        # CHANGE 2: Decoder input = cat([fused_modal, ZV]) → inject structural context
+        # CHANGE 8: Residual-gated decoder — luôn bật khi open_trace=True.
+        #   y = fuse_decoder(fm) + g * delta_head(cat[fm, zv])
+        # Δ-head zero-init + bias gate âm → khởi điểm y ≡ baseline log+KPI.
+        gate_g = None
+        if self.open_trace and ZV is not None and trace_nodes is not None:
+            q_feats = self._trace_quality_feats(trace_nodes, trace_adj)   # [B,W,6]
+            gate_g  = torch.sigmoid(self.trace_gate(q_feats))             # [B,W,1] ∈ (0,1)
+
         def _decode(fm, zv):
-            if zv is not None:
-                return self.fuse_decoder(torch.cat([fm, zv], dim=-1))  # [B,W,3H]→[B,W,kpi_c+log_c]
-            return self.fuse_decoder(fm)                                 # [B,W,2H]→[B,W,kpi_c+log_c]
+            y_base = self.fuse_decoder(fm)                                # [B,W,kpi_c+log_c]
+            if zv is not None and gate_g is not None:
+                delta = self.delta_head(torch.cat([fm, zv], dim=-1))      # [B,W,kpi_c+log_c]
+                return y_base + gate_g * delta
+            return y_base
 
         fused_out           = _decode(fused_modal, ZV)
         fused_out_unmatched = _decode(fused_modal_unmatched, ZV_unmatched)
@@ -487,15 +545,11 @@ class MultiModel(nn.Module):
 
             trace_d = trace_dis * self.expand_anomaly_gap(trace_dis)
 
-            # CHANGE 4 (updated): variance-based alpha
-            # Đo relative discriminativeness: trace có phân biệt các timestep không?
-            # .detach() để alpha là hằng số per-batch, không tạo gradient path phức tạp
-            var_lk    = log_kpi_loss.detach().var()
-            var_trace = trace_dis.detach().var()
-            alpha     = var_trace / (var_lk + var_trace + self._alpha_eps)  # ∈ [0,1]
-
-            fusion_loss = (1 - alpha) * log_kpi_loss + alpha * trace_d
-            loss        = (1 - alpha) * loss + alpha * trace_dis.mean()
+            # Residual form: log_kpi_loss đã PHẢN ÁNH ảnh hưởng của gate (decoder output dùng g*Δ).
+            # Thêm phần gated của trace_d + L1 regularizer để gate mặc định đóng.
+            g2d = gate_g.squeeze(-1)                         # [B,W]
+            fusion_loss = log_kpi_loss + g2d * trace_d + self.gate_lambda * g2d
+            loss        = loss + (g2d * trace_dis).mean() + self.gate_lambda * g2d.mean()
         else:
             fusion_loss = log_kpi_loss
 

@@ -1,0 +1,4 @@
+Experiment bfdbeb41: 2026/04/24-18:52:48
+Train time/epoch 362.2633
+* Test -- f1:0.5647	rc:0.5790	pc:0.5511
+
