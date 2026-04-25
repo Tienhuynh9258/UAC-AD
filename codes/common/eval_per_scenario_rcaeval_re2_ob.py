@@ -115,6 +115,8 @@ def main():
                    help="Base result dir. Each fault type gets its own subdir. "
                         "Defaults to {data}/result_per_scenario_{data_type}_"
                         "{'trace' if open_trace else 'baseline'}")
+    p.add_argument("--gate_lambda",    default=0.01, type=float,
+                   help="L1 regularizer on residual-gated trace gate g (auto-applied when open_trace=True).")
     p.add_argument("--run_py",         default=None,
                    help="Path to run.py (auto-detected if not set)")
     args = p.parse_args()
@@ -177,6 +179,7 @@ def main():
             "--run_end",        str(args.run_end),
             "--test_pkl",       test_pkl,
             "--result_dir",     sc_result_dir,
+            "--gate_lambda",    str(args.gate_lambda),
         ]
 
         try:

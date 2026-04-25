@@ -1,4 +1,0 @@
-Experiment e86ab9dc: 2026/04/20-00:37:26
-Train time/epoch 127.8831
-* Test -- f1:0.3732	rc:0.3803	pc:0.3663
-

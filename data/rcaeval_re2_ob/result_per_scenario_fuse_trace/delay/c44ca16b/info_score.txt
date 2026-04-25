@@ -1,0 +1,4 @@
+Experiment c44ca16b: 2026/04/24-16:39:17
+Train time/epoch 360.8747
+* Test -- f1:0.8584	rc:0.8448	pc:0.8724
+

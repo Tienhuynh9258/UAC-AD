@@ -1,4 +1,0 @@
-Experiment 3fe7504e: 2026/04/20-00:12:21
-Train time/epoch 128.4356
-* Test -- f1:0.9455	rc:0.9365	pc:0.9547
-

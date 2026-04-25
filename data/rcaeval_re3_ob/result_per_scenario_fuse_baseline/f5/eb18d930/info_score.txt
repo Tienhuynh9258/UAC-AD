@@ -1,4 +1,0 @@
-Experiment eb18d930: 2026/04/19-23:47:00
-Train time/epoch 79.4772
-* Test -- f1:0.9251	rc:0.9181	pc:0.9321
-

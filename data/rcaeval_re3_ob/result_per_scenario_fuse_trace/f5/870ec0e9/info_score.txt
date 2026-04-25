@@ -1,4 +1,0 @@
-Experiment 870ec0e9: 2026/04/20-00:49:44
-Train time/epoch 127.4790
-* Test -- f1:0.9267	rc:0.9200	pc:0.9336
-

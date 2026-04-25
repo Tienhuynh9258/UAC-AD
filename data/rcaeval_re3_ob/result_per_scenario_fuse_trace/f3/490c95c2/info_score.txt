@@ -1,4 +1,0 @@
-Experiment 490c95c2: 2026/04/20-00:24:52
-Train time/epoch 127.9568
-* Test -- f1:0.6773	rc:0.6812	pc:0.6735
-

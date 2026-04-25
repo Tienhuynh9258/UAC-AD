@@ -1,4 +1,0 @@
-Experiment c0aadb36: 2026/04/19-23:30:39
-Train time/epoch 80.1284
-* Test -- f1:0.6756	rc:0.6467	pc:0.7072
-

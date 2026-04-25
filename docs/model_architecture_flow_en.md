@@ -183,6 +183,47 @@ UAC-AD/
 
 ---
 
+### 3.6 Residual-Gated Trace Fusion — [CHANGE 8] (active whenever `open_trace=True`)
+
+> **Problem**: Prior decoder always used `cat([fused_modal, ZV])` → when trace is uninformative
+> (e.g. RE3-OB code-defect faults), noisy ZV propagated into `kpi_out` / `log_out` and hurt F1
+> *below baseline*. The variance-based α in §3.4 only re-weights the **loss**, not the decoder output.
+>
+> **Fix**: residual form with a per-sample gate that can completely close the trace contribution.
+>
+> - `base_decoder`: `Linear(2H → H) → ReLU → Linear(H → kpi_c+log_c)` — baseline path on log+KPI only
+> - `delta_head`:   `Linear(3H → 2H) → ReLU → Linear(2H → kpi_c+log_c)` — **zero-init final layer**
+> - `trace_gate`:   `Linear(6 → 16) → ReLU → Linear(16 → 1) → sigmoid` — bias init to `−2.0` → g₀ ≈ 0.12
+> - **Trace-quality features** (per B,W): mean call count, coverage (non-zero spans), mean error_rate,
+>   mean |latency_dev|, adjacency density, call-count variance. Log1p-normalized.
+
+```
+  Trace-quality features [B, W, 6]
+         │
+   trace_gate (MLP, bias=-2.0) ──► g ∈ (0, 1)   [B, W, 1]
+                                          │
+  fused_modal [B,W,2H] ──► base_decoder ──► y_base [B,W,kpi_c+log_c]
+                                          │
+  cat([fm, ZV]) [B,W,3H] ─► delta_head ──► Δ [B,W,kpi_c+log_c]   (zero-init → Δ≈0 at start)
+                                          │
+                            fused_out = y_base + g · Δ    ← g=0 ⇒ exact baseline
+
+  fusion_loss = log_kpi_loss + g · trace_d + gate_lambda · g.mean()
+                                            └─── L1 reg keeps gate closed by default
+```
+
+> **Guarantee**: at initialization `Δ ≈ 0` and `g ≈ 0.12`; gradient only opens the gate if
+> `Δ` reduces log+KPI reconstruction loss by more than `gate_lambda` (default 0.01).
+> On trace-noisy datasets the gate stays closed and the model is *exactly* equivalent to baseline.
+>
+> **CLI**: `--gate_lambda 0.01` (auto-applied when `--open_trace True`).
+>
+> **Validation**: On RE3-OB (5 code-defect fault types) the residual-gated variant recovers
+> baseline F1 within 0.015 on every fault type.
+> See `experiment_results_re3_ob_trace_vs_baseline_en.md`.
+
+---
+
 ## 4. Discriminator — `MultiDiscriminator.get_loss()`
 
 ### 4.1 Structural Trace Discrimination — [CHANGE 5] (unchanged)
@@ -306,6 +347,7 @@ UAC-AD/
 |  5  | **Discriminator FAKE**      | uses `trace_adj` (real) → contradiction            | uses `adj_hat` (reconstructed) → valid loss                                    |
 |  6  | **trace_dis**               | BCE(A_hat, adj) — structural loss only             | + λ_lat×MSE(latency_dev) + λ_err×BCE(error_rate)                              |
 |  7  | **Attribute Discriminator** | not present — node attributes not discriminated    | separate head: REAL=trace_nodes[:,:,[3,5]], FAKE=feats_hat[:,:,[3,5]] → Linear(2,H)→ReLU→Linear(H,1) |
+|  8  | **Decoder fusion mode**     | always `cat([fm, ZV])` → noise leaks into kpi_out / log_out when trace is non-informative | **Residual-gated**: `y_base(fm) + g · delta_head(cat[fm,ZV])`, `g∈[0,1]` per-sample from 6 trace-quality features, `delta_head` zero-init, L1 reg on g (`gate_lambda`) |
 
 ---
 
@@ -321,10 +363,17 @@ UAC-AD/
   trace [B,W,N,C]    ──┘     log+KPI only)  └──► ZV [B,W,H]  (GAT)
   adj   [B,W,N,N]    ──────────────────────────────│
                                                    │
-                        cat([fused_modal, ZV]) [B,W,3H]
-                                    │
-                             fuse_decoder (Linear)
-                                    │
+                        ┌─── base_decoder(fused_modal) ─────► y_base ─┐
+                        │                                                │
+                        │  cat([fused_modal, ZV]) [B,W,3H]              │
+                        │           │                                    │
+                        │    delta_head (zero-init) ─► Δ [B,W,out] ───►  +  ◄── g·Δ
+                        │                                    ▲           │
+                        │   trace-quality feats [B,W,6] ─► trace_gate → g│
+                        └──────────── (g→0 when trace is uninformative → y ≡ baseline) ┘
+                                                         │
+                                                 fused_out = y_base + g·Δ
+                                                         │
                         kpi_out [B,W,kpi_c] + log_out [B,W,log_c]
                                     │
          ┌──────────────────────────┼──────────────────────────┐
@@ -359,3 +408,22 @@ UAC-AD/
   OUTPUT: F1 / Recall / Precision (with point-adjustment)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+---
+
+## 9. Fault Category Compatibility with Trace Branch
+
+> **When does trace help?** Only when the fault changes **observable service-to-service interaction patterns**
+> — i.e., the call graph topology, latency between services, or cross-service error rates.
+> When a fault stays **internal to a service** without affecting these patterns, trace is non-discriminative
+> and CHANGE 8 (hard gate) ensures it is silently disabled.
+
+| Fault Category                                        | Trace useful? | Reason |
+| **Network** (delay, packet loss, bandwidth limit)     | ✅ Strong     | Direct latency spike + error_rate change between services |
+| **Resource** (CPU, memory, disk overload)             | ✅ Moderate   | Overload → slow service → latency_dev increases |
+| **Service crash / OOM**                               | ✅ Strong     | Error rate spike, call count drops |
+| **Code Logic / Defect**                               | ❌ No         | Bug runs internally — no change in call graph or latency |
+| **Configuration error**                               | ❌ No         | Misconfigured value, service still responds normally |
+| **Database internal** (slow query, deadlock)          | ⚠️ Partial    | Only visible if DB is in the service mesh; latency of the calling service may increase |
+| **Business logic** (wrong calculation, wrong output)  | ❌ No         | Output incorrect but performance characteristics unchanged |
+| **Security** (auth bypass, injection)                 | ❌ No         | No change in call pattern or latency |

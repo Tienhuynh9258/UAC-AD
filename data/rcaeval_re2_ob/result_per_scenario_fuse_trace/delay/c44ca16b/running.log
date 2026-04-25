@@ -1,0 +1,35 @@
+2026-04-24 08:04:50,439 P2988 INFO ^^^^^^^^^^ Current Model:hades, c44ca16b ^^^^^^^^^^
+2026-04-24 08:04:50,439 P2988 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-04-24 08:04:59,951 P2988 INFO 40 unique log templates found.
+2026-04-24 08:04:59,981 P2988 INFO Transforming unlabel train data.
+2026-04-24 08:05:00,809 P2988 INFO Transforming test data.
+2026-04-24 08:05:01,080 P2988 INFO 1 new templates show.
+2026-04-24 08:05:02,387 P2988 INFO Data loaded done!
+2026-04-24 08:06:45,254 P2988 INFO Known word number: 40
+2026-04-24 08:09:52,280 P2988 INFO Epoch 0/5, train generator loss: 0.20416
+2026-04-24 08:12:52,812 P2988 INFO Epoch 0/5, train discriminator loss: 0.93480
+2026-04-24 08:12:59,785 P2988 INFO *** Test time is 6.972594499588013
+2026-04-24 08:12:59,801 P2988 INFO Epoch 0/5, test f1: 0.84966 rc: 0.76103 pc: 0.96167. [363.91s]
+2026-04-24 08:16:02,580 P2988 INFO Epoch 1/5, train generator loss: 0.07977
+2026-04-24 08:18:58,522 P2988 INFO Epoch 1/5, train discriminator loss: 0.45403
+2026-04-24 08:19:05,456 P2988 INFO *** Test time is 6.934084415435791
+2026-04-24 08:19:05,456 P2988 INFO Epoch 1/5, test f1: 0.83954 rc: 0.82937 pc: 0.84997. [358.67s]
+2026-04-24 08:19:05,456 P2988 INFO early stopping epoch 1/3
+2026-04-24 08:22:08,747 P2988 INFO Epoch 2/5, train generator loss: 0.06874
+2026-04-24 08:25:04,985 P2988 INFO Epoch 2/5, train discriminator loss: 0.23846
+2026-04-24 08:25:12,315 P2988 INFO *** Test time is 7.330508470535278
+2026-04-24 08:25:12,315 P2988 INFO Epoch 2/5, test f1: 0.85839 rc: 0.84482 pc: 0.87241. [359.53s]
+2026-04-24 08:28:15,977 P2988 INFO Epoch 3/5, train generator loss: 0.06011
+2026-04-24 08:31:13,926 P2988 INFO Epoch 3/5, train discriminator loss: 0.29419
+2026-04-24 08:31:21,085 P2988 INFO *** Test time is 7.150766611099243
+2026-04-24 08:31:21,090 P2988 INFO Epoch 3/5, test f1: 0.84692 rc: 0.81790 pc: 0.87808. [361.54s]
+2026-04-24 08:31:21,090 P2988 INFO early stopping epoch 1/3
+2026-04-24 08:34:24,790 P2988 INFO Epoch 4/5, train generator loss: 0.05803
+2026-04-24 08:37:21,797 P2988 INFO Epoch 4/5, train discriminator loss: 0.33997
+2026-04-24 08:37:29,169 P2988 INFO *** Test time is 7.35590124130249
+2026-04-24 08:37:29,185 P2988 INFO Epoch 4/5, test f1: 0.83692 rc: 0.84454 pc: 0.82943. [360.72s]
+2026-04-24 08:37:29,185 P2988 INFO early stopping epoch 2/3
+2026-04-24 08:39:14,338 P2988 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.287342
+2026-04-24 08:39:17,582 P2988 INFO *** Test F1 0.7984  of unsupervised traning
+2026-04-24 08:39:17,582 P2988 INFO *** Best F1 {'f1': 0.8583912798346176, 'rc': 0.8448164246740035, 'pc': 0.8724095119854837}  of unsupervised traning
+2026-04-24 08:39:17,853 P2988 INFO Current hash id c44ca16b

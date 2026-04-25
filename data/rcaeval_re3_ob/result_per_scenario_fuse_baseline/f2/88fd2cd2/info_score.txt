@@ -1,4 +1,0 @@
-Experiment 88fd2cd2: 2026/04/19-23:22:25
-Train time/epoch 78.6691
-* Test -- f1:0.9445	rc:0.9337	pc:0.9554
-

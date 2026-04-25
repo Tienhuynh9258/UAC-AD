@@ -41,7 +41,7 @@ Sample format (each pkl entry = 1 timestep):
     "seqs":                list[str],       # same as logs (compatibility)
     "log_features":        np.float32[1],   # placeholder; overwritten by semantics.py
     "metric_name":         list[str],       # N metric column names
-    "trace_node_features": np.float32[11,5],
+    "trace_node_features": np.float32[11,6],
     "trace_adj":           np.float32[11,11],
   }
 
@@ -84,7 +84,7 @@ SERVICE2IDX = {s: i for i, s in enumerate(SERVICES)}
 SERVICE_ALIASES = {"redis-cart": "redis"}
 
 NUM_SERVICES = len(SERVICES)
-TRACE_C = 5  # [call_count, avg_dur_ms, max_dur_ms, error_rate, root_rate]
+TRACE_C = 6  # [call_count, avg_dur_ms, max_dur_ms, error_rate, root_rate, latency_dev]
 
 
 # ── Drain3 log template extraction ──────────────────────────────────────────
@@ -241,11 +241,20 @@ class RCAEvalRE3OBPreprocessor:
 
     # ── Trace features ────────────────────────────────────────────────────────
 
-    def _build_trace_features(self, exp_dir: Path, timestamps: np.ndarray):
+    def _build_trace_features(self, exp_dir: Path, timestamps: np.ndarray,
+                               inject_time: int):
         """
         Returns:
-          node_feats [T, NUM_SERVICES, TRACE_C]
+          node_feats [T, NUM_SERVICES, TRACE_C]   (TRACE_C=6)
           adj        [T, NUM_SERVICES, NUM_SERVICES]  (row-normalized)
+
+        Node feature layout (col index):
+          0  call_count   — span count, normalized by global max
+          1  avg_dur_ms   — mean duration, normalized
+          2  max_dur_ms   — max duration, normalized
+          3  error_rate   — fraction(statusCode ∉ {0, 0.0, nan}) ∈ [0,1]
+          4  root_rate    — fraction(parentSpanID ∈ root set) ∈ [0,1]
+          5  latency_dev  — z-score(avg_dur vs pre-fault baseline per service)
         """
         T = len(timestamps)
         node_feats = np.zeros((T, NUM_SERVICES, TRACE_C), dtype=np.float32)
@@ -347,6 +356,14 @@ class RCAEvalRE3OBPreprocessor:
         except Exception as e:
             logging.warning(f"  Trace load failed for {exp_dir}: {e}")
 
+        # ── latency_dev (col 5): z-score of avg_dur vs pre-fault baseline ────
+        # Positive = slower than normal baseline, Negative = faster
+        pre_fault_idx = int(np.searchsorted(timestamps, inject_time, side="left"))
+        pre_fault_idx = max(pre_fault_idx, 1)  # need at least 1 row for baseline
+        baseline_avg = node_feats[:pre_fault_idx, :, 1].mean(axis=0)   # [NUM_SERVICES]
+        baseline_std = node_feats[:pre_fault_idx, :, 1].std(axis=0) + 1e-6
+        node_feats[:, :, 5] = (node_feats[:, :, 1] - baseline_avg) / baseline_std
+
         return node_feats, adj
 
     # ── Labels ────────────────────────────────────────────────────────────────
@@ -366,7 +383,7 @@ class RCAEvalRE3OBPreprocessor:
         inject_time = self._load_inject_time(exp_dir)
         timestamps, kpis, metric_names = self._load_kpi(exp_dir)
         logs_per_ts = self._build_log_features(exp_dir, timestamps, miner=miner)
-        node_feats, adj = self._build_trace_features(exp_dir, timestamps)
+        node_feats, adj = self._build_trace_features(exp_dir, timestamps, inject_time)
         labels = self._build_labels(timestamps, inject_time)
 
         normal_samples, anomaly_samples = {}, {}
@@ -499,16 +516,25 @@ class RCAEvalRE3OBPreprocessor:
                 logging.warning(f"  No anomaly samples for fault={fault} — skipping.")
                 continue
 
-            # Sample enough normal so anomaly_rate = n_anom / total <= target
+            # Sample enough normal so anomaly_rate = n_anom / total < target
             max_anom_rate = self.anomaly_rate
             n_normal_needed = int(n_anom * (1 - max_anom_rate) / max_anom_rate)
 
             available_normal = [k for k in normal_pool if k not in fault_anomaly[fault]]
             if len(available_normal) < n_normal_needed:
+                # Not enough normal data — subsample anomaly to honour the target rate.
+                # n_anom_capped = floor(n_available * rate / (1 - rate))
+                n_anom_capped = int(len(available_normal) * max_anom_rate / (1 - max_anom_rate))
+                # Guard: decrement if still exactly at target (floating-point edge case)
+                if (n_anom_capped > 0 and
+                        n_anom_capped / (n_anom_capped + len(available_normal)) >= max_anom_rate):
+                    n_anom_capped -= 1
                 logging.warning(
-                    f"  fault={fault}: need {n_normal_needed} normal but only "
-                    f"{len(available_normal)} available — using all."
+                    f"  fault={fault}: only {len(available_normal)} normal available "
+                    f"(need {n_normal_needed}); subsampling anomaly {n_anom} → {n_anom_capped}"
                 )
+                anom_ids = self.rng.sample(anom_ids, n_anom_capped)
+                n_anom = n_anom_capped
                 sampled_normal_ids = available_normal
             else:
                 sampled_normal_ids = self.rng.sample(available_normal, n_normal_needed)

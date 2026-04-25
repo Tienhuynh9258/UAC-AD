@@ -90,6 +90,8 @@ parser.add_argument("--trace_c", default=5, type=int,
                     help="Feature dimension per node in the STG (e.g. response_time, cpu, mem, ...)")
 parser.add_argument("--trace_dropout", default=0.1, type=float,
                     help="Dropout rate inside GAT layers")
+parser.add_argument("--gate_lambda", default=0.01, type=float,
+                    help="L1 regularizer on residual-gated trace gate g (auto-applied when open_trace=True).")
 parser.add_argument("--fuse_type", default="multi_modal_self_attn", choices=["concat", "cross_attn", "sep_attn","multi_modal_self_attn"])
 parser.add_argument("--attn_type", default="add", choices=["dot", "add","qkv"])
 

@@ -1,0 +1,4 @@
+Experiment c97ce51a: 2026/04/22-09:32:17
+Train time/epoch 83.9630
+* Test -- f1:0.9208	rc:0.9182	pc:0.9234
+

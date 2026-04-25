@@ -1,4 +1,0 @@
-Experiment 9de63f0c: 2026/04/19-23:14:26
-Train time/epoch 83.9293
-* Test -- f1:0.8403	rc:0.7562	pc:0.9453
-
