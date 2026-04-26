@@ -63,16 +63,20 @@ Nhật ký được phân tích bằng **Drain3** (streaming template miner), kh
 
 ### 2.4 Đặc trưng trace (tùy chọn, `open_trace=True`)
 
-Với mỗi dịch vụ, một vector đặc trưng 5 chiều được tính toán theo cửa sổ:
+Với mỗi dịch vụ, một vector đặc trưng 6 chiều được tính toán theo cửa sổ (`trace_c=6`):
 
 ```
-[call_count, avg_duration_us, max_duration_us, error_rate, root_rate]
+[call_count, avg_duration_us, max_duration_us, error_rate, root_rate, latency_dev]
 ```
 
 - `call_count`: số lượng trace span liên quan đến dịch vụ này trong cửa sổ
-- `avg_duration_us` / `max_duration_us`: thống kê độ trễ
-- `error_rate`: tỷ lệ span có mã trạng thái không phải OK
+- `avg_duration_us` / `max_duration_us`: thống kê độ trễ (chuẩn hoá về giây)
+- `error_rate`: tỷ lệ span có HTTP status code không phải OK
 - `root_rate`: tỷ lệ span là root span (điểm vào)
+- `latency_dev`: z-score của `avg_duration` so với baseline per-service từ Normal_Baseline
+  = `(avg_dur − mean_baseline) / (std_baseline + 1e-6)` — dương nghĩa là chậm hơn bình thường
+
+Baseline `latency_dev` được tính một lần từ **Normal_Baseline** `all_traces.csv` (mean và std per-service của `duration_us / 1e6`), sau đó áp dụng đồng nhất cho mọi scenario.
 
 Một **ma trận kề tĩnh** (12×12) được xây dựng từ trace Normal_Baseline: cạnh (i, j) = 1 nếu dịch vụ i gọi dịch vụ j ít nhất một lần. Đồ thị này cố định cho tất cả các kịch bản — chúng ta giả sử topo đồ thị lời gọi không thay đổi giữa các thí nghiệm.
 

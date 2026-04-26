@@ -101,7 +101,7 @@ CONTAINER_METRIC_FILES = [
 ]
 CONTAINER_LABEL_COL = "container_label_com_docker_compose_service"
 
-TRACE_NODE_FEAT_DIM = 5  # [call_count, avg_dur_us, max_dur_us, error_rate, root_rate]
+TRACE_NODE_FEAT_DIM = 6  # [call_count, avg_dur_us, max_dur_us, error_rate, root_rate, latency_dev]
 
 # Log timestamp format: [YYYY-Mon-DD HH:MM:SS.ffffff] <LEVEL>: ...
 _LOG_TS_RE  = re.compile(
@@ -166,8 +166,9 @@ class SNPreprocessor:
         self.metric_dir = os.path.join(sn_data_root, "metric_data")
         self.trace_dir  = os.path.join(sn_data_root, "trace_data")
 
-        self._miner  = None   # Drain3 TemplateMiner fitted on Normal_Baseline
-        self._adj    = None   # Static adjacency [12, 12] from Normal_Baseline
+        self._miner            = None   # Drain3 TemplateMiner fitted on Normal_Baseline
+        self._adj              = None   # Static adjacency [12, 12] from Normal_Baseline
+        self._latency_baseline = None   # Tuple(mean[N], std[N]) of avg_dur/1e6 from Normal_Baseline
 
     # ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -243,6 +244,42 @@ class SNPreprocessor:
         n_edges = int(adj.sum()) - self.num_services
         logging.info(f"  Static adj built: {n_edges} edges (symmetric) from {len(df)} spans")
         return adj
+
+    # ── Step 1b: Build per-service latency baseline from Normal_Baseline ────────
+
+    def _build_latency_baseline(self, trace_dir: str) -> None:
+        """
+        Compute per-service mean and std of avg span duration (in seconds) from
+        Normal_Baseline all_traces.csv.  Stored in self._latency_baseline as
+        (mean [N], std [N]).  Used by _build_trace_node_features to compute
+        latency_dev (col 5) as a z-score for every scenario.
+        """
+        baseline_mean = np.zeros(self.num_services, dtype=np.float32)
+        baseline_std  = np.full(self.num_services, 1e-6, dtype=np.float32)
+
+        path = os.path.join(trace_dir, "all_traces.csv")
+        if not os.path.exists(path):
+            logging.warning("  No all_traces.csv — latency_dev will be zero for all windows")
+            self._latency_baseline = (baseline_mean, baseline_std)
+            return
+
+        df = pd.read_csv(path, usecols=["service", "duration_us"])
+        df = df.dropna(subset=["service", "duration_us"])
+        df["service_idx"] = df["service"].map(self.service2idx)
+        df = df[df["service_idx"].notna()].copy()
+        df["dur_sec"] = pd.to_numeric(df["duration_us"], errors="coerce").fillna(0) / 1e6
+
+        for i in range(self.num_services):
+            vals = df[df["service_idx"] == i]["dur_sec"].values
+            if len(vals) > 1:
+                baseline_mean[i] = float(vals.mean())
+                baseline_std[i]  = float(vals.std()) + 1e-6
+
+        logging.info(
+            f"  Latency baseline from {len(df):,} spans — "
+            f"mean dur/svc: {baseline_mean.mean()*1000:.2f} ms"
+        )
+        self._latency_baseline = (baseline_mean, baseline_std)
 
     # ── Step 2: Fit Drain3 on Normal_Baseline logs ───────────────────────────
 
@@ -433,9 +470,10 @@ class SNPreprocessor:
         win_starts: List[datetime],
     ) -> np.ndarray:
         """
-        Build [W, N, 5] trace node features.
+        Build [W, N, 6] trace node features.
         Features per service per window:
-          [call_count, avg_dur_us, max_dur_us, error_rate, root_rate]
+          [call_count, avg_dur_us, max_dur_us, error_rate, root_rate, latency_dev]
+        latency_dev = z-score of avg_dur vs Normal_Baseline per service.
         """
         W = len(win_starts)
         N = self.num_services
@@ -492,6 +530,11 @@ class SNPreprocessor:
         result[:, :, 0] = np.log1p(result[:, :, 0]) / 10.0
         result[:, :, 1] = result[:, :, 1] / 1e6
         result[:, :, 2] = result[:, :, 2] / 1e6
+
+        # col 5: latency_dev = z-score of avg_dur vs Normal_Baseline per service
+        if self._latency_baseline is not None:
+            bl_mean, bl_std = self._latency_baseline
+            result[:, :, 5] = (result[:, :, 1] - bl_mean) / bl_std
 
         return result
 
@@ -706,6 +749,10 @@ class SNPreprocessor:
         # Step 1: Build static adjacency from Normal_Baseline
         logging.info("Step 1: Building static adjacency from Normal_Baseline traces …")
         self._adj = self._build_static_adj(scenario_dirs[normal_key]["trace_dir"])
+
+        # Step 1b: Build per-service latency baseline from Normal_Baseline traces
+        logging.info("Step 1b: Building latency baseline from Normal_Baseline traces …")
+        self._build_latency_baseline(scenario_dirs[normal_key]["trace_dir"])
 
         # Step 2: Fit Drain3 on Normal_Baseline logs
         logging.info("Step 2: Fitting Drain3 on Normal_Baseline logs …")

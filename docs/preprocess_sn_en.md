@@ -63,16 +63,20 @@ To avoid contamination from anomaly log patterns when building the vocabulary. T
 
 ### 2.4 Trace Features (optional, `open_trace=True`)
 
-For each service, a 5-dimensional feature vector is computed per window:
+For each service, a 6-dimensional feature vector is computed per window (`trace_c=6`):
 
 ```
-[call_count, avg_duration_us, max_duration_us, error_rate, root_rate]
+[call_count, avg_duration_us, max_duration_us, error_rate, root_rate, latency_dev]
 ```
 
 - `call_count`: number of trace spans involving this service in the window
-- `avg_duration_us` / `max_duration_us`: latency statistics
-- `error_rate`: fraction of spans with non-OK status codes
+- `avg_duration_us` / `max_duration_us`: latency statistics (normalized to seconds)
+- `error_rate`: fraction of spans with non-OK HTTP status codes
 - `root_rate`: fraction of spans that are root spans (entry points)
+- `latency_dev`: z-score of `avg_duration` vs per-service baseline from Normal_Baseline
+  = `(avg_dur − mean_baseline) / (std_baseline + 1e-6)` — positive means slower than normal
+
+`latency_dev` baseline is computed once from **Normal_Baseline** `all_traces.csv` (per-service mean and std of `duration_us / 1e6`), then applied to all scenarios uniformly.
 
 A **static adjacency matrix** (12×12) is built from Normal_Baseline traces: edge (i, j) = 1 if service i calls service j at least once. This graph is fixed for all scenarios — we assume the call graph topology does not change between experiments.
 

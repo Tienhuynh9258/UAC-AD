@@ -1,0 +1,44 @@
+2026-04-26 00:25:00,257 P22680 INFO ^^^^^^^^^^ Current Model:hades, 08d4b224 ^^^^^^^^^^
+2026-04-26 00:25:00,257 P22680 INFO Load from ../data/sn
+2026-04-26 00:25:00,495 P22680 INFO 375 unique log templates found.
+2026-04-26 00:25:00,495 P22680 INFO Transforming unlabel train data.
+2026-04-26 00:25:00,527 P22680 INFO Transforming test data.
+2026-04-26 00:25:00,570 P22680 INFO 193 new templates show.
+2026-04-26 00:25:00,600 P22680 INFO Transforming val data.
+2026-04-26 00:25:00,600 P22680 INFO 77 new templates show.
+2026-04-26 00:25:00,602 P22680 INFO Data loaded done!
+2026-04-26 00:25:00,637 P22680 INFO Known word number: 375
+2026-04-26 00:25:04,043 P22680 INFO Epoch 0/10, train generator loss: 1.51135
+2026-04-26 00:25:04,199 P22680 INFO Epoch 0/10, train discriminator loss: 5.82844
+2026-04-26 00:25:04,359 P22680 INFO *** Test time is 0.15202546119689941
+2026-04-26 00:25:04,359 P22680 INFO Epoch 0/10, test f1: 0.54545 rc: 0.50000 pc: 0.60000. [0.76s]
+2026-04-26 00:25:04,534 P22680 INFO Epoch 1/10, train generator loss: 1.38309
+2026-04-26 00:25:04,649 P22680 INFO Epoch 1/10, train discriminator loss: 5.11880
+2026-04-26 00:25:04,801 P22680 INFO *** Test time is 0.15172076225280762
+2026-04-26 00:25:04,801 P22680 INFO Epoch 1/10, test f1: 0.50000 rc: 0.33333 pc: 1.00000. [0.27s]
+2026-04-26 00:25:04,801 P22680 INFO early stopping epoch 1/5
+2026-04-26 00:25:04,947 P22680 INFO Epoch 2/10, train generator loss: 1.34931
+2026-04-26 00:25:05,060 P22680 INFO Epoch 2/10, train discriminator loss: 4.66683
+2026-04-26 00:25:05,211 P22680 INFO *** Test time is 0.15117573738098145
+2026-04-26 00:25:05,211 P22680 INFO Epoch 2/10, test f1: 0.50000 rc: 0.33333 pc: 1.00000. [0.26s]
+2026-04-26 00:25:05,211 P22680 INFO early stopping epoch 2/5
+2026-04-26 00:25:05,389 P22680 INFO Epoch 3/10, train generator loss: 1.36008
+2026-04-26 00:25:05,563 P22680 INFO Epoch 3/10, train discriminator loss: 4.34686
+2026-04-26 00:25:05,785 P22680 INFO *** Test time is 0.2216625213623047
+2026-04-26 00:25:05,785 P22680 INFO Epoch 3/10, test f1: 0.50000 rc: 0.33333 pc: 1.00000. [0.35s]
+2026-04-26 00:25:05,785 P22680 INFO early stopping epoch 3/5
+2026-04-26 00:25:05,958 P22680 INFO Epoch 4/10, train generator loss: 1.38136
+2026-04-26 00:25:06,116 P22680 INFO Epoch 4/10, train discriminator loss: 4.13285
+2026-04-26 00:25:06,306 P22680 INFO *** Test time is 0.18991565704345703
+2026-04-26 00:25:06,306 P22680 INFO Epoch 4/10, test f1: 0.50000 rc: 0.33333 pc: 1.00000. [0.33s]
+2026-04-26 00:25:06,306 P22680 INFO early stopping epoch 4/5
+2026-04-26 00:25:06,496 P22680 INFO Epoch 5/10, train generator loss: 1.41496
+2026-04-26 00:25:06,607 P22680 INFO Epoch 5/10, train discriminator loss: 3.99286
+2026-04-26 00:25:06,749 P22680 INFO *** Test time is 0.14188170433044434
+2026-04-26 00:25:06,749 P22680 INFO Epoch 5/10, test f1: 0.50000 rc: 0.33333 pc: 1.00000. [0.30s]
+2026-04-26 00:25:06,749 P22680 INFO early stopping epoch 5/5
+2026-04-26 00:25:06,749 P22680 INFO Early stopping
+2026-04-26 00:25:06,876 P22680 INFO Threshold (p=95.0, src=val): 1.818864
+2026-04-26 00:25:06,907 P22680 INFO *** Test F1 0.5000  of unsupervised traning
+2026-04-26 00:25:06,907 P22680 INFO *** Best F1 {'f1': 0.5454545454545454, 'rc': 0.5, 'pc': 0.6}  of unsupervised traning
+2026-04-26 00:25:06,907 P22680 INFO Current hash id 08d4b224

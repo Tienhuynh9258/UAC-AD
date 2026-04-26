@@ -13,7 +13,7 @@ Usage:
     python codes/common/eval_per_scenario_sn.py \\
         --data data/sn \\
         --dataset sn --data_type fuse \\
-        --open_trace False \\
+        --open_trace True --trace_c 6 --gate_lambda 0.01 \\
         --epoches 10 10 --batch_size 256 --patience 5 \\
         --window_size 5 --val_percentile 95 \\
         --alpha 0.16 --open_gan_sep True \\
@@ -137,7 +137,7 @@ def main():
     p.add_argument("--data_type",     default="fuse", choices=["fuse", "kpi", "log"])
     p.add_argument("--open_trace",    default="False")
     p.add_argument("--num_services",  default=12,   type=int)
-    p.add_argument("--trace_c",       default=5,    type=int)
+    p.add_argument("--trace_c",       default=6,    type=int)
     p.add_argument("--epoches",       default=[10, 10], nargs="+", type=int)
     p.add_argument("--batch_size",    default=256,  type=int)
     p.add_argument("--patience",      default=5,    type=int)
@@ -149,9 +149,11 @@ def main():
     p.add_argument("--open_gan_sep",  default="True")
     p.add_argument("--run_start",     default=0,    type=int)
     p.add_argument("--run_end",       default=1,    type=int)
+    p.add_argument("--gate_lambda",   default=0.01, type=float,
+                   help="L1 regularizer on residual-gated trace gate g (auto-applied when open_trace=True).")
     p.add_argument("--result_dir",    default=None,
                    help="Base result dir; each scenario gets its own subdir. "
-                        "Defaults to {data}/result_per_scenario_{data_type}")
+                        "Defaults to {data}/result_per_scenario_{data_type}_{trace|baseline}")
     p.add_argument("--run_py",        default=None,
                    help="Path to run.py (auto-detected if not specified)")
     args = p.parse_args()
@@ -166,8 +168,10 @@ def main():
     if not os.path.exists(run_py):
         raise FileNotFoundError(f"run.py not found at {run_py}. Use --run_py to specify.")
 
+    open_trace_str = str(args.open_trace).lower()
+    suffix = "trace" if open_trace_str in ("true", "1", "yes") else "baseline"
     result_base = args.result_dir or os.path.join(
-        args.data, f"result_per_scenario_{args.data_type}"
+        args.data, f"result_per_scenario_{args.data_type}_{suffix}"
     )
 
     scenario_files = _find_scenario_files(args.data)
@@ -212,6 +216,7 @@ def main():
             "--run_end",      str(args.run_end),
             "--test_pkl",          test_pkl,
             "--result_dir",        sc_result_dir,
+            "--gate_lambda",       str(args.gate_lambda),
         ]
 
         try:

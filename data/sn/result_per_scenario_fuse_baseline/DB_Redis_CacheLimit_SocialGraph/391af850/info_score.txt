@@ -1,0 +1,4 @@
+Experiment 391af850: 2026/04/26-08:20:46
+Train time/epoch 0.2874
+* Test -- f1:1.0000	rc:1.0000	pc:1.0000
+

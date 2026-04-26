@@ -1,0 +1,4 @@
+Experiment 2cbbc444: 2026/04/26-08:24:50
+Train time/epoch 0.3891
+* Test -- f1:0.7273	rc:0.8000	pc:0.6667
+
