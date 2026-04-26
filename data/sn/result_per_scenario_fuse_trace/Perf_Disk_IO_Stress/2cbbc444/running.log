@@ -1,0 +1,44 @@
+2026-04-26 00:24:43,342 P7796 INFO ^^^^^^^^^^ Current Model:hades, 2cbbc444 ^^^^^^^^^^
+2026-04-26 00:24:43,342 P7796 INFO Load from ../data/sn
+2026-04-26 00:24:43,549 P7796 INFO 375 unique log templates found.
+2026-04-26 00:24:43,565 P7796 INFO Transforming unlabel train data.
+2026-04-26 00:24:43,597 P7796 INFO Transforming test data.
+2026-04-26 00:24:43,629 P7796 INFO 189 new templates show.
+2026-04-26 00:24:43,661 P7796 INFO Transforming val data.
+2026-04-26 00:24:43,661 P7796 INFO 77 new templates show.
+2026-04-26 00:24:43,661 P7796 INFO Data loaded done!
+2026-04-26 00:24:43,709 P7796 INFO Known word number: 375
+2026-04-26 00:24:47,060 P7796 INFO Epoch 0/10, train generator loss: 1.50075
+2026-04-26 00:24:47,234 P7796 INFO Epoch 0/10, train discriminator loss: 5.52053
+2026-04-26 00:24:47,419 P7796 INFO *** Test time is 0.1787872314453125
+2026-04-26 00:24:47,419 P7796 INFO Epoch 0/10, test f1: 0.72727 rc: 0.80000 pc: 0.66667. [0.75s]
+2026-04-26 00:24:47,608 P7796 INFO Epoch 1/10, train generator loss: 1.40553
+2026-04-26 00:24:47,734 P7796 INFO Epoch 1/10, train discriminator loss: 4.89421
+2026-04-26 00:24:47,892 P7796 INFO *** Test time is 0.15783023834228516
+2026-04-26 00:24:47,892 P7796 INFO Epoch 1/10, test f1: 0.72727 rc: 0.80000 pc: 0.66667. [0.31s]
+2026-04-26 00:24:47,892 P7796 INFO early stopping epoch 1/5
+2026-04-26 00:24:48,033 P7796 INFO Epoch 2/10, train generator loss: 1.38221
+2026-04-26 00:24:48,144 P7796 INFO Epoch 2/10, train discriminator loss: 4.50428
+2026-04-26 00:24:48,287 P7796 INFO *** Test time is 0.1431121826171875
+2026-04-26 00:24:48,287 P7796 INFO Epoch 2/10, test f1: 0.72727 rc: 0.80000 pc: 0.66667. [0.25s]
+2026-04-26 00:24:48,287 P7796 INFO early stopping epoch 2/5
+2026-04-26 00:24:48,430 P7796 INFO Epoch 3/10, train generator loss: 1.40005
+2026-04-26 00:24:48,589 P7796 INFO Epoch 3/10, train discriminator loss: 4.22766
+2026-04-26 00:24:48,778 P7796 INFO *** Test time is 0.18741464614868164
+2026-04-26 00:24:48,778 P7796 INFO Epoch 3/10, test f1: 0.72727 rc: 0.80000 pc: 0.66667. [0.30s]
+2026-04-26 00:24:48,778 P7796 INFO early stopping epoch 3/5
+2026-04-26 00:24:48,951 P7796 INFO Epoch 4/10, train generator loss: 1.42566
+2026-04-26 00:24:49,129 P7796 INFO Epoch 4/10, train discriminator loss: 4.05900
+2026-04-26 00:24:49,315 P7796 INFO *** Test time is 0.18574833869934082
+2026-04-26 00:24:49,315 P7796 INFO Epoch 4/10, test f1: 0.72727 rc: 0.80000 pc: 0.66667. [0.35s]
+2026-04-26 00:24:49,315 P7796 INFO early stopping epoch 4/5
+2026-04-26 00:24:49,535 P7796 INFO Epoch 5/10, train generator loss: 1.46254
+2026-04-26 00:24:49,675 P7796 INFO Epoch 5/10, train discriminator loss: 3.96613
+2026-04-26 00:24:49,896 P7796 INFO *** Test time is 0.22118020057678223
+2026-04-26 00:24:49,896 P7796 INFO Epoch 5/10, test f1: 0.72727 rc: 0.80000 pc: 0.66667. [0.36s]
+2026-04-26 00:24:49,896 P7796 INFO early stopping epoch 5/5
+2026-04-26 00:24:49,896 P7796 INFO Early stopping
+2026-04-26 00:24:50,038 P7796 INFO Threshold (p=95.0, src=val): 1.821767
+2026-04-26 00:24:50,087 P7796 INFO *** Test F1 0.7273  of unsupervised traning
+2026-04-26 00:24:50,087 P7796 INFO *** Best F1 {'f1': 0.7272727272727273, 'rc': 0.8, 'pc': 0.6666666666666666}  of unsupervised traning
+2026-04-26 00:24:50,101 P7796 INFO Current hash id 2cbbc444

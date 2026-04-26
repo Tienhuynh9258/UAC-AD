@@ -1,0 +1,4 @@
+Experiment 2128b405: 2026/04/26-08:23:29
+Train time/epoch 0.4220
+* Test -- f1:0.9091	rc:0.8333	pc:1.0000
+

@@ -1,0 +1,4 @@
+Experiment 7c2f0d5d: 2026/04/26-08:22:32
+Train time/epoch 0.2917
+* Test -- f1:0.9091	rc:1.0000	pc:0.8333
+

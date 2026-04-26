@@ -1,0 +1,44 @@
+2026-04-26 00:20:26,061 P11488 INFO ^^^^^^^^^^ Current Model:hades, 610e8dbb ^^^^^^^^^^
+2026-04-26 00:20:26,061 P11488 INFO Load from ../data/sn
+2026-04-26 00:20:26,417 P11488 INFO 375 unique log templates found.
+2026-04-26 00:20:26,417 P11488 INFO Transforming unlabel train data.
+2026-04-26 00:20:26,458 P11488 INFO Transforming test data.
+2026-04-26 00:20:26,499 P11488 INFO 185 new templates show.
+2026-04-26 00:20:26,523 P11488 INFO Transforming val data.
+2026-04-26 00:20:26,523 P11488 INFO 77 new templates show.
+2026-04-26 00:20:26,523 P11488 INFO Data loaded done!
+2026-04-26 00:20:26,553 P11488 INFO Known word number: 375
+2026-04-26 00:20:29,856 P11488 INFO Epoch 0/10, train generator loss: 1.31585
+2026-04-26 00:20:29,938 P11488 INFO Epoch 0/10, train discriminator loss: 2.79423
+2026-04-26 00:20:30,126 P11488 INFO *** Test time is 0.1722097396850586
+2026-04-26 00:20:30,126 P11488 INFO Epoch 0/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.62s]
+2026-04-26 00:20:30,255 P11488 INFO Epoch 1/10, train generator loss: 1.20185
+2026-04-26 00:20:30,366 P11488 INFO Epoch 1/10, train discriminator loss: 2.25096
+2026-04-26 00:20:30,503 P11488 INFO *** Test time is 0.137373685836792
+2026-04-26 00:20:30,503 P11488 INFO Epoch 1/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.22s]
+2026-04-26 00:20:30,503 P11488 INFO early stopping epoch 1/5
+2026-04-26 00:20:30,616 P11488 INFO Epoch 2/10, train generator loss: 1.23244
+2026-04-26 00:20:30,714 P11488 INFO Epoch 2/10, train discriminator loss: 1.87775
+2026-04-26 00:20:30,932 P11488 INFO *** Test time is 0.21868205070495605
+2026-04-26 00:20:30,933 P11488 INFO Epoch 2/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.21s]
+2026-04-26 00:20:30,933 P11488 INFO early stopping epoch 2/5
+2026-04-26 00:20:31,114 P11488 INFO Epoch 3/10, train generator loss: 1.28791
+2026-04-26 00:20:31,215 P11488 INFO Epoch 3/10, train discriminator loss: 1.61338
+2026-04-26 00:20:31,405 P11488 INFO *** Test time is 0.1899127960205078
+2026-04-26 00:20:31,405 P11488 INFO Epoch 3/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.28s]
+2026-04-26 00:20:31,405 P11488 INFO early stopping epoch 3/5
+2026-04-26 00:20:31,564 P11488 INFO Epoch 4/10, train generator loss: 1.36269
+2026-04-26 00:20:31,674 P11488 INFO Epoch 4/10, train discriminator loss: 1.44014
+2026-04-26 00:20:31,866 P11488 INFO *** Test time is 0.191636323928833
+2026-04-26 00:20:31,866 P11488 INFO Epoch 4/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.27s]
+2026-04-26 00:20:31,866 P11488 INFO early stopping epoch 4/5
+2026-04-26 00:20:31,992 P11488 INFO Epoch 5/10, train generator loss: 1.44275
+2026-04-26 00:20:32,071 P11488 INFO Epoch 5/10, train discriminator loss: 1.33219
+2026-04-26 00:20:32,229 P11488 INFO *** Test time is 0.15842390060424805
+2026-04-26 00:20:32,229 P11488 INFO Epoch 5/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.20s]
+2026-04-26 00:20:32,229 P11488 INFO early stopping epoch 5/5
+2026-04-26 00:20:32,229 P11488 INFO Early stopping
+2026-04-26 00:20:32,341 P11488 INFO Threshold (p=95.0, src=val): 1.415805
+2026-04-26 00:20:32,373 P11488 INFO *** Test F1 0.6316  of unsupervised traning
+2026-04-26 00:20:32,373 P11488 INFO *** Best F1 {'f1': 1.0, 'rc': 1.0, 'pc': 1.0}  of unsupervised traning
+2026-04-26 00:20:32,389 P11488 INFO Current hash id 610e8dbb

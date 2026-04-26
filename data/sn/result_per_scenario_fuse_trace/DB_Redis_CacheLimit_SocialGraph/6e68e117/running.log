@@ -1,0 +1,63 @@
+2026-04-26 00:23:55,662 P9644 INFO ^^^^^^^^^^ Current Model:hades, 6e68e117 ^^^^^^^^^^
+2026-04-26 00:23:55,662 P9644 INFO Load from ../data/sn
+2026-04-26 00:23:55,885 P9644 INFO 375 unique log templates found.
+2026-04-26 00:23:55,885 P9644 INFO Transforming unlabel train data.
+2026-04-26 00:23:55,933 P9644 INFO Transforming test data.
+2026-04-26 00:23:55,964 P9644 INFO 193 new templates show.
+2026-04-26 00:23:56,008 P9644 INFO Transforming val data.
+2026-04-26 00:23:56,008 P9644 INFO 77 new templates show.
+2026-04-26 00:23:56,012 P9644 INFO Data loaded done!
+2026-04-26 00:23:56,044 P9644 INFO Known word number: 375
+2026-04-26 00:23:59,475 P9644 INFO Epoch 0/10, train generator loss: 1.49740
+2026-04-26 00:23:59,667 P9644 INFO Epoch 0/10, train discriminator loss: 5.64942
+2026-04-26 00:23:59,897 P9644 INFO *** Test time is 0.22185754776000977
+2026-04-26 00:23:59,897 P9644 INFO Epoch 0/10, test f1: 0.80000 rc: 1.00000 pc: 0.66667. [0.78s]
+2026-04-26 00:24:00,133 P9644 INFO Epoch 1/10, train generator loss: 1.42161
+2026-04-26 00:24:00,277 P9644 INFO Epoch 1/10, train discriminator loss: 5.00294
+2026-04-26 00:24:00,482 P9644 INFO *** Test time is 0.20437049865722656
+2026-04-26 00:24:00,482 P9644 INFO Epoch 1/10, test f1: 0.80000 rc: 1.00000 pc: 0.66667. [0.35s]
+2026-04-26 00:24:00,482 P9644 INFO early stopping epoch 1/5
+2026-04-26 00:24:00,693 P9644 INFO Epoch 2/10, train generator loss: 1.37785
+2026-04-26 00:24:00,829 P9644 INFO Epoch 2/10, train discriminator loss: 4.57754
+2026-04-26 00:24:01,034 P9644 INFO *** Test time is 0.20506739616394043
+2026-04-26 00:24:01,034 P9644 INFO Epoch 2/10, test f1: 0.80000 rc: 1.00000 pc: 0.66667. [0.35s]
+2026-04-26 00:24:01,034 P9644 INFO early stopping epoch 2/5
+2026-04-26 00:24:01,241 P9644 INFO Epoch 3/10, train generator loss: 1.39787
+2026-04-26 00:24:01,399 P9644 INFO Epoch 3/10, train discriminator loss: 4.26355
+2026-04-26 00:24:01,605 P9644 INFO *** Test time is 0.20586848258972168
+2026-04-26 00:24:01,605 P9644 INFO Epoch 3/10, test f1: 0.80000 rc: 1.00000 pc: 0.66667. [0.36s]
+2026-04-26 00:24:01,605 P9644 INFO early stopping epoch 3/5
+2026-04-26 00:24:01,826 P9644 INFO Epoch 4/10, train generator loss: 1.42719
+2026-04-26 00:24:02,002 P9644 INFO Epoch 4/10, train discriminator loss: 4.05736
+2026-04-26 00:24:02,190 P9644 INFO *** Test time is 0.1883409023284912
+2026-04-26 00:24:02,190 P9644 INFO Epoch 4/10, test f1: 0.83333 rc: 0.83333 pc: 0.83333. [0.40s]
+2026-04-26 00:24:02,360 P9644 INFO Epoch 5/10, train generator loss: 1.46335
+2026-04-26 00:24:02,473 P9644 INFO Epoch 5/10, train discriminator loss: 3.93109
+2026-04-26 00:24:02,601 P9644 INFO *** Test time is 0.12840795516967773
+2026-04-26 00:24:02,601 P9644 INFO Epoch 5/10, test f1: 0.83333 rc: 0.83333 pc: 0.83333. [0.25s]
+2026-04-26 00:24:02,601 P9644 INFO early stopping epoch 1/5
+2026-04-26 00:24:02,746 P9644 INFO Epoch 6/10, train generator loss: 1.49449
+2026-04-26 00:24:02,857 P9644 INFO Epoch 6/10, train discriminator loss: 3.86562
+2026-04-26 00:24:03,013 P9644 INFO *** Test time is 0.1562025547027588
+2026-04-26 00:24:03,013 P9644 INFO Epoch 6/10, test f1: 0.83333 rc: 0.83333 pc: 0.83333. [0.26s]
+2026-04-26 00:24:03,013 P9644 INFO early stopping epoch 2/5
+2026-04-26 00:24:03,177 P9644 INFO Epoch 7/10, train generator loss: 1.52330
+2026-04-26 00:24:03,279 P9644 INFO Epoch 7/10, train discriminator loss: 3.84062
+2026-04-26 00:24:03,453 P9644 INFO *** Test time is 0.17396116256713867
+2026-04-26 00:24:03,453 P9644 INFO Epoch 7/10, test f1: 0.83333 rc: 0.83333 pc: 0.83333. [0.27s]
+2026-04-26 00:24:03,453 P9644 INFO early stopping epoch 3/5
+2026-04-26 00:24:03,579 P9644 INFO Epoch 8/10, train generator loss: 1.54530
+2026-04-26 00:24:03,725 P9644 INFO Epoch 8/10, train discriminator loss: 3.84491
+2026-04-26 00:24:03,862 P9644 INFO *** Test time is 0.13648366928100586
+2026-04-26 00:24:03,862 P9644 INFO Epoch 8/10, test f1: 0.83333 rc: 0.83333 pc: 0.83333. [0.27s]
+2026-04-26 00:24:03,862 P9644 INFO early stopping epoch 4/5
+2026-04-26 00:24:03,992 P9644 INFO Epoch 9/10, train generator loss: 1.55614
+2026-04-26 00:24:04,091 P9644 INFO Epoch 9/10, train discriminator loss: 3.86319
+2026-04-26 00:24:04,243 P9644 INFO *** Test time is 0.15213656425476074
+2026-04-26 00:24:04,243 P9644 INFO Epoch 9/10, test f1: 0.83333 rc: 0.83333 pc: 0.83333. [0.23s]
+2026-04-26 00:24:04,243 P9644 INFO early stopping epoch 5/5
+2026-04-26 00:24:04,243 P9644 INFO Early stopping
+2026-04-26 00:24:04,338 P9644 INFO Threshold (p=95.0, src=val): 1.738446
+2026-04-26 00:24:04,370 P9644 INFO *** Test F1 0.8000  of unsupervised traning
+2026-04-26 00:24:04,370 P9644 INFO *** Best F1 {'f1': 0.8333333333333334, 'rc': 0.8333333333333334, 'pc': 0.8333333333333334}  of unsupervised traning
+2026-04-26 00:24:04,386 P9644 INFO Current hash id 6e68e117

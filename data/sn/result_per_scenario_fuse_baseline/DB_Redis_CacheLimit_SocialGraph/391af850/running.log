@@ -1,0 +1,44 @@
+2026-04-26 00:20:39,803 P16904 INFO ^^^^^^^^^^ Current Model:hades, 391af850 ^^^^^^^^^^
+2026-04-26 00:20:39,803 P16904 INFO Load from ../data/sn
+2026-04-26 00:20:40,157 P16904 INFO 375 unique log templates found.
+2026-04-26 00:20:40,166 P16904 INFO Transforming unlabel train data.
+2026-04-26 00:20:40,199 P16904 INFO Transforming test data.
+2026-04-26 00:20:40,230 P16904 INFO 193 new templates show.
+2026-04-26 00:20:40,262 P16904 INFO Transforming val data.
+2026-04-26 00:20:40,262 P16904 INFO 77 new templates show.
+2026-04-26 00:20:40,262 P16904 INFO Data loaded done!
+2026-04-26 00:20:40,294 P16904 INFO Known word number: 375
+2026-04-26 00:20:43,555 P16904 INFO Epoch 0/10, train generator loss: 1.28732
+2026-04-26 00:20:43,649 P16904 INFO Epoch 0/10, train discriminator loss: 2.80093
+2026-04-26 00:20:43,806 P16904 INFO *** Test time is 0.13523316383361816
+2026-04-26 00:20:43,806 P16904 INFO Epoch 0/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.61s]
+2026-04-26 00:20:43,931 P16904 INFO Epoch 1/10, train generator loss: 1.26513
+2026-04-26 00:20:44,012 P16904 INFO Epoch 1/10, train discriminator loss: 2.29611
+2026-04-26 00:20:44,163 P16904 INFO *** Test time is 0.15121173858642578
+2026-04-26 00:20:44,163 P16904 INFO Epoch 1/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.19s]
+2026-04-26 00:20:44,163 P16904 INFO early stopping epoch 1/5
+2026-04-26 00:20:44,272 P16904 INFO Epoch 2/10, train generator loss: 1.24200
+2026-04-26 00:20:44,370 P16904 INFO Epoch 2/10, train discriminator loss: 1.92077
+2026-04-26 00:20:44,516 P16904 INFO *** Test time is 0.1462247371673584
+2026-04-26 00:20:44,516 P16904 INFO Epoch 2/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.21s]
+2026-04-26 00:20:44,516 P16904 INFO early stopping epoch 2/5
+2026-04-26 00:20:44,626 P16904 INFO Epoch 3/10, train generator loss: 1.29604
+2026-04-26 00:20:44,705 P16904 INFO Epoch 3/10, train discriminator loss: 1.61933
+2026-04-26 00:20:44,911 P16904 INFO *** Test time is 0.20654726028442383
+2026-04-26 00:20:44,911 P16904 INFO Epoch 3/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.19s]
+2026-04-26 00:20:44,911 P16904 INFO early stopping epoch 3/5
+2026-04-26 00:20:45,054 P16904 INFO Epoch 4/10, train generator loss: 1.37880
+2026-04-26 00:20:45,164 P16904 INFO Epoch 4/10, train discriminator loss: 1.40181
+2026-04-26 00:20:45,370 P16904 INFO *** Test time is 0.2064061164855957
+2026-04-26 00:20:45,370 P16904 INFO Epoch 4/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.25s]
+2026-04-26 00:20:45,370 P16904 INFO early stopping epoch 4/5
+2026-04-26 00:20:45,527 P16904 INFO Epoch 5/10, train generator loss: 1.47998
+2026-04-26 00:20:45,637 P16904 INFO Epoch 5/10, train discriminator loss: 1.25556
+2026-04-26 00:20:45,859 P16904 INFO *** Test time is 0.20914793014526367
+2026-04-26 00:20:45,859 P16904 INFO Epoch 5/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.28s]
+2026-04-26 00:20:45,859 P16904 INFO early stopping epoch 5/5
+2026-04-26 00:20:45,859 P16904 INFO Early stopping
+2026-04-26 00:20:45,971 P16904 INFO Threshold (p=95.0, src=val): 1.459558
+2026-04-26 00:20:46,019 P16904 INFO *** Test F1 0.5455  of unsupervised traning
+2026-04-26 00:20:46,019 P16904 INFO *** Best F1 {'f1': 1.0, 'rc': 1.0, 'pc': 1.0}  of unsupervised traning
+2026-04-26 00:20:46,019 P16904 INFO Current hash id 391af850

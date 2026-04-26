@@ -1,0 +1,61 @@
+2026-04-26 00:20:10,809 P20512 INFO ^^^^^^^^^^ Current Model:hades, 2cab171b ^^^^^^^^^^
+2026-04-26 00:20:10,809 P20512 INFO Load from ../data/sn
+2026-04-26 00:20:11,158 P20512 INFO 375 unique log templates found.
+2026-04-26 00:20:11,173 P20512 INFO Transforming unlabel train data.
+2026-04-26 00:20:11,206 P20512 INFO Transforming test data.
+2026-04-26 00:20:11,238 P20512 INFO 198 new templates show.
+2026-04-26 00:20:11,270 P20512 INFO Transforming val data.
+2026-04-26 00:20:11,270 P20512 INFO 77 new templates show.
+2026-04-26 00:20:11,270 P20512 INFO Data loaded done!
+2026-04-26 00:20:11,301 P20512 INFO Known word number: 375
+2026-04-26 00:20:14,634 P20512 INFO Epoch 0/10, train generator loss: 1.27793
+2026-04-26 00:20:14,715 P20512 INFO Epoch 0/10, train discriminator loss: 2.65224
+2026-04-26 00:20:14,871 P20512 INFO *** Test time is 0.1560359001159668
+2026-04-26 00:20:14,871 P20512 INFO Epoch 0/10, test f1: 0.85714 rc: 1.00000 pc: 0.75000. [0.62s]
+2026-04-26 00:20:15,022 P20512 INFO Epoch 1/10, train generator loss: 1.26025
+2026-04-26 00:20:15,091 P20512 INFO Epoch 1/10, train discriminator loss: 2.15340
+2026-04-26 00:20:15,253 P20512 INFO *** Test time is 0.16122651100158691
+2026-04-26 00:20:15,253 P20512 INFO Epoch 1/10, test f1: 0.85714 rc: 1.00000 pc: 0.75000. [0.20s]
+2026-04-26 00:20:15,253 P20512 INFO early stopping epoch 1/5
+2026-04-26 00:20:15,400 P20512 INFO Epoch 2/10, train generator loss: 1.25549
+2026-04-26 00:20:15,518 P20512 INFO Epoch 2/10, train discriminator loss: 1.82261
+2026-04-26 00:20:15,708 P20512 INFO *** Test time is 0.19022035598754883
+2026-04-26 00:20:15,708 P20512 INFO Epoch 2/10, test f1: 0.85714 rc: 1.00000 pc: 0.75000. [0.27s]
+2026-04-26 00:20:15,708 P20512 INFO early stopping epoch 2/5
+2026-04-26 00:20:15,884 P20512 INFO Epoch 3/10, train generator loss: 1.30431
+2026-04-26 00:20:16,018 P20512 INFO Epoch 3/10, train discriminator loss: 1.56444
+2026-04-26 00:20:16,214 P20512 INFO *** Test time is 0.19609737396240234
+2026-04-26 00:20:16,214 P20512 INFO Epoch 3/10, test f1: 0.85714 rc: 1.00000 pc: 0.75000. [0.31s]
+2026-04-26 00:20:16,214 P20512 INFO early stopping epoch 3/5
+2026-04-26 00:20:16,372 P20512 INFO Epoch 4/10, train generator loss: 1.37826
+2026-04-26 00:20:16,492 P20512 INFO Epoch 4/10, train discriminator loss: 1.36498
+2026-04-26 00:20:16,628 P20512 INFO *** Test time is 0.13571667671203613
+2026-04-26 00:20:16,628 P20512 INFO Epoch 4/10, test f1: 0.85714 rc: 1.00000 pc: 0.75000. [0.28s]
+2026-04-26 00:20:16,628 P20512 INFO early stopping epoch 4/5
+2026-04-26 00:20:16,749 P20512 INFO Epoch 5/10, train generator loss: 1.47463
+2026-04-26 00:20:16,833 P20512 INFO Epoch 5/10, train discriminator loss: 1.21694
+2026-04-26 00:20:16,959 P20512 INFO *** Test time is 0.12555718421936035
+2026-04-26 00:20:16,959 P20512 INFO Epoch 5/10, test f1: 0.92308 rc: 1.00000 pc: 0.85714. [0.21s]
+2026-04-26 00:20:17,078 P20512 INFO Epoch 6/10, train generator loss: 1.58690
+2026-04-26 00:20:17,152 P20512 INFO Epoch 6/10, train discriminator loss: 1.10526
+2026-04-26 00:20:17,290 P20512 INFO *** Test time is 0.13849091529846191
+2026-04-26 00:20:17,290 P20512 INFO Epoch 6/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.18s]
+2026-04-26 00:20:17,420 P20512 INFO Epoch 7/10, train generator loss: 1.69211
+2026-04-26 00:20:17,492 P20512 INFO Epoch 7/10, train discriminator loss: 1.02605
+2026-04-26 00:20:17,638 P20512 INFO *** Test time is 0.14558839797973633
+2026-04-26 00:20:17,638 P20512 INFO Epoch 7/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.19s]
+2026-04-26 00:20:17,638 P20512 INFO early stopping epoch 1/5
+2026-04-26 00:20:17,770 P20512 INFO Epoch 8/10, train generator loss: 1.78722
+2026-04-26 00:20:17,851 P20512 INFO Epoch 8/10, train discriminator loss: 0.96902
+2026-04-26 00:20:17,983 P20512 INFO *** Test time is 0.1324167251586914
+2026-04-26 00:20:17,983 P20512 INFO Epoch 8/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.21s]
+2026-04-26 00:20:17,983 P20512 INFO early stopping epoch 2/5
+2026-04-26 00:20:18,082 P20512 INFO Epoch 9/10, train generator loss: 1.86705
+2026-04-26 00:20:18,162 P20512 INFO Epoch 9/10, train discriminator loss: 0.93135
+2026-04-26 00:20:18,299 P20512 INFO *** Test time is 0.13651371002197266
+2026-04-26 00:20:18,299 P20512 INFO Epoch 9/10, test f1: 1.00000 rc: 1.00000 pc: 1.00000. [0.18s]
+2026-04-26 00:20:18,299 P20512 INFO early stopping epoch 3/5
+2026-04-26 00:20:18,378 P20512 INFO Threshold (p=95.0, src=val): 1.350314
+2026-04-26 00:20:18,394 P20512 INFO *** Test F1 0.6667  of unsupervised traning
+2026-04-26 00:20:18,394 P20512 INFO *** Best F1 {'f1': 1.0, 'rc': 1.0, 'pc': 1.0}  of unsupervised traning
+2026-04-26 00:20:18,410 P20512 INFO Current hash id 2cab171b

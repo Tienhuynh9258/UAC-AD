@@ -1,0 +1,44 @@
+2026-04-26 00:21:24,327 P3372 INFO ^^^^^^^^^^ Current Model:hades, 8ef1718e ^^^^^^^^^^
+2026-04-26 00:21:24,327 P3372 INFO Load from ../data/sn
+2026-04-26 00:21:24,663 P3372 INFO 375 unique log templates found.
+2026-04-26 00:21:24,663 P3372 INFO Transforming unlabel train data.
+2026-04-26 00:21:24,711 P3372 INFO Transforming test data.
+2026-04-26 00:21:24,743 P3372 INFO 189 new templates show.
+2026-04-26 00:21:24,759 P3372 INFO Transforming val data.
+2026-04-26 00:21:24,759 P3372 INFO 77 new templates show.
+2026-04-26 00:21:24,774 P3372 INFO Data loaded done!
+2026-04-26 00:21:24,806 P3372 INFO Known word number: 375
+2026-04-26 00:21:28,169 P3372 INFO Epoch 0/10, train generator loss: 1.27668
+2026-04-26 00:21:28,273 P3372 INFO Epoch 0/10, train discriminator loss: 2.75102
+2026-04-26 00:21:28,438 P3372 INFO *** Test time is 0.1571507453918457
+2026-04-26 00:21:28,438 P3372 INFO Epoch 0/10, test f1: 0.83333 rc: 1.00000 pc: 0.71429. [0.63s]
+2026-04-26 00:21:28,591 P3372 INFO Epoch 1/10, train generator loss: 1.20653
+2026-04-26 00:21:28,668 P3372 INFO Epoch 1/10, train discriminator loss: 2.24170
+2026-04-26 00:21:28,816 P3372 INFO *** Test time is 0.14878153800964355
+2026-04-26 00:21:28,816 P3372 INFO Epoch 1/10, test f1: 0.83333 rc: 1.00000 pc: 0.71429. [0.21s]
+2026-04-26 00:21:28,816 P3372 INFO early stopping epoch 1/5
+2026-04-26 00:21:28,917 P3372 INFO Epoch 2/10, train generator loss: 1.22456
+2026-04-26 00:21:28,994 P3372 INFO Epoch 2/10, train discriminator loss: 1.87406
+2026-04-26 00:21:29,164 P3372 INFO *** Test time is 0.16959929466247559
+2026-04-26 00:21:29,164 P3372 INFO Epoch 2/10, test f1: 0.83333 rc: 1.00000 pc: 0.71429. [0.18s]
+2026-04-26 00:21:29,164 P3372 INFO early stopping epoch 2/5
+2026-04-26 00:21:29,274 P3372 INFO Epoch 3/10, train generator loss: 1.27733
+2026-04-26 00:21:29,356 P3372 INFO Epoch 3/10, train discriminator loss: 1.57999
+2026-04-26 00:21:29,501 P3372 INFO *** Test time is 0.14410614967346191
+2026-04-26 00:21:29,501 P3372 INFO Epoch 3/10, test f1: 0.83333 rc: 1.00000 pc: 0.71429. [0.19s]
+2026-04-26 00:21:29,501 P3372 INFO early stopping epoch 3/5
+2026-04-26 00:21:29,649 P3372 INFO Epoch 4/10, train generator loss: 1.36068
+2026-04-26 00:21:29,785 P3372 INFO Epoch 4/10, train discriminator loss: 1.36496
+2026-04-26 00:21:29,953 P3372 INFO *** Test time is 0.1684579849243164
+2026-04-26 00:21:29,969 P3372 INFO Epoch 4/10, test f1: 0.83333 rc: 1.00000 pc: 0.71429. [0.28s]
+2026-04-26 00:21:29,969 P3372 INFO early stopping epoch 4/5
+2026-04-26 00:21:30,117 P3372 INFO Epoch 5/10, train generator loss: 1.45853
+2026-04-26 00:21:30,223 P3372 INFO Epoch 5/10, train discriminator loss: 1.21603
+2026-04-26 00:21:30,415 P3372 INFO *** Test time is 0.1917743682861328
+2026-04-26 00:21:30,415 P3372 INFO Epoch 5/10, test f1: 0.83333 rc: 1.00000 pc: 0.71429. [0.25s]
+2026-04-26 00:21:30,415 P3372 INFO early stopping epoch 5/5
+2026-04-26 00:21:30,415 P3372 INFO Early stopping
+2026-04-26 00:21:30,525 P3372 INFO Threshold (p=95.0, src=val): 1.409082
+2026-04-26 00:21:30,588 P3372 INFO *** Test F1 0.6250  of unsupervised traning
+2026-04-26 00:21:30,588 P3372 INFO *** Best F1 {'f1': 0.8333333333333334, 'rc': 1.0, 'pc': 0.7142857142857143}  of unsupervised traning
+2026-04-26 00:21:30,599 P3372 INFO Current hash id 8ef1718e

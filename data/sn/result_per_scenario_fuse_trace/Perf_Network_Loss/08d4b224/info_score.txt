@@ -1,0 +1,4 @@
+Experiment 08d4b224: 2026/04/26-08:25:06
+Train time/epoch 0.3805
+* Test -- f1:0.5455	rc:0.5000	pc:0.6000
+
