@@ -1,4 +1,0 @@
-Experiment micross_50_1_l1_True_False_template_appear_False_False_40_False_add_multi_modal_self_attn_fuse_32_False_False_True_False_True_False_True_True_True_16_1: 2026/04/11-18:41:24
-Train time/epoch 436.0320
-* Test -- f1:0.3386	rc:0.4113	pc:0.2877
-

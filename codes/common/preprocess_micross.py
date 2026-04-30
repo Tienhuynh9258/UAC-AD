@@ -84,7 +84,7 @@ def _csv_files(directory: str):
 # ─────────────────────────────────────────────────────────────────────────────
 
 class MicroSSPreprocessor:
-    TRACE_NODE_FEAT_DIM = 5  # [call_count, avg_dur, max_dur, error_rate, root_rate]
+    TRACE_NODE_FEAT_DIM = 6  # [call_count, avg_dur, max_dur, error_rate, root_rate, latency_dev]
 
     def __init__(self, trace_dir, metric_dir, log_dir, run_dir, output_dir,
                  window_sec=60, train_ratio=0.7, max_services=4, max_metrics=85,
@@ -216,6 +216,111 @@ class MicroSSPreprocessor:
                 logging.warning(f"  adj pass2 {os.path.basename(path)}: {e}")
 
         logging.info(f"  {int(adj.sum())} directed edges")
+
+        # Row-normalize (consistent with RE2-OB / RE3-OB per-timestep adj)
+        row_sum = adj.sum(axis=1, keepdims=True)
+        safe_denom = np.where(row_sum > 0, row_sum, 1.0)
+        adj = (adj / safe_denom * (row_sum > 0)).astype(np.float32)
+        return adj
+
+    # ── Step 3b: dynamic adjacency per window ────────────────────────────────
+
+    def _build_dynamic_adjacency(self, win_starts_ns: np.ndarray) -> np.ndarray:
+        """
+        2-pass per-file: build per-window call-graph adjacency [W, S, S].
+
+        Pass 1 (fast, 2 cols): span_id → service_idx registry for this file.
+        Pass 2 (full cols):    resolve parent_id → parent service, count edges
+                               per window. Same-file assumption: parent and child
+                               spans of a trace typically complete within seconds,
+                               so cross-file edges are negligible.
+
+        Returns adj [W, S, S] row-normalized per window.
+        Windows with zero calls get a zero adjacency row (GAT skips them).
+        """
+        W, S = len(win_starts_ns), self.num_services
+        acc_edges = np.zeros((W, S, S), dtype=np.float64)
+        _need_p1 = {"span_id", "service_name"}
+        _need_p2 = {"timestamp", "service_name", "span_id", "parent_id"}
+
+        # ── Pass 1 (GLOBAL): span_id → service_idx across ALL files ──────
+        # MicroSS stores each service's spans in its own file, so a parent_id
+        # in dbservice1.csv typically references a span in mobservice1.csv.
+        # Per-file pass 1 cannot resolve such edges → must be global.
+        span_svc: dict = {}
+        for path in _csv_files(self.trace_dir):
+            fname = os.path.basename(path)
+            try:
+                for chunk in pd.read_csv(path, chunksize=CHUNK_SIZE,
+                                         usecols=lambda c: c in _need_p1,
+                                         low_memory=False):
+                    chunk = chunk[chunk["service_name"].isin(self.service2idx)]
+                    if chunk.empty:
+                        continue
+                    for sid, svc in zip(chunk["span_id"].astype(str),
+                                        chunk["service_name"].astype(str)):
+                        span_svc[sid] = self.service2idx[svc]
+            except Exception as e:
+                logging.warning(f"  dyn-adj pass1 {fname}: {e}")
+        logging.info(f"  dyn-adj global span registry: {len(span_svc):,} entries")
+
+        # ── Pass 2: resolve parent→child edges per window (per file) ──────
+        for path in _csv_files(self.trace_dir):
+            fname = os.path.basename(path)
+            try:
+                for chunk in pd.read_csv(path, chunksize=CHUNK_SIZE,
+                                         usecols=lambda c: c in _need_p2,
+                                         low_memory=False):
+                    chunk["timestamp"] = pd.to_datetime(
+                        chunk["timestamp"], errors="coerce")
+                    chunk = chunk.dropna(subset=["timestamp"])
+                    chunk = chunk[chunk["service_name"].isin(self.service2idx)]
+                    if chunk.empty:
+                        continue
+
+                    # Non-root spans only
+                    chunk = chunk[chunk["parent_id"].astype(str) != "0"]
+                    if chunk.empty:
+                        continue
+
+                    ts_ns = (chunk["timestamp"]
+                             .astype("datetime64[ns]")
+                             .astype("int64").values)
+                    wi    = np.searchsorted(win_starts_ns, ts_ns, side="right") - 1
+                    valid = (wi >= 0) & (wi < W)
+                    if not valid.any():
+                        continue
+
+                    chunk = chunk[valid]
+                    wi_v  = wi[valid]
+                    c_si  = chunk["service_name"].map(
+                        self.service2idx).values.astype(np.int64)
+                    pids  = chunk["parent_id"].astype(str).values
+
+                    p_si  = (pd.Series(pids)
+                             .map(span_svc)
+                             .fillna(-1)
+                             .astype(np.int64)
+                             .values)
+                    keep  = (p_si >= 0) & (p_si != c_si)
+                    if not keep.any():
+                        continue
+
+                    np.add.at(acc_edges,
+                              (wi_v[keep], p_si[keep], c_si[keep]),
+                              1.0)
+            except Exception as e:
+                logging.warning(f"  dyn-adj pass2 {fname}: {e}")
+
+            logging.info(f"  dyn-adj pass2 {fname}: done")
+
+        # ── Row-normalize per window ──────────────────────────────────────
+        row_sum    = acc_edges.sum(axis=2, keepdims=True)   # [W, S, 1]
+        safe_denom = np.where(row_sum > 0, row_sum, 1.0)
+        adj        = (acc_edges / safe_denom * (row_sum > 0)).astype(np.float32)
+
+        n_covered = int((acc_edges.sum(axis=(1, 2)) > 0).sum())
+        logging.info(f"  Dynamic adj: {n_covered}/{W} windows have ≥1 edge.")
         return adj
 
     # ── Step 4: anomaly periods from run table ───────────────────────────────
@@ -275,7 +380,8 @@ class MicroSSPreprocessor:
     def _stream_trace_to_windows(self, win_starts_ns: np.ndarray) -> np.ndarray:
         """
         Stream trace CSVs in chunks. Never holds more than CHUNK_SIZE spans in RAM.
-        Returns node_feats [W, S, 5].
+        Returns node_feats [W, S, 6] — col 5 (latency_dev) is zero-filled here;
+        caller must compute it after the training-split baseline is known.
         """
         W, S = len(win_starts_ns), self.num_services
         logging.info(f"Streaming trace → {W} windows × {S} services …")
@@ -311,7 +417,9 @@ class MicroSSPreprocessor:
                 is_root  = (chunk["parent_id"].astype(str) == "0").values.astype(np.float64)
                 si = chunk["service_name"].map(self.service2idx).values.astype(np.int64)
 
-                ts_ns = chunk["timestamp"].values.astype(np.int64)
+                ts_ns = (chunk["timestamp"]
+                         .astype("datetime64[ns]")
+                         .astype("int64").values)
                 wi    = np.searchsorted(win_starts_ns, ts_ns, side="right") - 1
                 valid = (wi >= 0) & (wi < W)
                 wi, si = wi[valid], si[valid]
@@ -334,10 +442,21 @@ class MicroSSPreprocessor:
         node_feats[:, :, 3] = acc_errors  / safe        # error_rate
         node_feats[:, :, 4] = acc_roots   / safe        # root_rate
 
-        for col in [0, 1, 2]:
-            mx = node_feats[:, :, col].max()
-            if mx > 0:
-                node_feats[:, :, col] /= mx
+        # call_count: divide by global max (counts are comparable across services)
+        mx0 = node_feats[:, :, 0].max()
+        if mx0 > 0:
+            node_feats[:, :, 0] /= mx0
+        # avg_dur_ms / max_dur_ms: log1p-transform per-service to preserve
+        # relative latency changes (global-max norm collapses slow services to ~0)
+        for col in [1, 2]:
+            raw = node_feats[:, :, col]        # [W, S]
+            # log1p scale (raw values are already in ms)
+            log_vals = np.log1p(raw)
+            # per-service min-max to [0,1]
+            lo = log_vals.min(axis=0, keepdims=True)   # [1, S]
+            hi = log_vals.max(axis=0, keepdims=True)   # [1, S]
+            denom = np.where(hi > lo, hi - lo, 1.0)
+            node_feats[:, :, col] = ((log_vals - lo) / denom).astype(np.float32)
 
         logging.info("  Trace streaming complete.")
         return node_feats
@@ -473,17 +592,19 @@ class MicroSSPreprocessor:
 
     def _log_file_for_services(self, fname: str) -> bool:
         """
-        Return True only if the log filename explicitly contains at least one
-        of the selected service names.
-        e.g. "business_table_webservice1_2021-07.csv" → True (contains "webservice1")
-             "business_table_2021-08.csv"             → False (generic/combined file)
-        This skips the large combined-month files that contain all services and
-        are potentially huge (22 GB+) — only per-service extracts are loaded.
+        Return True for per-service log files; False for generic combined monthly files.
+
+        Detection by filename structure:
+          business_table_{service}_{date}.csv  → 4+ underscore-parts → per-service → load
+          business_table_{date}.csv            → 3 underscore-parts  → combined    → skip
+
+        We load ALL per-service files regardless of which services were selected for
+        trace modelling — log data from any service is relevant for anomaly detection.
+        Combined monthly files (e.g. business_table_2021-08.csv, 22 GB+) are skipped
+        to avoid loading huge files that contain data outside our analysis window.
         """
-        if not self.service2idx:
-            return True
-        fname_lower = fname.lower()
-        return any(svc.lower() in fname_lower for svc in self.service2idx)
+        base = os.path.splitext(fname)[0]   # strip .csv
+        return len(base.split('_')) >= 4    # has a service name between "table" and date
 
     def _load_logs_chunked(self):
         """
@@ -759,7 +880,7 @@ class MicroSSPreprocessor:
             return 1
         return 0
 
-    def _build_and_save(self, win_starts, node_feats_all, adj_global,
+    def _build_and_save(self, win_starts, node_feats_all, adj_per_window,
                         kpi_matrix, win_log_lists):
         W     = len(win_starts)
         delta = timedelta(seconds=self.window_sec)
@@ -801,7 +922,7 @@ class MicroSSPreprocessor:
                 "log_features":        np.zeros(max(n_log_templates, 1),
                                                 dtype=np.float32),
                 "trace_node_features": node_feats_all[i].copy(),
-                "trace_adj":           adj_global.copy(),
+                "trace_adj":           adj_per_window[i].copy(),
             }
 
             if i < split_idx:
@@ -844,7 +965,7 @@ class MicroSSPreprocessor:
         logging.info("  ── Run model with ──────────────────────────────────────")
         logging.info(f"  python run.py --data {self.output_dir} --dataset micross")
         logging.info(f"    --data_type fuse --open_trace true")
-        logging.info(f"    --num_services {self.num_services} --trace_c {self.TRACE_NODE_FEAT_DIM}")
+        logging.info(f"    --num_services {self.num_services} --trace_c {self.TRACE_NODE_FEAT_DIM}  (trace_c=6 includes latency_dev)")
         logging.info("  ─────────────────────────────────────────────────────────")
 
     # ── Entry point ───────────────────────────────────────────────────────────
@@ -857,13 +978,10 @@ class MicroSSPreprocessor:
         # 2. Service index from 10K-row sample per file
         self._build_service_index_from_sample()
 
-        # 3. Static adjacency from 50K-row sample per file
-        adj_global = self._build_static_adjacency()
-
-        # 4. Anomaly periods from run.zip (regex parse of message column)
+        # 3. Anomaly periods from run.zip (regex parse of message column)
         self._load_anomaly_periods()
 
-        # 5. Build window list
+        # 4. Build window list
         delta   = timedelta(seconds=self.window_sec)
         current = t_min
         win_starts = []
@@ -875,8 +993,20 @@ class MicroSSPreprocessor:
         window_ns  = int(self.window_sec * 1_000_000_000)
         logging.info(f"Total windows: {W} × {self.window_sec}s")
 
+        # 5. Dynamic adjacency per window (2-pass per file)
+        adj_per_window = self._build_dynamic_adjacency(win_ns)
+
         # 6. Stream trace (7.5 GB) → per-window node features
         node_feats = self._stream_trace_to_windows(win_ns)
+
+        # 6b. latency_dev (col 5): z-score of avg_dur vs normal-train baseline.
+        #     Use all training windows as baseline (mostly normal by train_ratio design).
+        split_idx   = int(W * self.train_ratio)
+        bl_avg      = node_feats[:split_idx, :, 1]          # avg_dur_ms from train split
+        bl_mean     = bl_avg.mean(axis=0)                    # [S]
+        bl_std      = bl_avg.std(axis=0) + 1e-6             # [S]
+        node_feats[:, :, 5] = (node_feats[:, :, 1] - bl_mean) / bl_std
+        logging.info("  latency_dev (col 5) computed from training-split baseline.")
 
         # 7. Discover metric groups (10,817 files → 50 unique metrics × ~3 splits)
         #    then build [W, M] matrix fully vectorised
@@ -890,7 +1020,7 @@ class MicroSSPreprocessor:
                                                      win_ns, window_ns, W)
 
         # 9. Assemble and save (pure numpy/dict, no pandas per-window)
-        self._build_and_save(win_starts, node_feats, adj_global,
+        self._build_and_save(win_starts, node_feats, adj_per_window,
                              kpi_matrix, win_log_lists)
         logging.info("Preprocessing complete.")
 

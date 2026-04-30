@@ -54,7 +54,7 @@ D:\GAIA-DataSet\MicroSS\
           ├── Step 2 ──► Build Service Index
           │                   10 services: dbservice1..webservice2
           │
-          ├── Step 3 ──► Build Static Adjacency  [10×10]
+          ├── Step 3 ──► Build Static Adjacency  [10×10]  (row-normalized)
           │                   30 directed edges (call graph)
           │
           ├── Step 4 ──► Load Anomaly Periods
@@ -64,6 +64,8 @@ D:\GAIA-DataSet\MicroSS\
           │                   44,043 windows × 60s
           │
           ├── Step 6 ──► Stream Trace → node_feats  [W, 10, 5]
+          │
+          ├── Step 6b ─► Compute latency_dev (col 5) → node_feats  [W, 10, 6]
           │
           ├── Step 7 ──► Build KPI Matrix            [W, 50]
           │
@@ -130,7 +132,11 @@ Pass 2 — build call graph:
     child_svc  = service_name
     adj[parent_svc_idx, child_svc_idx] = 1.0
 
-Result: adj [10×10] — directed adjacency matrix
+Row-normalize (consistent with RE2-OB / RE3-OB):
+  row_sum = adj.sum(axis=1, keepdims=True)
+  adj = adj / row_sum  (rows with no outgoing edges stay 0)
+
+Result: adj [10×10] — row-normalized directed adjacency matrix
   30 directed edges (who calls whom in the microservice system)
 
 Example (illustrative):
@@ -178,7 +184,7 @@ while current < t_max:
 
 ```
 Input:  trace CSV files (10 files, ~7.5 GB)
-Output: node_feats [W=44043, S=10, C=5]
+Output: node_feats [W=44043, S=10, C=6]
 
 ┌─────────────────────────────────────────────────────────────────┐
 │  For each trace file, read chunks of 500K rows:                 │
@@ -202,7 +208,7 @@ Output: node_feats [W=44043, S=10, C=5]
 └─────────────────────────────────────────────────────────────────┘
               │
               ▼
-node_feats [W, S, 5]:
+node_feats [W, S, 5]:  (col 5 zero-filled at this stage)
   dim 0 — call_count   (number of calls within window, normalized)
   dim 1 — avg_dur_ms   (average response time, normalized)
   dim 2 — max_dur_ms   (maximum response time, normalized)
@@ -213,6 +219,27 @@ node_feats [W, S, 5]:
 > **Why use `np.add.at` instead of a loop?**
 > The dataset contains tens of millions of spans. A Python loop would take many hours.
 > `np.add.at` accumulates directly into a NumPy array; this entire step completes in ~6 minutes.
+
+---
+
+### Step 6b — Compute latency_dev (col 5)
+
+```
+After streaming all trace data, compute latency deviation relative to the
+normal training baseline (first train_ratio=70% of windows).
+
+  split_idx  = int(W * 0.7)                       # = 30,830
+  bl_mean[s] = mean(node_feats[:split_idx, s, 1]) # per-service avg_dur mean
+  bl_std[s]  = std (node_feats[:split_idx, s, 1]) # per-service avg_dur std
+
+  node_feats[:, :, 5] = (node_feats[:, :, 1] - bl_mean) / (bl_std + 1e-6)
+
+→ node_feats [W, S, 6]:
+  dim 5 — latency_dev  (z-score of avg_dur vs normal-train baseline per service)
+           positive = slower than normal, negative = faster
+
+Consistent with RE2-OB / RE3-OB (which use pre-injection window as baseline).
+```
 
 ---
 
@@ -309,7 +336,7 @@ For each window i in 44,043:
 │    "label":               0 or 1,                               │
 │    "kpis":                kpi_matrix[i],           shape [50]   │
 │    "logs":                win_logs[i],             list[str]    │
-│    "trace_node_features": node_feats[i],           shape [10,5] │
+│    "trace_node_features": node_feats[i],           shape [10,6] │
 │    "trace_adj":           adj_global,              shape [10,10]│
 │  }                                                              │
 └─────────────────────────────────────────────────────────────────┘
@@ -322,7 +349,7 @@ Result:
   train.pkl   — 26,235 normal samples
   unlabel.pkl — (same as train, used for semi-supervised)
   test.pkl    — 13,213 samples (2,064 anomaly = 15.6%)
-  meta.pkl    — {num_services:10, kpi_c:50, trace_c:5, window_sec:60, ...}
+  meta.pkl    — {num_services:10, kpi_c:50, trace_c:6, window_sec:60, ...}
 ```
 
 ---
@@ -357,16 +384,21 @@ python preprocess_micross.py \
     --max_metrics 50
 ```
 
-**After completion, run the model:**
+**After completion, run evaluation:**
 
 ```bash
-python run.py \
-    --data        ../../data/micross \
-    --dataset     micross \
-    --data_type   fuse \
-    --open_trace  true \
-    --num_services 10 \
-    --trace_c     5
+# Baseline (log + KPI only)
+python codes/common/eval_micross.py \
+    --data data/micross --dataset micross --data_type fuse \
+    --open_trace False --val_percentile 95 \
+    --result_dir data/micross/result_fuse_baseline
+
+# Trace (log + KPI + trace GAT, residual gate)
+python codes/common/eval_micross.py \
+    --data data/micross --dataset micross --data_type fuse \
+    --open_trace True --num_services 10 --trace_c 6 \
+    --gate_lambda 0.01 --val_percentile 95 \
+    --result_dir data/micross/result_fuse_trace
 ```
 
 ---
@@ -380,8 +412,8 @@ train.pkl / test.pkl
       "label":               int (0=normal, 1=anomaly)
       "kpis":                float32 [50]        ← from metric CSV
       "logs":                list[str]            ← from business log CSV
-      "trace_node_features": float32 [10, 5]     ← from trace CSV
-      "trace_adj":           float32 [10, 10]    ← from trace CSV (static)
+      "trace_node_features": float32 [10, 6]     ← from trace CSV
+      "trace_adj":           float32 [10, 10]    ← from trace CSV (static, row-normalized)
     },
     block_id_yyyy: { ... },
     ...
@@ -393,7 +425,7 @@ meta.pkl
     "service2idx":  {name: idx, ...},
     "metric_names": [str × 50],
     "kpi_c":        50,
-    "trace_c":      5,
+    "trace_c":      6,   # 6 features: call_count, avg_dur, max_dur, error_rate, root_rate, latency_dev
     "window_sec":   60,
   }
 ```
