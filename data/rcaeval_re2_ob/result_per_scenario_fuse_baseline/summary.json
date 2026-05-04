@@ -3,52 +3,67 @@
     "data_type": "fuse",
     "open_trace": "False",
     "val_percentile": 95,
-    "window_size": 30
+    "window_size": 30,
+    "fault_types": [
+      "cpu",
+      "delay",
+      "disk",
+      "loss",
+      "mem",
+      "socket"
+    ]
   },
   "per_scenario": [
     {
       "fault": "cpu",
-      "f1": 0.5954,
-      "precision": 0.5825,
-      "recall": 0.6089
+      "f1": 0.6218,
+      "precision": 0.6087,
+      "recall": 0.6355,
+      "elapsed_sec": 1887.5901632999994
     },
     {
       "fault": "delay",
-      "f1": 0.7974,
-      "precision": 0.787,
-      "recall": 0.808
+      "f1": 0.708,
+      "precision": 0.9399,
+      "recall": 0.5679,
+      "elapsed_sec": 1897.4709366000002
     },
     {
       "fault": "disk",
       "f1": 0.9843,
       "precision": 1.0,
-      "recall": 0.9691
+      "recall": 0.9691,
+      "elapsed_sec": 2051.0433785999994
     },
     {
       "fault": "loss",
-      "f1": 0.6829,
-      "precision": 0.963,
-      "recall": 0.529
+      "f1": 0.6528,
+      "precision": 0.8684,
+      "recall": 0.5229,
+      "elapsed_sec": 1508.9531155000004
     },
     {
       "fault": "mem",
-      "f1": 0.7061,
-      "precision": 0.7748,
-      "recall": 0.6485
+      "f1": 0.7469,
+      "precision": 0.9576,
+      "recall": 0.6122,
+      "elapsed_sec": 1396.7712585999989
     },
     {
       "fault": "socket",
-      "f1": 0.4363,
-      "precision": 0.4316,
-      "recall": 0.4412
+      "f1": 0.5015,
+      "precision": 0.4904,
+      "recall": 0.5131,
+      "elapsed_sec": 1419.3383596000003
     }
   ],
   "aggregate": {
-    "f1_mean": 0.7004,
-    "f1_std": 0.16887902968298538,
-    "precision_mean": 0.7564833333333333,
-    "precision_std": 0.19959778235797668,
-    "recall_mean": 0.66745,
-    "recall_std": 0.17554282241094335
+    "f1_mean": 0.70255,
+    "f1_std": 0.14764099530827338,
+    "precision_mean": 0.8108333333333333,
+    "precision_std": 0.19184522791955898,
+    "recall_mean": 0.6367833333333333,
+    "recall_std": 0.15495225988498093,
+    "total_elapsed_sec": 10161.167212199998
   }
 }

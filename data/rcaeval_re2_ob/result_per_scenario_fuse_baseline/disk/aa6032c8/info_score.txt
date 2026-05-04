@@ -1,0 +1,4 @@
+Experiment aa6032c8: 2026/05/02-07:25:41
+Train time/epoch 349.2179
+* Test -- f1:0.9843	rc:0.9691	pc:1.0000
+

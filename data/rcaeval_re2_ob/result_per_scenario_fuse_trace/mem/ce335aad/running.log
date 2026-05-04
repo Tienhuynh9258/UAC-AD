@@ -1,0 +1,34 @@
+2026-05-01 13:48:15,292 P6600 INFO ^^^^^^^^^^ Current Model:hades, ce335aad ^^^^^^^^^^
+2026-05-01 13:48:15,292 P6600 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-05-01 13:48:22,265 P6600 INFO 40 unique log templates found.
+2026-05-01 13:48:22,274 P6600 INFO Transforming unlabel train data.
+2026-05-01 13:48:23,112 P6600 INFO Transforming test data.
+2026-05-01 13:48:23,366 P6600 INFO 7 new templates show.
+2026-05-01 13:48:24,727 P6600 INFO Data loaded done!
+2026-05-01 13:50:22,077 P6600 INFO Known word number: 40
+2026-05-01 13:52:54,082 P6600 INFO Epoch 0/5, train generator loss: 0.27305
+2026-05-01 13:55:18,901 P6600 INFO Epoch 0/5, train discriminator loss: 0.97591
+2026-05-01 13:55:24,580 P6600 INFO *** Test time is 5.663416385650635
+2026-05-01 13:55:24,597 P6600 INFO Epoch 0/5, test f1: 0.72353 rc: 0.68566 pc: 0.76583. [292.82s]
+2026-05-01 13:57:55,569 P6600 INFO Epoch 1/5, train generator loss: 0.10269
+2026-05-01 14:00:20,345 P6600 INFO Epoch 1/5, train discriminator loss: 0.64148
+2026-05-01 14:00:26,614 P6600 INFO *** Test time is 6.26909875869751
+2026-05-01 14:00:26,614 P6600 INFO Epoch 1/5, test f1: 0.87400 rc: 0.87729 pc: 0.87074. [295.72s]
+2026-05-01 14:02:57,356 P6600 INFO Epoch 2/5, train generator loss: 0.06749
+2026-05-01 14:05:17,570 P6600 INFO Epoch 2/5, train discriminator loss: 0.38876
+2026-05-01 14:05:23,548 P6600 INFO *** Test time is 5.978591680526733
+2026-05-01 14:05:23,548 P6600 INFO Epoch 2/5, test f1: 0.88853 rc: 0.89050 pc: 0.88656. [290.91s]
+2026-05-01 14:07:57,154 P6600 INFO Epoch 3/5, train generator loss: 0.06331
+2026-05-01 14:10:19,591 P6600 INFO Epoch 3/5, train discriminator loss: 0.41365
+2026-05-01 14:10:25,866 P6600 INFO *** Test time is 6.274537086486816
+2026-05-01 14:10:25,866 P6600 INFO Epoch 3/5, test f1: 0.87513 rc: 0.87922 pc: 0.87107. [296.00s]
+2026-05-01 14:10:25,866 P6600 INFO early stopping epoch 1/3
+2026-05-01 14:12:58,830 P6600 INFO Epoch 4/5, train generator loss: 0.06572
+2026-05-01 14:15:22,993 P6600 INFO Epoch 4/5, train discriminator loss: 0.61738
+2026-05-01 14:15:29,585 P6600 INFO *** Test time is 6.591052770614624
+2026-05-01 14:15:29,585 P6600 INFO Epoch 4/5, test f1: 0.82445 rc: 0.83092 pc: 0.81807. [297.13s]
+2026-05-01 14:15:29,585 P6600 INFO early stopping epoch 2/3
+2026-05-01 14:16:51,056 P6600 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.281183
+2026-05-01 14:16:53,502 P6600 INFO *** Test F1 0.8702  of unsupervised traning
+2026-05-01 14:16:53,502 P6600 INFO *** Best F1 {'f1': 0.888525536212369, 'rc': 0.8904954694428379, 'pc': 0.8865642994241842}  of unsupervised traning
+2026-05-01 14:16:53,851 P6600 INFO Current hash id ce335aad

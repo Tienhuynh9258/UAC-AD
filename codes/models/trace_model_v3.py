@@ -13,9 +13,13 @@ class GATLayer(nn.Module):
     def __init__(self, in_features, out_features, dropout=0.1, alpha=0.2):
         super(GATLayer, self).__init__()
         self.W = nn.Linear(in_features, out_features, bias=False)
-        self.a = nn.Linear(2 * out_features, 1, bias=False)
+        # Decomposed attention: a([h_i || h_j]) = a_l·h_i + a_r·h_j
+        # Avoids materialising [B, N, N, 2D] — same expressivity, fewer FLOPs.
+        self.a_l = nn.Linear(out_features, 1, bias=False)
+        self.a_r = nn.Linear(out_features, 1, bias=False)
         self.leakyrelu = nn.LeakyReLU(alpha)
         self.dropout = nn.Dropout(dropout)
+        self._eye = None  # lazy-cached identity matrix
 
     def forward(self, x, adj):
         """
@@ -25,18 +29,18 @@ class GATLayer(nn.Module):
         Returns:
             h_out: [B, N, out_features]
         """
-        h = self.W(x)                          # [B, N, out_features]
+        h = self.W(x)                          # [B, N, D]
         B, N, D = h.shape
 
-        # Build pairwise concatenation for attention scoring
-        h_i = h.unsqueeze(2).expand(-1, -1, N, -1)   # [B, N, N, D]
-        h_j = h.unsqueeze(1).expand(-1, N, -1, -1)   # [B, N, N, D]
-        e = self.leakyrelu(
-            self.a(torch.cat([h_i, h_j], dim=-1)).squeeze(-1)
-        )  # [B, N, N]
+        # Decomposed attention scoring: O(B·N·D) instead of O(B·N²·2D)
+        e_l = self.a_l(h)                      # [B, N, 1]
+        e_r = self.a_r(h)                      # [B, N, 1]
+        e = self.leakyrelu(e_l + e_r.transpose(1, 2))  # [B, N, N] via broadcast
 
-        # Add self-loops, then mask non-neighbors to -inf
-        adj_self = (adj + torch.eye(N, device=adj.device).unsqueeze(0)) > 0
+        # Lazy-cache eye to avoid repeated allocation every forward call
+        if self._eye is None or self._eye.shape[0] != N or self._eye.device != adj.device:
+            self._eye = torch.eye(N, device=adj.device)
+        adj_self = (adj + self._eye.unsqueeze(0)) > 0
         e = e.masked_fill(~adj_self, float('-inf'))
 
         alpha = F.softmax(e, dim=-1)           # [B, N, N]

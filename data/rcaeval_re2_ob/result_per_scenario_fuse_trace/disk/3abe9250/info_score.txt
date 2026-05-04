@@ -1,4 +1,0 @@
-Experiment 3abe9250: 2026/04/24-17:07:54
-Train time/epoch 361.3941
-* Test -- f1:0.9844	rc:0.9692	pc:1.0000
-

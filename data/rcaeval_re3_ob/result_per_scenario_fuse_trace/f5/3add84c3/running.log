@@ -1,0 +1,33 @@
+2026-05-01 19:25:17,543 P22364 INFO ^^^^^^^^^^ Current Model:hades, 3add84c3 ^^^^^^^^^^
+2026-05-01 19:25:17,543 P22364 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-05-01 19:25:18,791 P22364 INFO 301 unique log templates found.
+2026-05-01 19:25:18,807 P22364 INFO Transforming unlabel train data.
+2026-05-01 19:25:19,472 P22364 INFO Transforming test data.
+2026-05-01 19:25:19,600 P22364 INFO 18 new templates show.
+2026-05-01 19:25:20,692 P22364 INFO Data loaded done!
+2026-05-01 19:25:47,713 P22364 INFO Known word number: 301
+2026-05-01 19:27:02,244 P22364 INFO Epoch 0/5, train generator loss: 0.25924
+2026-05-01 19:28:33,043 P22364 INFO Epoch 0/5, train discriminator loss: 1.84968
+2026-05-01 19:28:37,516 P22364 INFO *** Test time is 4.472183465957642
+2026-05-01 19:28:37,516 P22364 INFO Epoch 0/5, test f1: 0.86036 rc: 0.86614 pc: 0.85466. [159.91s]
+2026-05-01 19:30:00,281 P22364 INFO Epoch 1/5, train generator loss: 0.15975
+2026-05-01 19:31:30,449 P22364 INFO Epoch 1/5, train discriminator loss: 1.08454
+2026-05-01 19:31:33,768 P22364 INFO *** Test time is 3.3155293464660645
+2026-05-01 19:31:33,768 P22364 INFO Epoch 1/5, test f1: 0.90252 rc: 0.90273 pc: 0.90231. [172.89s]
+2026-05-01 19:32:58,575 P22364 INFO Epoch 2/5, train generator loss: 0.16075
+2026-05-01 19:34:18,704 P22364 INFO Epoch 2/5, train discriminator loss: 0.75229
+2026-05-01 19:34:22,261 P22364 INFO *** Test time is 3.540658950805664
+2026-05-01 19:34:22,261 P22364 INFO Epoch 2/5, test f1: 0.90177 rc: 0.90250 pc: 0.90104. [164.90s]
+2026-05-01 19:34:22,261 P22364 INFO early stopping epoch 1/3
+2026-05-01 19:35:56,720 P22364 INFO Epoch 3/5, train generator loss: 0.14205
+2026-05-01 19:37:18,125 P22364 INFO Epoch 3/5, train discriminator loss: 0.54953
+2026-05-01 19:37:21,693 P22364 INFO *** Test time is 3.5678627490997314
+2026-05-01 19:37:21,693 P22364 INFO Epoch 3/5, test f1: 0.90791 rc: 0.90644 pc: 0.90939. [175.86s]
+2026-05-01 19:38:45,755 P22364 INFO Epoch 4/5, train generator loss: 0.14643
+2026-05-01 19:40:13,461 P22364 INFO Epoch 4/5, train discriminator loss: 0.72235
+2026-05-01 19:40:18,253 P22364 INFO *** Test time is 4.78523325920105
+2026-05-01 19:40:18,253 P22364 INFO Epoch 4/5, test f1: 0.91768 rc: 0.91524 pc: 0.92014. [171.74s]
+2026-05-01 19:41:03,049 P22364 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.212123
+2026-05-01 19:41:04,741 P22364 INFO *** Test F1 0.8867  of unsupervised traning
+2026-05-01 19:41:04,741 P22364 INFO *** Best F1 {'f1': 0.9176825728549867, 'rc': 0.9152385363594256, 'pc': 0.920139697322468}  of unsupervised traning
+2026-05-01 19:41:04,936 P22364 INFO Current hash id 3add84c3

@@ -1,0 +1,4 @@
+Experiment 40d647b0: 2026/05/02-03:24:56
+Train time/epoch 161.8662
+* Test -- f1:0.3752	rc:0.3827	pc:0.3680
+

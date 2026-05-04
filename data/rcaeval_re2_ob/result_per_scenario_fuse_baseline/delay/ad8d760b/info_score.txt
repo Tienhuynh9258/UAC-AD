@@ -1,0 +1,4 @@
+Experiment ad8d760b: 2026/05/04-08:25:49
+Train time/epoch 297.1208
+* Test -- f1:0.7095	rc:0.5689	pc:0.9423
+

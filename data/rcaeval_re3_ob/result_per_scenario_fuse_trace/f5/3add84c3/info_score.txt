@@ -1,0 +1,4 @@
+Experiment 3add84c3: 2026/05/02-03:41:04
+Train time/epoch 169.0605
+* Test -- f1:0.9177	rc:0.9152	pc:0.9201
+

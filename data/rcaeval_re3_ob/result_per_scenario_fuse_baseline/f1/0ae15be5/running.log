@@ -1,0 +1,32 @@
+2026-05-01 17:17:18,844 P26408 INFO ^^^^^^^^^^ Current Model:hades, 0ae15be5 ^^^^^^^^^^
+2026-05-01 17:17:18,844 P26408 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-05-01 17:17:26,756 P26408 INFO 301 unique log templates found.
+2026-05-01 17:17:26,788 P26408 INFO Transforming unlabel train data.
+2026-05-01 17:17:27,269 P26408 INFO Transforming test data.
+2026-05-01 17:17:27,410 P26408 INFO 20 new templates show.
+2026-05-01 17:17:28,559 P26408 INFO Data loaded done!
+2026-05-01 17:17:56,272 P26408 INFO Known word number: 301
+2026-05-01 17:18:45,762 P26408 INFO Epoch 0/5, train generator loss: 0.18949
+2026-05-01 17:19:37,949 P26408 INFO Epoch 0/5, train discriminator loss: 0.19676
+2026-05-01 17:19:42,322 P26408 INFO *** Test time is 4.369062423706055
+2026-05-01 17:19:42,322 P26408 INFO Epoch 0/5, test f1: 0.82976 rc: 0.74378 pc: 0.93822. [97.25s]
+2026-05-01 17:20:30,527 P26408 INFO Epoch 1/5, train generator loss: 0.13022
+2026-05-01 17:21:17,254 P26408 INFO Epoch 1/5, train discriminator loss: 0.33142
+2026-05-01 17:21:20,864 P26408 INFO *** Test time is 3.6105539798736572
+2026-05-01 17:21:20,864 P26408 INFO Epoch 1/5, test f1: 0.82959 rc: 0.74378 pc: 0.93778. [94.89s]
+2026-05-01 17:21:20,864 P26408 INFO early stopping epoch 1/3
+2026-05-01 17:22:09,538 P26408 INFO Epoch 2/5, train generator loss: 0.15096
+2026-05-01 17:22:55,879 P26408 INFO Epoch 2/5, train discriminator loss: 0.33080
+2026-05-01 17:23:00,512 P26408 INFO *** Test time is 4.632320404052734
+2026-05-01 17:23:00,512 P26408 INFO Epoch 2/5, test f1: 0.82935 rc: 0.74341 pc: 0.93775. [95.02s]
+2026-05-01 17:23:00,512 P26408 INFO early stopping epoch 2/3
+2026-05-01 17:23:48,978 P26408 INFO Epoch 3/5, train generator loss: 0.14669
+2026-05-01 17:24:34,524 P26408 INFO Epoch 3/5, train discriminator loss: 0.56408
+2026-05-01 17:24:38,589 P26408 INFO *** Test time is 4.0609424114227295
+2026-05-01 17:24:38,589 P26408 INFO Epoch 3/5, test f1: 0.82623 rc: 0.74100 pc: 0.93361. [94.02s]
+2026-05-01 17:24:38,589 P26408 INFO early stopping epoch 3/3
+2026-05-01 17:24:38,589 P26408 INFO Early stopping
+2026-05-01 17:25:07,743 P26408 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.198682
+2026-05-01 17:25:09,246 P26408 INFO *** Test F1 0.7591  of unsupervised traning
+2026-05-01 17:25:09,246 P26408 INFO *** Best F1 {'f1': 0.8297630135568664, 'rc': 0.7437847866419295, 'pc': 0.9382167095717294}  of unsupervised traning
+2026-05-01 17:25:09,588 P26408 INFO Current hash id 0ae15be5

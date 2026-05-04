@@ -1,0 +1,33 @@
+2026-05-01 18:53:18,075 P23376 INFO ^^^^^^^^^^ Current Model:hades, 3bdfe012 ^^^^^^^^^^
+2026-05-01 18:53:18,075 P23376 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-05-01 18:53:19,246 P23376 INFO 301 unique log templates found.
+2026-05-01 18:53:19,259 P23376 INFO Transforming unlabel train data.
+2026-05-01 18:53:19,794 P23376 INFO Transforming test data.
+2026-05-01 18:53:19,894 P23376 INFO 14 new templates show.
+2026-05-01 18:53:20,881 P23376 INFO Data loaded done!
+2026-05-01 18:53:54,266 P23376 INFO Known word number: 301
+2026-05-01 18:55:09,471 P23376 INFO Epoch 0/5, train generator loss: 0.25927
+2026-05-01 18:56:39,886 P23376 INFO Epoch 0/5, train discriminator loss: 1.84342
+2026-05-01 18:56:43,412 P23376 INFO *** Test time is 3.521854877471924
+2026-05-01 18:56:43,415 P23376 INFO Epoch 0/5, test f1: 0.62730 rc: 0.64276 pc: 0.61257. [160.71s]
+2026-05-01 18:58:09,272 P23376 INFO Epoch 1/5, train generator loss: 0.15753
+2026-05-01 18:59:25,427 P23376 INFO Epoch 1/5, train discriminator loss: 0.98159
+2026-05-01 18:59:28,703 P23376 INFO *** Test time is 3.2593085765838623
+2026-05-01 18:59:28,705 P23376 INFO Epoch 1/5, test f1: 0.64400 rc: 0.65942 pc: 0.62928. [162.00s]
+2026-05-01 19:00:52,581 P23376 INFO Epoch 2/5, train generator loss: 0.15623
+2026-05-01 19:02:11,958 P23376 INFO Epoch 2/5, train discriminator loss: 0.65368
+2026-05-01 19:02:15,285 P23376 INFO *** Test time is 3.327105760574341
+2026-05-01 19:02:15,285 P23376 INFO Epoch 2/5, test f1: 0.66102 rc: 0.67746 pc: 0.64536. [163.21s]
+2026-05-01 19:03:40,858 P23376 INFO Epoch 3/5, train generator loss: 0.13956
+2026-05-01 19:05:06,167 P23376 INFO Epoch 3/5, train discriminator loss: 0.46397
+2026-05-01 19:05:09,641 P23376 INFO *** Test time is 3.4737863540649414
+2026-05-01 19:05:09,641 P23376 INFO Epoch 3/5, test f1: 0.66335 rc: 0.66358 pc: 0.66312. [170.84s]
+2026-05-01 19:06:37,372 P23376 INFO Epoch 4/5, train generator loss: 0.14095
+2026-05-01 19:08:13,552 P23376 INFO Epoch 4/5, train discriminator loss: 0.79913
+2026-05-01 19:08:17,197 P23376 INFO *** Test time is 3.642855405807495
+2026-05-01 19:08:17,197 P23376 INFO Epoch 4/5, test f1: 0.63714 rc: 0.62078 pc: 0.65439. [183.86s]
+2026-05-01 19:08:17,197 P23376 INFO early stopping epoch 1/3
+2026-05-01 19:09:09,088 P23376 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.213614
+2026-05-01 19:09:10,815 P23376 INFO *** Test F1 0.5484  of unsupervised traning
+2026-05-01 19:09:10,815 P23376 INFO *** Best F1 {'f1': 0.6633514513704175, 'rc': 0.6635816751503933, 'pc': 0.663121387283237}  of unsupervised traning
+2026-05-01 19:09:10,973 P23376 INFO Current hash id 3bdfe012

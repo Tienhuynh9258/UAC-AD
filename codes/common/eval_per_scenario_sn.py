@@ -26,6 +26,7 @@ import logging
 import os
 import subprocess
 import sys
+import time
 import numpy as np
 
 logging.basicConfig(
@@ -168,6 +169,11 @@ def main():
     if not os.path.exists(run_py):
         raise FileNotFoundError(f"run.py not found at {run_py}. Use --run_py to specify.")
 
+    # Convert to absolute paths so run.py subprocess (cwd=codes/) resolves correctly
+    args.data = os.path.abspath(args.data)
+    if args.result_dir:
+        args.result_dir = os.path.abspath(args.result_dir)
+
     open_trace_str = str(args.open_trace).lower()
     suffix = "trace" if open_trace_str in ("true", "1", "yes") else "baseline"
     result_base = args.result_dir or os.path.join(
@@ -183,7 +189,8 @@ def main():
     logging.info(f"Results will be saved under: {result_base}/\n")
 
     # ── Run per scenario ──────────────────────────────────────────────────────
-    results = []   # list of (sc_name, f1, pc, rc)
+    results = []   # list of (sc_name, f1, pc, rc, elapsed_sec)
+    total_start = time.perf_counter()
 
     for sc_name, test_pkl in scenario_files:
         # Strip trailing _YYYYMMDD_HHMMSS timestamp from sc_name for result folder
@@ -219,6 +226,7 @@ def main():
             "--gate_lambda",       str(args.gate_lambda),
         ]
 
+        sc_start = time.perf_counter()
         try:
             proc = subprocess.run(
                 cmd,
@@ -230,43 +238,49 @@ def main():
                 logging.warning(f"  run.py exited with code {proc.returncode}")
         except Exception as e:
             logging.error(f"  Failed to run scenario {sc_name}: {e}")
-            results.append((sc_name, 0.0, 0.0, 0.0))
+            results.append((sc_name, 0.0, 0.0, 0.0, 0.0))
             continue
+        elapsed = time.perf_counter() - sc_start
 
         # ── Read result ──────────────────────────────────────────────────────
         res = _scan_latest_results(sc_result_dir, args.run_start, args.run_end)
         if res is None:
             logging.warning(f"  No result files found in {sc_result_dir}")
-            results.append((sc_name, 0.0, 0.0, 0.0))
+            results.append((sc_name, 0.0, 0.0, 0.0, elapsed))
         else:
             f1, pc, rc = res
-            results.append((sc_name, f1, pc, rc))
-            logging.info(f"  → F1={f1:.4f}  P={pc:.4f}  R={rc:.4f}")
+            results.append((sc_name, f1, pc, rc, elapsed))
+            logging.info(f"  → F1={f1:.4f}  P={pc:.4f}  R={rc:.4f}  time={elapsed:.1f}s")
 
     # ── Aggregate ─────────────────────────────────────────────────────────────
     if not results:
         logging.error("No results collected.")
         return
 
-    f1s = np.array([r[1] for r in results])
-    pcs = np.array([r[2] for r in results])
-    rcs = np.array([r[3] for r in results])
+    total_elapsed = time.perf_counter() - total_start
+
+    f1s   = np.array([r[1] for r in results])
+    pcs   = np.array([r[2] for r in results])
+    rcs   = np.array([r[3] for r in results])
+    times = np.array([r[4] for r in results])
 
     col = 38
-    sep = "-" * (col + 34)
-    print(f"\n{'='*72}")
+    sep = "-" * (col + 44)
+    print(f"\n{'='*82}")
     print(f"  Per-Scenario Evaluation Results  ({args.data_type}, "
           f"open_trace={args.open_trace})")
-    print(f"{'='*72}")
-    print(f"  {'Scenario':<{col}}  {'F1':>6}  {'Precision':>9}  {'Recall':>6}")
+    print(f"{'='*82}")
+    print(f"  {'Scenario':<{col}}  {'F1':>6}  {'Precision':>9}  {'Recall':>6}  {'Time(s)':>8}")
     print(f"  {sep}")
-    for sc_name, f1, pc, rc in results:
+    for sc_name, f1, pc, rc, t in results:
         display = sc_name[:col]
-        print(f"  {display:<{col}}  {f1:>6.4f}  {pc:>9.4f}  {rc:>6.4f}")
+        print(f"  {display:<{col}}  {f1:>6.4f}  {pc:>9.4f}  {rc:>6.4f}  {t:>8.1f}")
     print(f"  {sep}")
-    print(f"  {'Mean':<{col}}  {f1s.mean():>6.4f}  {pcs.mean():>9.4f}  {rcs.mean():>6.4f}")
+    print(f"  {'Mean':<{col}}  {f1s.mean():>6.4f}  {pcs.mean():>9.4f}  {rcs.mean():>6.4f}  {times.mean():>8.1f}")
     print(f"  {'Std':<{col}}  {f1s.std():>6.4f}  {pcs.std():>9.4f}  {rcs.std():>6.4f}")
-    print(f"{'='*72}\n")
+    print(f"  {sep}")
+    print(f"  Total wall time: {total_elapsed:.1f}s ({total_elapsed/60:.1f} min)")
+    print(f"{'='*82}\n")
 
     # Save summary JSON
     summary = {
@@ -277,13 +291,14 @@ def main():
             "window_size": args.window_size,
         },
         "per_scenario": [
-            {"scenario": sc, "f1": f1, "precision": pc, "recall": rc}
-            for sc, f1, pc, rc in results
+            {"scenario": sc, "f1": f1, "precision": pc, "recall": rc, "elapsed_sec": t}
+            for sc, f1, pc, rc, t in results
         ],
         "aggregate": {
             "f1_mean": float(f1s.mean()), "f1_std": float(f1s.std()),
             "precision_mean": float(pcs.mean()), "precision_std": float(pcs.std()),
             "recall_mean": float(rcs.mean()), "recall_std": float(rcs.std()),
+            "total_elapsed_sec": float(total_elapsed),
         }
     }
     summary_path = os.path.join(result_base, "summary.json")

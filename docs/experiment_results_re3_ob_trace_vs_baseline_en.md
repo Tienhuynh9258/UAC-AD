@@ -1,7 +1,7 @@
 # Experiment Results — RE3-OB: Baseline vs Trace
 
 > **Dataset**: RCAEval OnlineBoutique RE3-OB — code-defect faults (f1–f5)
-> **Date**: 2026-04-23
+> **Date**: 2026-05-01
 
 ---
 
@@ -45,40 +45,40 @@ RE3-OB injects **code-defect faults** (bugs in service logic) rather than resour
 
 ### 2.1 Trace (open_trace=True, trace_c=6)
 
-| Fault    | F1         | Precision  | Recall     |
-|:------   |---:        |----------: |-------:    |
-| f1       | 0.8307     | 0.9383     | 0.7453     |
-| f2       | **0.9449** | **0.9516** | **0.9383** |
-| f3       | 0.6683     | 0.6534     | 0.6839     |
-| f4       | 0.3762     | 0.3689     | 0.3839     |
-| f5       | 0.9206     | 0.9246     | 0.9166     |
-| **Mean** | **0.7481** | **0.7674** | **0.7336** |
-| **Std**  | 0.2098     | 0.2279     | 0.2001     |
+| Fault    | F1         | Precision  | Recall     | Time(s) |
+|:------   |---:        |----------: |-------:    |-------: |
+| f1       | 0.8232     | 0.9011     | 0.7577     | 1233    |
+| f2       | **0.9384** | **0.9442** | **0.9328** | 925     |
+| f3       | 0.6634     | 0.6631     | 0.6636     | 972     |
+| f4       | 0.3752     | 0.3680     | 0.3827     | 946     |
+| f5       | 0.9177     | 0.9201     | 0.9152     | 969     |
+| **Mean** | **0.7436** | **0.7593** | **0.7304** | 1009    |
+| **Std**  | 0.2082     | 0.2203     | 0.2006     |         |
 
 ### 2.2 Baseline (open_trace=False)
 
-| Fault    | F1         | Precision  | Recall     |
-|:------   |---:        |----------: |-------:    |
-| f1       | 0.8298     | 0.9382     | 0.7438     |
-| f2       | 0.9470     | 0.9535     | 0.9407     |
-| f3       | 0.6826     | 0.6675     | 0.6985     |
-| f4       | 0.3815     | 0.3734     | 0.3899     |
-| f5       | 0.9208     | 0.9234     | 0.9182     |
-| **Mean** | **0.7523** | **0.7712** | **0.7382** |
-| **Std**  | 0.2086     | 0.2265     | 0.1994     |
+| Fault    | F1         | Precision  | Recall     | Time(s) |
+|:------   |---:        |----------: |-------:    |-------: |
+| f1       | 0.8298     | 0.9382     | 0.7438     | 491     |
+| f2       | **0.9453** | **0.9529** | **0.9379** | 539     |
+| f3       | 0.6689     | 0.7047     | 0.6365     | 776     |
+| f4       | 0.3785     | 0.3707     | 0.3866     | 895     |
+| f5       | 0.9231     | 0.9269     | 0.9194     | 878     |
+| **Mean** | **0.7491** | **0.7787** | **0.7248** | 716     |
+| **Std**  | 0.2093     | 0.2235     | 0.2029     |         |
 
 ### 2.3 Head-to-Head Comparison
 
 | Fault    | Baseline F1 | Trace F1   | **Δ F1**    | Δ%      |
 |:------   |-----------: |---------:  |---------:   |-------: |
-| f1       | 0.8298      | 0.8307     | **+0.0009** | +0.1%   |
-| f2       | 0.9470      | 0.9449     | **−0.0021** | −0.2%   |
-| f3       | 0.6826      | 0.6683     | **−0.0143** | −2.1%   |
-| f4       | 0.3815      | 0.3762     | **−0.0053** | −1.4%   |
-| f5       | 0.9208      | 0.9206     | **−0.0002** | −0.02%  |
-| **Mean** | **0.7523**  | **0.7481** | **−0.0042** | **−0.6%** |
+| f1       | 0.8298      | 0.8232     | **−0.0066** | −0.8%   |
+| f2       | 0.9453      | 0.9384     | **−0.0069** | −0.7%   |
+| f3       | 0.6689      | 0.6634     | **−0.0055** | −0.8%   |
+| f4       | 0.3785      | 0.3752     | **−0.0033** | −0.9%   |
+| f5       | 0.9231      | 0.9177     | **−0.0054** | −0.6%   |
+| **Mean** | **0.7491**  | **0.7436** | **−0.0055** | **−0.7%** |
 
-**Residual-gated trace stays within ±0.015 F1 of baseline on every fault type.** The mean gap of −0.0042 is within training variance — trace essentially reproduces baseline as designed.
+**Residual-gated trace stays within ±0.007 F1 of baseline on every fault type.** The mean gap of −0.0055 is within training variance — trace essentially reproduces baseline as designed.
 
 ---
 
@@ -117,7 +117,7 @@ Compare RE2-OB — resource/network faults:
 
 The dataset-level F1 is essentially unchanged (−0.004 mean) but the **worst case is bounded**. On deployment pipelines where multiple fault types appear in the same stream, residual-gated fusion guarantees:
 
-- Trace-friendly faults (network, resource): **upside as validated on RE2-OB (+0.097 mean F1)**
+- Trace-friendly faults (network, resource): **upside as validated on RE2-OB (+0.054 mean F1)**
 - Trace-unfriendly faults (code defects, config errors): **no regression vs log+KPI baseline**
 
 The practitioner does not need to pick between "trace on" or "trace off" per dataset — the gate auto-selects per sample.
@@ -129,11 +129,11 @@ The practitioner does not need to pick between "trace on" or "trace off" per dat
 | Job | Time |
 |:----|-----:|
 | Preprocessing (TRACE_C=6) | ~1 minute |
-| Trace residual-gated eval (5 scenarios × 5 epochs) | ~3.0 hours |
-| Baseline eval (5 scenarios × 5 epochs) | ~1.8 hours |
-| **Total** | **~4.8 hours** |
+| Trace residual-gated eval (5 scenarios × 5 epochs) | 5045s (~1.4 hours) |
+| Baseline eval (5 scenarios × 5 epochs) | 3579s (~1.0 hours) |
+| **Runtime overhead (trace / baseline)** | **1.4×** |
 
-> Training cost is dominated by TraceEncoder (2-layer GAT). The residual-gated head adds a small MLP and a zero-init linear — negligible overhead.
+> Average per-scenario: trace 1009s, baseline 716s. Training cost is dominated by TraceEncoder (2-layer GAT). The residual-gated head adds a small MLP and a zero-init linear — negligible overhead vs the GAT itself.
 
 ---
 

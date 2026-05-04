@@ -1,7 +1,7 @@
 # Kết quả thí nghiệm — RE3-OB: Baseline vs Trace
 
 > **Dataset**: RCAEval OnlineBoutique RE3-OB — fault code-defect (f1–f5)
-> **Ngày**: 2026-04-23
+> **Ngày**: 2026-05-01
 
 ---
 
@@ -45,40 +45,40 @@ RE3-OB inject **fault code-defect** (bug trong logic service) thay vì resource/
 
 ### 2.1 Trace (open_trace=True, trace_c=6)
 
-| Fault    | F1         | Precision  | Recall     |
-|:------   |---:        |----------: |-------:    |
-| f1       | 0.8307     | 0.9383     | 0.7453     |
-| f2       | **0.9449** | **0.9516** | **0.9383** |
-| f3       | 0.6683     | 0.6534     | 0.6839     |
-| f4       | 0.3762     | 0.3689     | 0.3839     |
-| f5       | 0.9206     | 0.9246     | 0.9166     |
-| **Mean** | **0.7481** | **0.7674** | **0.7336** |
-| **Std**  | 0.2098     | 0.2279     | 0.2001     |
+| Fault    | F1         | Precision  | Recall     | Time(s) |
+|:------   |---:        |----------: |-------:    |-------: |
+| f1       | 0.8232     | 0.9011     | 0.7577     | 1233    |
+| f2       | **0.9384** | **0.9442** | **0.9328** | 925     |
+| f3       | 0.6634     | 0.6631     | 0.6636     | 972     |
+| f4       | 0.3752     | 0.3680     | 0.3827     | 946     |
+| f5       | 0.9177     | 0.9201     | 0.9152     | 969     |
+| **Mean** | **0.7436** | **0.7593** | **0.7304** | 1009    |
+| **Std**  | 0.2082     | 0.2203     | 0.2006     |         |
 
 ### 2.2 Baseline (open_trace=False)
 
-| Fault    | F1         | Precision  | Recall     |
-|:------   |---:        |----------: |-------:    |
-| f1       | 0.8298     | 0.9382     | 0.7438     |
-| f2       | 0.9470     | 0.9535     | 0.9407     |
-| f3       | 0.6826     | 0.6675     | 0.6985     |
-| f4       | 0.3815     | 0.3734     | 0.3899     |
-| f5       | 0.9208     | 0.9234     | 0.9182     |
-| **Mean** | **0.7523** | **0.7712** | **0.7382** |
-| **Std**  | 0.2086     | 0.2265     | 0.1994     |
+| Fault    | F1         | Precision  | Recall     | Time(s) |
+|:------   |---:        |----------: |-------:    |-------: |
+| f1       | 0.8298     | 0.9382     | 0.7438     | 491     |
+| f2       | **0.9453** | **0.9529** | **0.9379** | 539     |
+| f3       | 0.6689     | 0.7047     | 0.6365     | 776     |
+| f4       | 0.3785     | 0.3707     | 0.3866     | 895     |
+| f5       | 0.9231     | 0.9269     | 0.9194     | 878     |
+| **Mean** | **0.7491** | **0.7787** | **0.7248** | 716     |
+| **Std**  | 0.2093     | 0.2235     | 0.2029     |         |
 
 ### 2.3 So sánh trực tiếp
 
 | Fault    | Baseline F1 | Trace F1   | **Δ F1**    | Δ%      |
 |:------   |-----------: |---------:  |---------:   |-------: |
-| f1       | 0.8298      | 0.8307     | **+0.0009** | +0.1%   |
-| f2       | 0.9470      | 0.9449     | **−0.0021** | −0.2%   |
-| f3       | 0.6826      | 0.6683     | **−0.0143** | −2.1%   |
-| f4       | 0.3815      | 0.3762     | **−0.0053** | −1.4%   |
-| f5       | 0.9208      | 0.9206     | **−0.0002** | −0.02%  |
-| **Mean** | **0.7523**  | **0.7481** | **−0.0042** | **−0.6%** |
+| f1       | 0.8298      | 0.8232     | **−0.0066** | −0.8%   |
+| f2       | 0.9453      | 0.9384     | **−0.0069** | −0.7%   |
+| f3       | 0.6689      | 0.6634     | **−0.0055** | −0.8%   |
+| f4       | 0.3785      | 0.3752     | **−0.0033** | −0.9%   |
+| f5       | 0.9231      | 0.9177     | **−0.0054** | −0.6%   |
+| **Mean** | **0.7491**  | **0.7436** | **−0.0055** | **−0.7%** |
 
-**Residual-gated trace bám baseline trong khoảng ±0.015 F1 trên mọi fault type.** Chênh lệch mean −0.0042 nằm trong training variance — trace coi như reproduce baseline đúng như thiết kế.
+**Residual-gated trace bám baseline trong khoảng ±0.007 F1 trên mọi fault type.** Chênh lệch mean −0.0055 nằm trong training variance — trace coi như reproduce baseline đúng như thiết kế.
 
 ---
 
@@ -117,7 +117,7 @@ So với RE2-OB — fault resource/network:
 
 F1 ở mức dataset gần như không đổi (−0.004 mean) nhưng **worst case được chặn**. Trên pipeline production khi nhiều loại fault xuất hiện trong cùng stream, residual-gated fusion đảm bảo:
 
-- Fault trace-friendly (network, resource): **upside như đã validate trên RE2-OB (+0.097 mean F1)**
+- Fault trace-friendly (network, resource): **upside như đã validate trên RE2-OB (+0.054 mean F1)**
 - Fault trace-unfriendly (code defect, config error): **không regression so với baseline log+KPI**
 
 Người dùng không cần chọn "trace on" hay "trace off" tuỳ dataset — gate tự chọn per sample.
@@ -129,11 +129,11 @@ Người dùng không cần chọn "trace on" hay "trace off" tuỳ dataset — 
 | Job | Thời gian |
 |:----|----------:|
 | Preprocessing (TRACE_C=6) | ~1 phút |
-| Trace residual-gated eval (5 scenarios × 5 epochs) | ~3.0 giờ |
-| Baseline eval (5 scenarios × 5 epochs) | ~1.8 giờ |
-| **Tổng** | **~4.8 giờ** |
+| Trace residual-gated eval (5 scenarios × 5 epochs) | 5045s (~1.4 giờ) |
+| Baseline eval (5 scenarios × 5 epochs) | 3579s (~1.0 giờ) |
+| **Overhead runtime (trace / baseline)** | **1.4×** |
 
-> Chi phí training chủ yếu do TraceEncoder (2 lớp GAT). Head residual-gated chỉ thêm 1 MLP nhỏ + 1 linear zero-init — overhead không đáng kể.
+> Trung bình per-scenario: trace 1009s, baseline 716s. Chi phí training chủ yếu do TraceEncoder (2 lớp GAT). Head residual-gated chỉ thêm 1 MLP nhỏ + 1 linear zero-init — overhead không đáng kể so với GAT.
 
 ---
 

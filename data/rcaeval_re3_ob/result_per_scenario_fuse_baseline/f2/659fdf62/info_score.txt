@@ -1,4 +1,0 @@
-Experiment 659fdf62: 2026/04/22-09:06:47
-Train time/epoch 79.5040
-* Test -- f1:0.9470	rc:0.9407	pc:0.9535
-

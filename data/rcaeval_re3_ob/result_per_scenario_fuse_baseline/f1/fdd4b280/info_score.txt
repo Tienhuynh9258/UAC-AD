@@ -1,4 +1,0 @@
-Experiment fdd4b280: 2026/04/22-08:58:42
-Train time/epoch 86.0087
-* Test -- f1:0.8298	rc:0.7438	pc:0.9382
-

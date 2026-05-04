@@ -1,0 +1,66 @@
+2026-05-01 01:06:04,459 P10308 INFO ^^^^^^^^^^ Current Model:hades, f9975edc ^^^^^^^^^^
+2026-05-01 01:06:04,459 P10308 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-05-01 01:06:13,211 P10308 INFO 40 unique log templates found.
+2026-05-01 01:06:13,229 P10308 INFO Transforming unlabel train data.
+2026-05-01 01:06:14,620 P10308 INFO Transforming test data.
+2026-05-01 01:06:14,973 P10308 INFO 7 new templates show.
+2026-05-01 01:06:16,734 P10308 INFO Data loaded done!
+2026-05-01 01:08:40,867 P10308 INFO Known word number: 40
+2026-05-01 01:10:55,381 P10308 INFO Epoch 0/5, train generator loss: 0.28549
+2026-05-01 01:13:10,815 P10308 INFO Epoch 0/5, train discriminator loss: 0.10833
+2026-05-01 01:13:18,276 P10308 INFO *** Test time is 7.451367616653442
+2026-05-01 01:13:18,276 P10308 INFO Epoch 0/5, test f1: 0.65441 rc: 0.49055 pc: 0.98262. [264.20s]
+2026-05-01 01:15:30,708 P10308 INFO Epoch 1/5, train generator loss: 0.10402
+2026-05-01 01:17:41,953 P10308 INFO Epoch 1/5, train discriminator loss: 0.54331
+2026-05-01 01:17:50,447 P10308 INFO *** Test time is 8.494360208511353
+2026-05-01 01:17:50,447 P10308 INFO Epoch 1/5, test f1: 0.87253 rc: 0.85714 pc: 0.88849. [263.63s]
+2026-05-01 01:20:01,757 P10308 INFO Epoch 2/5, train generator loss: 0.08975
+2026-05-01 01:22:09,329 P10308 INFO Epoch 2/5, train discriminator loss: 0.32204
+2026-05-01 01:22:17,108 P10308 INFO *** Test time is 7.763315200805664
+2026-05-01 01:22:17,108 P10308 INFO Epoch 2/5, test f1: 0.87480 rc: 0.87864 pc: 0.87100. [258.79s]
+2026-05-01 01:24:29,444 P10308 INFO Epoch 3/5, train generator loss: 0.09822
+2026-05-01 01:26:46,290 P10308 INFO Epoch 3/5, train discriminator loss: 0.44074
+2026-05-01 01:26:53,834 P10308 INFO *** Test time is 7.544365167617798
+2026-05-01 01:26:53,834 P10308 INFO Epoch 3/5, test f1: 0.88001 rc: 0.88336 pc: 0.87669. [269.12s]
+2026-05-01 01:29:06,849 P10308 INFO Epoch 4/5, train generator loss: 0.09870
+2026-05-01 01:31:15,710 P10308 INFO Epoch 4/5, train discriminator loss: 0.39383
+2026-05-01 01:31:24,810 P10308 INFO *** Test time is 9.084567785263062
+2026-05-01 01:31:24,812 P10308 INFO Epoch 4/5, test f1: 0.86321 rc: 0.86861 pc: 0.85786. [261.84s]
+2026-05-01 01:31:24,812 P10308 INFO early stopping epoch 1/3
+2026-05-01 01:32:42,345 P10308 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.281891
+2026-05-01 01:32:44,723 P10308 INFO *** Test F1 0.8572  of unsupervised traning
+2026-05-01 01:32:44,739 P10308 INFO *** Best F1 {'f1': 0.8800115235031449, 'rc': 0.8833622517833044, 'pc': 0.8766861188175643}  of unsupervised traning
+2026-05-01 01:32:44,914 P10308 INFO Current hash id f9975edc
+2026-05-01 23:51:30,358 P10668 INFO ^^^^^^^^^^ Current Model:hades, f9975edc ^^^^^^^^^^
+2026-05-01 23:51:30,358 P10668 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-05-01 23:51:37,065 P10668 INFO 40 unique log templates found.
+2026-05-01 23:51:37,065 P10668 INFO Transforming unlabel train data.
+2026-05-01 23:51:37,926 P10668 INFO Transforming test data.
+2026-05-01 23:51:38,197 P10668 INFO 7 new templates show.
+2026-05-01 23:51:39,499 P10668 INFO Data loaded done!
+2026-05-01 23:53:23,952 P10668 INFO Known word number: 40
+2026-05-01 23:55:26,369 P10668 INFO Epoch 0/5, train generator loss: 0.24815
+2026-05-01 23:57:20,305 P10668 INFO Epoch 0/5, train discriminator loss: 0.15767
+2026-05-01 23:57:25,788 P10668 INFO *** Test time is 5.480903148651123
+2026-05-01 23:57:25,788 P10668 INFO Epoch 0/5, test f1: 0.67190 rc: 0.51966 pc: 0.95029. [232.31s]
+2026-05-01 23:59:26,696 P10668 INFO Epoch 1/5, train generator loss: 0.12057
+2026-05-02 00:01:14,870 P10668 INFO Epoch 1/5, train discriminator loss: 0.55999
+2026-05-02 00:01:21,082 P10668 INFO *** Test time is 6.21211051940918
+2026-05-02 00:01:21,082 P10668 INFO Epoch 1/5, test f1: 0.70928 rc: 0.60112 pc: 0.86491. [229.05s]
+2026-05-02 00:03:22,438 P10668 INFO Epoch 2/5, train generator loss: 0.12484
+2026-05-02 00:05:13,197 P10668 INFO Epoch 2/5, train discriminator loss: 0.40268
+2026-05-02 00:05:18,907 P10668 INFO *** Test time is 5.705257892608643
+2026-05-02 00:05:18,907 P10668 INFO Epoch 2/5, test f1: 0.69058 rc: 0.65038 pc: 0.73609. [232.03s]
+2026-05-02 00:05:18,907 P10668 INFO early stopping epoch 1/3
+2026-05-02 00:07:20,284 P10668 INFO Epoch 3/5, train generator loss: 0.10110
+2026-05-02 00:09:11,898 P10668 INFO Epoch 3/5, train discriminator loss: 0.47160
+2026-05-02 00:09:17,464 P10668 INFO *** Test time is 5.566783666610718
+2026-05-02 00:09:17,464 P10668 INFO Epoch 3/5, test f1: 0.73540 rc: 0.62088 pc: 0.90172. [232.99s]
+2026-05-02 00:11:19,430 P10668 INFO Epoch 4/5, train generator loss: 0.08892
+2026-05-02 00:13:09,948 P10668 INFO Epoch 4/5, train discriminator loss: 0.70213
+2026-05-02 00:13:15,962 P10668 INFO *** Test time is 6.011943101882935
+2026-05-02 00:13:15,962 P10668 INFO Epoch 4/5, test f1: 0.74691 rc: 0.61220 pc: 0.95763. [232.44s]
+2026-05-02 00:14:26,742 P10668 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.279701
+2026-05-02 00:14:28,915 P10668 INFO *** Test F1 0.4213  of unsupervised traning
+2026-05-02 00:14:28,915 P10668 INFO *** Best F1 {'f1': 0.7469128542867224, 'rc': 0.6122035858877964, 'pc': 0.9576296743063932}  of unsupervised traning
+2026-05-02 00:14:29,122 P10668 INFO Current hash id f9975edc

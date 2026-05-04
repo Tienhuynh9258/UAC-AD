@@ -1,0 +1,4 @@
+Experiment bfe86d0f: 2026/05/01-20:48:50
+Train time/epoch 297.1725
+* Test -- f1:0.8730	rc:0.8582	pc:0.8882
+

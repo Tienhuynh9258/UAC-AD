@@ -1,4 +1,0 @@
-Experiment 52204a1c: 2026/04/24-07:36:59
-Train time/epoch 138.3112
-* Test -- f1:0.8307	rc:0.7453	pc:0.9383
-

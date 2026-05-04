@@ -28,6 +28,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 import numpy as np
 
@@ -149,7 +150,8 @@ def main():
     logging.info(f"Found {len(scenario_files)} scenarios.")
     logging.info(f"Results will be saved under: {result_base}/\n")
 
-    results = []   # list of (fault_type, f1, pc, rc)
+    results = []   # list of (fault_type, f1, pc, rc, elapsed_sec)
+    total_start = time.perf_counter()
 
     for fault, test_pkl in scenario_files:
         sc_result_dir = os.path.join(result_base, fault)
@@ -182,6 +184,7 @@ def main():
             "--gate_lambda",    str(args.gate_lambda),
         ]
 
+        sc_start = time.perf_counter()
         try:
             proc = subprocess.run(
                 cmd,
@@ -193,41 +196,47 @@ def main():
                 logging.warning(f"  run.py exited with code {proc.returncode}")
         except Exception as e:
             logging.error(f"  Failed to run scenario {fault}: {e}")
-            results.append((fault, 0.0, 0.0, 0.0))
+            results.append((fault, 0.0, 0.0, 0.0, 0.0))
             continue
+        elapsed = time.perf_counter() - sc_start
 
         res = _scan_latest_results(sc_result_dir)
         if res is None:
             logging.warning(f"  No result files found in {sc_result_dir}")
-            results.append((fault, 0.0, 0.0, 0.0))
+            results.append((fault, 0.0, 0.0, 0.0, elapsed))
         else:
             f1, pc, rc = res
-            results.append((fault, f1, pc, rc))
-            logging.info(f"  → F1={f1:.4f}  P={pc:.4f}  R={rc:.4f}")
+            results.append((fault, f1, pc, rc, elapsed))
+            logging.info(f"  → F1={f1:.4f}  P={pc:.4f}  R={rc:.4f}  time={elapsed:.1f}s")
 
     # ── Aggregate ─────────────────────────────────────────────────────────────
     if not results:
         logging.error("No results collected.")
         return
 
-    f1s = np.array([r[1] for r in results])
-    pcs = np.array([r[2] for r in results])
-    rcs = np.array([r[3] for r in results])
+    total_elapsed = time.perf_counter() - total_start
+
+    f1s   = np.array([r[1] for r in results])
+    pcs   = np.array([r[2] for r in results])
+    rcs   = np.array([r[3] for r in results])
+    times = np.array([r[4] for r in results])
 
     col = 10
-    sep = "-" * (col + 34)
-    print(f"\n{'='*56}")
+    sep = "-" * (col + 44)
+    print(f"\n{'='*66}")
     print(f"  RE3-OB Per-Scenario Results  "
           f"({args.data_type}, open_trace={args.open_trace})")
-    print(f"{'='*56}")
-    print(f"  {'Fault':<{col}}  {'F1':>6}  {'Precision':>9}  {'Recall':>6}")
+    print(f"{'='*66}")
+    print(f"  {'Fault':<{col}}  {'F1':>6}  {'Precision':>9}  {'Recall':>6}  {'Time(s)':>8}")
     print(f"  {sep}")
-    for fault, f1, pc, rc in results:
-        print(f"  {fault:<{col}}  {f1:>6.4f}  {pc:>9.4f}  {rc:>6.4f}")
+    for fault, f1, pc, rc, t in results:
+        print(f"  {fault:<{col}}  {f1:>6.4f}  {pc:>9.4f}  {rc:>6.4f}  {t:>8.1f}")
     print(f"  {sep}")
-    print(f"  {'Mean':<{col}}  {f1s.mean():>6.4f}  {pcs.mean():>9.4f}  {rcs.mean():>6.4f}")
+    print(f"  {'Mean':<{col}}  {f1s.mean():>6.4f}  {pcs.mean():>9.4f}  {rcs.mean():>6.4f}  {times.mean():>8.1f}")
     print(f"  {'Std':<{col}}  {f1s.std():>6.4f}  {pcs.std():>9.4f}  {rcs.std():>6.4f}")
-    print(f"{'='*56}\n")
+    print(f"  {sep}")
+    print(f"  Total wall time: {total_elapsed:.1f}s ({total_elapsed/60:.1f} min)")
+    print(f"{'='*66}\n")
 
     summary = {
         "config": {
@@ -237,13 +246,14 @@ def main():
             "window_size":    args.window_size,
         },
         "per_scenario": [
-            {"fault": fault, "f1": f1, "precision": pc, "recall": rc}
-            for fault, f1, pc, rc in results
+            {"fault": fault, "f1": f1, "precision": pc, "recall": rc, "elapsed_sec": t}
+            for fault, f1, pc, rc, t in results
         ],
         "aggregate": {
             "f1_mean":         float(f1s.mean()),  "f1_std":         float(f1s.std()),
             "precision_mean":  float(pcs.mean()),  "precision_std":  float(pcs.std()),
             "recall_mean":     float(rcs.mean()),  "recall_std":     float(rcs.std()),
+            "total_elapsed_sec": float(total_elapsed),
         },
     }
     summary_path = os.path.join(result_base, "summary.json")

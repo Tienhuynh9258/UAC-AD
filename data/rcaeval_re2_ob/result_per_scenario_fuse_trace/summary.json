@@ -3,52 +3,67 @@
     "data_type": "fuse",
     "open_trace": "True",
     "val_percentile": 95,
-    "window_size": 30
+    "window_size": 30,
+    "fault_types": [
+      "cpu",
+      "delay",
+      "disk",
+      "loss",
+      "mem",
+      "socket"
+    ]
   },
   "per_scenario": [
     {
       "fault": "cpu",
-      "f1": 0.6245,
-      "precision": 0.6105,
-      "recall": 0.6391
+      "f1": 0.6393,
+      "precision": 0.6809,
+      "recall": 0.6025,
+      "elapsed_sec": 1777.5395881000002
     },
     {
       "fault": "delay",
-      "f1": 0.8584,
-      "precision": 0.8724,
-      "recall": 0.8448
+      "f1": 0.873,
+      "precision": 0.8882,
+      "recall": 0.8582,
+      "elapsed_sec": 1760.8431172
     },
     {
       "fault": "disk",
-      "f1": 0.9844,
+      "f1": 0.9843,
       "precision": 1.0,
-      "recall": 0.9692
+      "recall": 0.9691,
+      "elapsed_sec": 1792.2751884
     },
     {
       "fault": "loss",
-      "f1": 0.8548,
-      "precision": 0.8696,
-      "recall": 0.8406
+      "f1": 0.8414,
+      "precision": 0.8751,
+      "recall": 0.8102,
+      "elapsed_sec": 1751.3332356
     },
     {
       "fault": "mem",
-      "f1": 0.8968,
-      "precision": 0.8957,
-      "recall": 0.8979
+      "f1": 0.8885,
+      "precision": 0.8866,
+      "recall": 0.8905,
+      "elapsed_sec": 1738.7436815
     },
     {
       "fault": "socket",
-      "f1": 0.5647,
-      "precision": 0.5511,
-      "recall": 0.579
+      "f1": 0.5715,
+      "precision": 0.5576,
+      "recall": 0.5862,
+      "elapsed_sec": 1746.486909700001
     }
   ],
   "aggregate": {
-    "f1_mean": 0.7972666666666668,
-    "f1_std": 0.15050399404076367,
-    "precision_mean": 0.7998833333333333,
-    "precision_std": 0.16181562982467285,
-    "recall_mean": 0.7951,
-    "recall_std": 0.13931630677466775
+    "f1_mean": 0.7996666666666666,
+    "f1_std": 0.14541765902240192,
+    "precision_mean": 0.8147333333333333,
+    "precision_std": 0.14863767654564872,
+    "recall_mean": 0.7861166666666667,
+    "recall_std": 0.14366427782236688,
+    "total_elapsed_sec": 10567.5030801
   }
 }

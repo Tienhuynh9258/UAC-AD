@@ -1,4 +1,0 @@
-Experiment d1c174c8: 2026/04/20-12:12:40
-Train time/epoch 212.1023
-* Test -- f1:0.5954	rc:0.6089	pc:0.5825
-
