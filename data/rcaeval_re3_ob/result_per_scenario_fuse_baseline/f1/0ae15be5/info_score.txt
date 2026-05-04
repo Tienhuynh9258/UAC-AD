@@ -1,0 +1,4 @@
+Experiment 0ae15be5: 2026/05/02-01:25:09
+Train time/epoch 95.2920
+* Test -- f1:0.8298	rc:0.7438	pc:0.9382
+

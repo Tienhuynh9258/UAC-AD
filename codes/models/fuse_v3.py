@@ -86,13 +86,14 @@ class MultiEncoder(nn.Module):
             # CHANGE 1: Self-Attention chỉ trên log+KPI → luôn 2H, bất kể open_trace
             self.self_attention = MultiHeadAttention(2 * self.hidden_size, 2, device=device)
 
-    def forward(self, log_x, kpi_x, trace_nodes=None, trace_adj=None):
+    def forward(self, log_x, kpi_x, trace_nodes=None, trace_adj=None, precomputed_ZV=None):
         kpi_re = self.kpi_encoder(kpi_x)  # [B, W, H]
         log_re = self.log_encoder(log_x)  # [B, W, H]
 
         # CHANGE 1: Trace encoder chạy riêng → ZV [B,W,H], KHÔNG đưa vào attention
-        ZV = None
-        if self.open_trace and trace_nodes is not None and trace_adj is not None:
+        # precomputed_ZV cho phép MultiModel tính ZV 1 lần rồi tái sử dụng qua 3 calls.
+        ZV = precomputed_ZV
+        if ZV is None and self.open_trace and trace_nodes is not None and trace_adj is not None:
             B, W, N, C = trace_nodes.shape
             trace_z = self.trace_encoder(
                 trace_nodes.reshape(B * W, N, C),
@@ -483,11 +484,25 @@ class MultiModel(nn.Module):
         # ── Encoder ────────────────────────────────────────────────────────────
         # fused_modal: [B,W,2H]  (log+KPI self-attention, không có trace)
         # ZV:          [B,W,H]   (trace GAT output) hoặc None
+        #
+        # Tính ZV một lần vì trace_nodes/trace_adj giống nhau ở cả 3 encoder calls.
+        # (trace_encoder output chỉ phụ thuộc vào trace input, không phụ thuộc log/KPI)
+        cached_ZV = None
+        if self.open_trace and trace_nodes is not None and trace_adj is not None:
+            B_t, W_t, N_t, C_t = trace_nodes.shape
+            trace_z = self.encoder.trace_encoder(
+                trace_nodes.reshape(B_t * W_t, N_t, C_t),
+                trace_adj.reshape(B_t * W_t, N_t, N_t)
+            )
+            cached_ZV = trace_z.mean(dim=1).reshape(B_t, W_t, self.hidden_size)
+
         fused_kpi, fused_log, fused_modal, ZV = self.encoder(
-            input_dict["log_features"], input_dict["kpi_features"], trace_nodes, trace_adj)
+            input_dict["log_features"], input_dict["kpi_features"],
+            trace_nodes, trace_adj, precomputed_ZV=cached_ZV)
 
         fused_kpi_unmatched, fused_log_unmatched, fused_modal_unmatched, ZV_unmatched = self.encoder(
-            input_dict["log_features"], input_dict["unmatched_kpi_features"], trace_nodes, trace_adj)
+            input_dict["log_features"], input_dict["unmatched_kpi_features"],
+            trace_nodes, trace_adj, precomputed_ZV=cached_ZV)
 
         # CHANGE 8: Residual-gated decoder — luôn bật khi open_trace=True.
         #   y = fuse_decoder(fm) + g * delta_head(cat[fm, zv])
@@ -512,9 +527,9 @@ class MultiModel(nn.Module):
         kpi_out_unmatched = fused_out_unmatched[:, :, :self.kpi_c]
         log_out_unmatched = fused_out_unmatched[:, :, self.kpi_c:]
 
-        # Fake pass (cycle re-encode)
+        # Fake pass (cycle re-encode) — trace input không đổi, tái dùng cached_ZV
         fused_kpi_fake, fused_log_fake, fused_modal_fake, ZV_fake = self.encoder(
-            log_out, kpi_out, trace_nodes, trace_adj)
+            log_out, kpi_out, trace_nodes, trace_adj, precomputed_ZV=cached_ZV)
         fused_out_fake = _decode(fused_modal_fake, ZV_fake)
 
         # ── Reconstruction losses ───────────────────────────────────────────────

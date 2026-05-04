@@ -1,0 +1,4 @@
+Experiment a4606ab2: 2026/05/02-01:34:09
+Train time/epoch 106.9869
+* Test -- f1:0.9453	rc:0.9379	pc:0.9529
+

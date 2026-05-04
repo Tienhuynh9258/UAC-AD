@@ -1,0 +1,4 @@
+Experiment 671af35f: 2026/05/01-20:19:29
+Train time/epoch 295.9686
+* Test -- f1:0.6393	rc:0.6025	pc:0.6809
+

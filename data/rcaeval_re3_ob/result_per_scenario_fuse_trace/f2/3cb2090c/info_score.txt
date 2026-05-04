@@ -1,4 +1,0 @@
-Experiment 3cb2090c: 2026/04/24-07:49:14
-Train time/epoch 128.1804
-* Test -- f1:0.9449	rc:0.9383	pc:0.9516
-

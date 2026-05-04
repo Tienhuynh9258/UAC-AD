@@ -1,0 +1,36 @@
+2026-05-01 18:17:22,134 P26100 INFO ^^^^^^^^^^ Current Model:hades, e9c03619 ^^^^^^^^^^
+2026-05-01 18:17:22,134 P26100 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-05-01 18:17:23,814 P26100 INFO 301 unique log templates found.
+2026-05-01 18:17:23,830 P26100 INFO Transforming unlabel train data.
+2026-05-01 18:17:24,434 P26100 INFO Transforming test data.
+2026-05-01 18:17:24,613 P26100 INFO 20 new templates show.
+2026-05-01 18:17:26,103 P26100 INFO Data loaded done!
+2026-05-01 18:17:57,136 P26100 INFO Known word number: 301
+2026-05-01 18:19:30,941 P26100 INFO Epoch 0/5, train generator loss: 0.26239
+2026-05-01 18:21:10,176 P26100 INFO Epoch 0/5, train discriminator loss: 1.84534
+2026-05-01 18:21:15,180 P26100 INFO *** Test time is 5.000860691070557
+2026-05-01 18:21:15,180 P26100 INFO Epoch 0/5, test f1: 0.80593 rc: 0.76197 pc: 0.85527. [186.74s]
+2026-05-01 18:22:52,506 P26100 INFO Epoch 1/5, train generator loss: 0.15901
+2026-05-01 18:24:48,947 P26100 INFO Epoch 1/5, train discriminator loss: 1.11803
+2026-05-01 18:24:53,392 P26100 INFO *** Test time is 4.441006183624268
+2026-05-01 18:24:53,392 P26100 INFO Epoch 1/5, test f1: 0.82322 rc: 0.75770 pc: 0.90115. [213.70s]
+2026-05-01 18:27:14,027 P26100 INFO Epoch 2/5, train generator loss: 0.15424
+2026-05-01 18:29:37,415 P26100 INFO Epoch 2/5, train discriminator loss: 0.67650
+2026-05-01 18:29:44,221 P26100 INFO *** Test time is 6.7928948402404785
+2026-05-01 18:29:44,222 P26100 INFO Epoch 2/5, test f1: 0.82239 rc: 0.75640 pc: 0.90099. [283.99s]
+2026-05-01 18:29:44,223 P26100 INFO early stopping epoch 1/3
+2026-05-01 18:31:32,462 P26100 INFO Epoch 3/5, train generator loss: 0.14192
+2026-05-01 18:33:16,555 P26100 INFO Epoch 3/5, train discriminator loss: 0.55558
+2026-05-01 18:33:21,836 P26100 INFO *** Test time is 5.271042823791504
+2026-05-01 18:33:21,838 P26100 INFO Epoch 3/5, test f1: 0.82310 rc: 0.73766 pc: 0.93093. [212.34s]
+2026-05-01 18:33:21,838 P26100 INFO early stopping epoch 2/3
+2026-05-01 18:35:04,509 P26100 INFO Epoch 4/5, train generator loss: 0.14490
+2026-05-01 18:36:38,944 P26100 INFO Epoch 4/5, train discriminator loss: 0.62767
+2026-05-01 18:36:43,179 P26100 INFO *** Test time is 4.225138187408447
+2026-05-01 18:36:43,179 P26100 INFO Epoch 4/5, test f1: 0.78566 rc: 0.72152 pc: 0.86231. [197.12s]
+2026-05-01 18:36:43,181 P26100 INFO early stopping epoch 3/3
+2026-05-01 18:36:43,181 P26100 INFO Early stopping
+2026-05-01 18:37:30,744 P26100 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.223893
+2026-05-01 18:37:32,626 P26100 INFO *** Test F1 0.7517  of unsupervised traning
+2026-05-01 18:37:32,626 P26100 INFO *** Best F1 {'f1': 0.8232211247732312, 'rc': 0.7576994434137291, 'pc': 0.9011473962930273}  of unsupervised traning
+2026-05-01 18:37:32,847 P26100 INFO Current hash id e9c03619

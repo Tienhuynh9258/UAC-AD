@@ -1,0 +1,32 @@
+2026-05-01 18:37:53,530 P11708 INFO ^^^^^^^^^^ Current Model:hades, e438cc36 ^^^^^^^^^^
+2026-05-01 18:37:53,530 P11708 INFO Load from D:\UAC-AD\data\rcaeval_re3_ob
+2026-05-01 18:37:54,281 P11708 INFO 301 unique log templates found.
+2026-05-01 18:37:54,296 P11708 INFO Transforming unlabel train data.
+2026-05-01 18:37:54,803 P11708 INFO Transforming test data.
+2026-05-01 18:37:54,851 P11708 INFO 7 new templates show.
+2026-05-01 18:37:55,430 P11708 INFO Data loaded done!
+2026-05-01 18:38:22,785 P11708 INFO Known word number: 301
+2026-05-01 18:39:40,387 P11708 INFO Epoch 0/5, train generator loss: 0.25953
+2026-05-01 18:41:10,142 P11708 INFO Epoch 0/5, train discriminator loss: 1.85369
+2026-05-01 18:41:11,940 P11708 INFO *** Test time is 1.7942798137664795
+2026-05-01 18:41:11,942 P11708 INFO Epoch 0/5, test f1: 0.89407 rc: 0.89801 pc: 0.89017. [162.82s]
+2026-05-01 18:42:35,929 P11708 INFO Epoch 1/5, train generator loss: 0.16154
+2026-05-01 18:43:54,663 P11708 INFO Epoch 1/5, train discriminator loss: 1.05900
+2026-05-01 18:43:56,509 P11708 INFO *** Test time is 1.8459081649780273
+2026-05-01 18:43:56,509 P11708 INFO Epoch 1/5, test f1: 0.92558 rc: 0.92258 pc: 0.92860. [162.69s]
+2026-05-01 18:45:20,584 P11708 INFO Epoch 2/5, train generator loss: 0.15732
+2026-05-01 18:46:40,336 P11708 INFO Epoch 2/5, train discriminator loss: 0.62973
+2026-05-01 18:46:42,130 P11708 INFO *** Test time is 1.7931883335113525
+2026-05-01 18:46:42,130 P11708 INFO Epoch 2/5, test f1: 0.93060 rc: 0.92629 pc: 0.93496. [163.76s]
+2026-05-01 18:48:06,417 P11708 INFO Epoch 3/5, train generator loss: 0.14310
+2026-05-01 18:49:26,936 P11708 INFO Epoch 3/5, train discriminator loss: 0.50839
+2026-05-01 18:49:28,921 P11708 INFO *** Test time is 1.9835255146026611
+2026-05-01 18:49:28,921 P11708 INFO Epoch 3/5, test f1: 0.93399 rc: 0.92814 pc: 0.93991. [164.76s]
+2026-05-01 18:50:51,355 P11708 INFO Epoch 4/5, train generator loss: 0.15145
+2026-05-01 18:52:11,709 P11708 INFO Epoch 4/5, train discriminator loss: 0.76926
+2026-05-01 18:52:13,445 P11708 INFO *** Test time is 1.7318580150604248
+2026-05-01 18:52:13,445 P11708 INFO Epoch 4/5, test f1: 0.93843 rc: 0.93278 pc: 0.94416. [162.75s]
+2026-05-01 18:53:00,683 P11708 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.210285
+2026-05-01 18:53:01,371 P11708 INFO *** Test F1 0.9011  of unsupervised traning
+2026-05-01 18:53:01,371 P11708 INFO *** Best F1 {'f1': 0.9384328358208955, 'rc': 0.9327770050996754, 'pc': 0.9441576724542469}  of unsupervised traning
+2026-05-01 18:53:01,739 P11708 INFO Current hash id e438cc36

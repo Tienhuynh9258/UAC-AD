@@ -1,0 +1,4 @@
+Experiment 0cac94d4: 2026/05/04-08:50:56
+Train time/epoch 243.1036
+* Test -- f1:0.6528	rc:0.5229	pc:0.8684
+

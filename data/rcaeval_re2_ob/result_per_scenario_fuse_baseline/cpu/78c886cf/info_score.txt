@@ -1,0 +1,4 @@
+Experiment 78c886cf: 2026/05/04-08:01:33
+Train time/epoch 303.0443
+* Test -- f1:0.6218	rc:0.6355	pc:0.6087
+

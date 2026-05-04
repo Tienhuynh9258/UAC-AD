@@ -1,4 +1,0 @@
-Experiment ae5daa2b: 2026/04/24-08:14:41
-Train time/epoch 128.1197
-* Test -- f1:0.3762	rc:0.3839	pc:0.3689
-

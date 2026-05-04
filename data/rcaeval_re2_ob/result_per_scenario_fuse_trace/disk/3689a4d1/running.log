@@ -1,0 +1,35 @@
+2026-05-01 12:49:11,764 P7824 INFO ^^^^^^^^^^ Current Model:hades, 3689a4d1 ^^^^^^^^^^
+2026-05-01 12:49:11,764 P7824 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-05-01 12:49:18,437 P7824 INFO 40 unique log templates found.
+2026-05-01 12:49:18,454 P7824 INFO Transforming unlabel train data.
+2026-05-01 12:49:19,295 P7824 INFO Transforming test data.
+2026-05-01 12:49:19,596 P7824 INFO 1 new templates show.
+2026-05-01 12:49:21,259 P7824 INFO Data loaded done!
+2026-05-01 12:51:46,595 P7824 INFO Known word number: 40
+2026-05-01 12:54:18,831 P7824 INFO Epoch 0/5, train generator loss: 0.22285
+2026-05-01 12:56:44,582 P7824 INFO Epoch 0/5, train discriminator loss: 0.96747
+2026-05-01 12:56:51,030 P7824 INFO *** Test time is 6.448445081710815
+2026-05-01 12:56:51,030 P7824 INFO Epoch 0/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [293.98s]
+2026-05-01 12:59:21,509 P7824 INFO Epoch 1/5, train generator loss: 0.10964
+2026-05-01 13:01:43,337 P7824 INFO Epoch 1/5, train discriminator loss: 0.31116
+2026-05-01 13:01:51,952 P7824 INFO *** Test time is 8.61555790901184
+2026-05-01 13:01:51,952 P7824 INFO Epoch 1/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [292.26s]
+2026-05-01 13:01:51,952 P7824 INFO early stopping epoch 1/3
+2026-05-01 13:04:24,150 P7824 INFO Epoch 2/5, train generator loss: 0.07915
+2026-05-01 13:06:48,873 P7824 INFO Epoch 2/5, train discriminator loss: 0.43268
+2026-05-01 13:06:54,918 P7824 INFO *** Test time is 6.044769763946533
+2026-05-01 13:06:54,918 P7824 INFO Epoch 2/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [296.92s]
+2026-05-01 13:06:54,934 P7824 INFO early stopping epoch 2/3
+2026-05-01 13:09:30,576 P7824 INFO Epoch 3/5, train generator loss: 0.06249
+2026-05-01 13:12:02,993 P7824 INFO Epoch 3/5, train discriminator loss: 0.35352
+2026-05-01 13:12:13,498 P7824 INFO *** Test time is 10.499319076538086
+2026-05-01 13:12:13,498 P7824 INFO Epoch 3/5, test f1: 0.98431 rc: 0.96910 pc: 1.00000. [308.07s]
+2026-05-01 13:14:46,805 P7824 INFO Epoch 4/5, train generator loss: 0.06260
+2026-05-01 13:17:11,694 P7824 INFO Epoch 4/5, train discriminator loss: 0.49437
+2026-05-01 13:17:18,548 P7824 INFO *** Test time is 6.851979494094849
+2026-05-01 13:17:18,548 P7824 INFO Epoch 4/5, test f1: 0.98426 rc: 0.96901 pc: 1.00000. [298.04s]
+2026-05-01 13:17:18,548 P7824 INFO early stopping epoch 1/3
+2026-05-01 13:18:41,167 P7824 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.288765
+2026-05-01 13:18:43,742 P7824 INFO *** Test F1 0.7680  of unsupervised traning
+2026-05-01 13:18:43,742 P7824 INFO *** Best F1 {'f1': 0.9843089354505309, 'rc': 0.9691026827012026, 'pc': 1.0}  of unsupervised traning
+2026-05-01 13:18:43,990 P7824 INFO Current hash id 3689a4d1

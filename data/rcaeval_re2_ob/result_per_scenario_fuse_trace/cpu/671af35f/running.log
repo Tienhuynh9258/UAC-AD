@@ -1,0 +1,33 @@
+2026-05-01 11:50:39,954 P13664 INFO ^^^^^^^^^^ Current Model:hades, 671af35f ^^^^^^^^^^
+2026-05-01 11:50:39,954 P13664 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-05-01 11:50:49,637 P13664 INFO 40 unique log templates found.
+2026-05-01 11:50:49,653 P13664 INFO Transforming unlabel train data.
+2026-05-01 11:50:50,445 P13664 INFO Transforming test data.
+2026-05-01 11:50:50,762 P13664 INFO 1 new templates show.
+2026-05-01 11:50:52,033 P13664 INFO Data loaded done!
+2026-05-01 11:52:45,296 P13664 INFO Known word number: 40
+2026-05-01 11:55:17,191 P13664 INFO Epoch 0/5, train generator loss: 0.28933
+2026-05-01 11:57:43,978 P13664 INFO Epoch 0/5, train discriminator loss: 0.95476
+2026-05-01 11:57:50,316 P13664 INFO *** Test time is 6.337200403213501
+2026-05-01 11:57:50,332 P13664 INFO Epoch 0/5, test f1: 0.49073 rc: 0.50248 pc: 0.47953. [294.08s]
+2026-05-01 12:00:19,867 P13664 INFO Epoch 1/5, train generator loss: 0.10286
+2026-05-01 12:02:45,821 P13664 INFO Epoch 1/5, train discriminator loss: 0.65892
+2026-05-01 12:02:54,270 P13664 INFO *** Test time is 8.432326316833496
+2026-05-01 12:02:54,270 P13664 INFO Epoch 1/5, test f1: 0.59507 rc: 0.61040 pc: 0.58049. [295.47s]
+2026-05-01 12:05:26,872 P13664 INFO Epoch 2/5, train generator loss: 0.07096
+2026-05-01 12:07:52,926 P13664 INFO Epoch 2/5, train discriminator loss: 0.28716
+2026-05-01 12:07:58,921 P13664 INFO *** Test time is 5.979921579360962
+2026-05-01 12:07:58,921 P13664 INFO Epoch 2/5, test f1: 0.62777 rc: 0.64010 pc: 0.61589. [298.58s]
+2026-05-01 12:10:33,500 P13664 INFO Epoch 3/5, train generator loss: 0.06257
+2026-05-01 12:12:58,392 P13664 INFO Epoch 3/5, train discriminator loss: 0.56856
+2026-05-01 12:13:04,918 P13664 INFO *** Test time is 6.522453546524048
+2026-05-01 12:13:04,918 P13664 INFO Epoch 3/5, test f1: 0.61895 rc: 0.63079 pc: 0.60755. [299.43s]
+2026-05-01 12:13:04,918 P13664 INFO early stopping epoch 1/3
+2026-05-01 12:15:36,581 P13664 INFO Epoch 4/5, train generator loss: 0.06187
+2026-05-01 12:17:57,206 P13664 INFO Epoch 4/5, train discriminator loss: 0.19839
+2026-05-01 12:18:03,725 P13664 INFO *** Test time is 6.5188210010528564
+2026-05-01 12:18:03,725 P13664 INFO Epoch 4/5, test f1: 0.63934 rc: 0.60254 pc: 0.68093. [292.29s]
+2026-05-01 12:19:25,751 P13664 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.272130
+2026-05-01 12:19:28,824 P13664 INFO *** Test F1 0.5756  of unsupervised traning
+2026-05-01 12:19:28,828 P13664 INFO *** Best F1 {'f1': 0.6393408856848609, 'rc': 0.6025429486557313, 'pc': 0.6809257431172535}  of unsupervised traning
+2026-05-01 12:19:29,131 P13664 INFO Current hash id 671af35f

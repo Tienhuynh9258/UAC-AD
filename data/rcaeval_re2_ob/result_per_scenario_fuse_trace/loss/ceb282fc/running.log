@@ -1,0 +1,32 @@
+2026-05-01 13:19:05,143 P17496 INFO ^^^^^^^^^^ Current Model:hades, ceb282fc ^^^^^^^^^^
+2026-05-01 13:19:05,143 P17496 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-05-01 13:19:11,708 P17496 INFO 40 unique log templates found.
+2026-05-01 13:19:11,724 P17496 INFO Transforming unlabel train data.
+2026-05-01 13:19:12,561 P17496 INFO Transforming test data.
+2026-05-01 13:19:12,830 P17496 INFO 108 new templates show.
+2026-05-01 13:19:14,185 P17496 INFO Data loaded done!
+2026-05-01 13:21:13,575 P17496 INFO Known word number: 40
+2026-05-01 13:23:46,550 P17496 INFO Epoch 0/5, train generator loss: 0.23825
+2026-05-01 13:26:11,813 P17496 INFO Epoch 0/5, train discriminator loss: 0.96964
+2026-05-01 13:26:18,139 P17496 INFO *** Test time is 6.325562477111816
+2026-05-01 13:26:18,139 P17496 INFO Epoch 0/5, test f1: 0.68486 rc: 0.58150 pc: 0.83291. [293.58s]
+2026-05-01 13:28:50,747 P17496 INFO Epoch 1/5, train generator loss: 0.08862
+2026-05-01 13:31:15,437 P17496 INFO Epoch 1/5, train discriminator loss: 0.10034
+2026-05-01 13:31:22,552 P17496 INFO *** Test time is 7.1127705574035645
+2026-05-01 13:31:22,552 P17496 INFO Epoch 1/5, test f1: 0.82130 rc: 0.81101 pc: 0.83186. [297.24s]
+2026-05-01 13:33:54,146 P17496 INFO Epoch 2/5, train generator loss: 0.08317
+2026-05-01 13:36:16,137 P17496 INFO Epoch 2/5, train discriminator loss: 0.18377
+2026-05-01 13:36:23,059 P17496 INFO *** Test time is 6.905551433563232
+2026-05-01 13:36:23,059 P17496 INFO Epoch 2/5, test f1: 0.83067 rc: 0.81869 pc: 0.84302. [293.54s]
+2026-05-01 13:38:58,362 P17496 INFO Epoch 3/5, train generator loss: 0.08454
+2026-05-01 13:41:23,503 P17496 INFO Epoch 3/5, train discriminator loss: 0.22350
+2026-05-01 13:41:30,224 P17496 INFO *** Test time is 6.721271514892578
+2026-05-01 13:41:30,227 P17496 INFO Epoch 3/5, test f1: 0.83544 rc: 0.80518 pc: 0.86806. [300.39s]
+2026-05-01 13:44:02,217 P17496 INFO Epoch 4/5, train generator loss: 0.07440
+2026-05-01 13:46:24,233 P17496 INFO Epoch 4/5, train discriminator loss: 0.39244
+2026-05-01 13:46:30,691 P17496 INFO *** Test time is 6.4560277462005615
+2026-05-01 13:46:30,691 P17496 INFO Epoch 4/5, test f1: 0.84139 rc: 0.81018 pc: 0.87510. [293.96s]
+2026-05-01 13:47:52,759 P17496 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.279253
+2026-05-01 13:47:55,348 P17496 INFO *** Test F1 0.7832  of unsupervised traning
+2026-05-01 13:47:55,348 P17496 INFO *** Best F1 {'f1': 0.8413872610241138, 'rc': 0.8101757631822387, 'pc': 0.8750999200639489}  of unsupervised traning
+2026-05-01 13:47:55,679 P17496 INFO Current hash id ceb282fc

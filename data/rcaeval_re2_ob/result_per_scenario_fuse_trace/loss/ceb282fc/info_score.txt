@@ -1,0 +1,4 @@
+Experiment ceb282fc: 2026/05/01-21:47:55
+Train time/epoch 295.7446
+* Test -- f1:0.8414	rc:0.8102	pc:0.8751
+

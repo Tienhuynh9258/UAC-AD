@@ -1,0 +1,4 @@
+Experiment e438cc36: 2026/05/02-02:53:01
+Train time/epoch 163.3582
+* Test -- f1:0.9384	rc:0.9328	pc:0.9442
+

@@ -1,0 +1,4 @@
+Experiment f9975edc: 2026/05/02-08:14:29
+Train time/epoch 231.7644
+* Test -- f1:0.7469	rc:0.6122	pc:0.9576
+

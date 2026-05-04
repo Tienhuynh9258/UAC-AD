@@ -1,0 +1,32 @@
+2026-05-01 14:17:13,909 P20136 INFO ^^^^^^^^^^ Current Model:hades, d0e5397e ^^^^^^^^^^
+2026-05-01 14:17:13,909 P20136 INFO Load from D:\UAC-AD\data\rcaeval_re2_ob
+2026-05-01 14:17:20,553 P20136 INFO 40 unique log templates found.
+2026-05-01 14:17:20,568 P20136 INFO Transforming unlabel train data.
+2026-05-01 14:17:21,390 P20136 INFO Transforming test data.
+2026-05-01 14:17:21,724 P20136 INFO 1 new templates show.
+2026-05-01 14:17:23,101 P20136 INFO Data loaded done!
+2026-05-01 14:19:23,012 P20136 INFO Known word number: 40
+2026-05-01 14:21:54,467 P20136 INFO Epoch 0/5, train generator loss: 0.25548
+2026-05-01 14:24:21,030 P20136 INFO Epoch 0/5, train discriminator loss: 0.96352
+2026-05-01 14:24:27,161 P20136 INFO *** Test time is 6.121453285217285
+2026-05-01 14:24:27,161 P20136 INFO Epoch 0/5, test f1: 0.37600 rc: 0.38210 pc: 0.37009. [293.97s]
+2026-05-01 14:26:58,412 P20136 INFO Epoch 1/5, train generator loss: 0.10359
+2026-05-01 14:29:21,310 P20136 INFO Epoch 1/5, train discriminator loss: 0.36635
+2026-05-01 14:29:27,435 P20136 INFO *** Test time is 6.125748157501221
+2026-05-01 14:29:27,435 P20136 INFO Epoch 1/5, test f1: 0.40276 rc: 0.29730 pc: 0.62415. [294.10s]
+2026-05-01 14:31:59,074 P20136 INFO Epoch 2/5, train generator loss: 0.07126
+2026-05-01 14:34:20,023 P20136 INFO Epoch 2/5, train discriminator loss: 0.20345
+2026-05-01 14:34:26,427 P20136 INFO *** Test time is 6.401696681976318
+2026-05-01 14:34:26,427 P20136 INFO Epoch 2/5, test f1: 0.56259 rc: 0.57703 pc: 0.54886. [292.55s]
+2026-05-01 14:36:57,839 P20136 INFO Epoch 3/5, train generator loss: 0.06154
+2026-05-01 14:39:23,017 P20136 INFO Epoch 3/5, train discriminator loss: 0.45095
+2026-05-01 14:39:29,668 P20136 INFO *** Test time is 6.649885892868042
+2026-05-01 14:39:29,668 P20136 INFO Epoch 3/5, test f1: 0.56731 rc: 0.58184 pc: 0.55348. [296.54s]
+2026-05-01 14:42:00,998 P20136 INFO Epoch 4/5, train generator loss: 0.06057
+2026-05-01 14:44:29,372 P20136 INFO Epoch 4/5, train discriminator loss: 0.38264
+2026-05-01 14:44:37,493 P20136 INFO *** Test time is 8.105834484100342
+2026-05-01 14:44:37,493 P20136 INFO Epoch 4/5, test f1: 0.57154 rc: 0.58618 pc: 0.55762. [299.68s]
+2026-05-01 14:45:58,665 P20136 INFO Threshold (p=95.0, src=unlabel(fallback)): 0.252025
+2026-05-01 14:46:01,248 P20136 INFO *** Test F1 0.3832  of unsupervised traning
+2026-05-01 14:46:01,248 P20136 INFO *** Best F1 {'f1': 0.5715444955369219, 'rc': 0.5861845755502126, 'pc': 0.5576178747361014}  of unsupervised traning
+2026-05-01 14:46:01,444 P20136 INFO Current hash id d0e5397e

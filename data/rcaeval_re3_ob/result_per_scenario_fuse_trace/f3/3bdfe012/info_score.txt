@@ -1,0 +1,4 @@
+Experiment 3bdfe012: 2026/05/02-03:09:10
+Train time/epoch 168.1226
+* Test -- f1:0.6634	rc:0.6636	pc:0.6631
+

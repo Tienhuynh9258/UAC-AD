@@ -1,0 +1,4 @@
+Experiment ea545ef4: 2026/05/02-08:38:08
+Train time/epoch 233.5558
+* Test -- f1:0.5015	rc:0.5131	pc:0.4904
+
