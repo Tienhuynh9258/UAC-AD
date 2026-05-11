@@ -1,22 +1,37 @@
-# UAC-AD
+<h1 align="center">UAC-AD</h1>
 
-Source code for the paper **"UAC-AD: Unsupervised Adversarial Contrastive Learning for Anomaly Detection on Multi-source Data"**.
+<p align="center">
+  <b>Unsupervised Adversarial Contrastive Learning for Anomaly Detection on Multi-source Data</b>
+</p>
 
-UAC-AD detects anomalies in cloud/microservice systems by jointly learning from three data modalities — **KPI metrics**, **logs**, and **traces** — without requiring labeled training data.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-%3E%3D3.7-blue?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/PyTorch-1.11.0-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
+
+<p align="center">
+  UAC-AD detects anomalies in cloud/microservice systems by jointly learning from three data modalities — <b>KPI metrics</b>, <b>logs</b>, and <b>traces</b> — without requiring labeled training data.
+</p>
 
 ---
 
 ## Architecture Overview
 
-![UAC-AD Overview](./result21/overview.png)
+<p align="center">
+  <img src="./result/main_architecture.jpg" alt="UAC-AD Architecture" width="85%">
+</p>
 
-The model encodes each modality separately, fuses them via multi-modal self-attention, and reconstructs the input using an adversarial autoencoder. Windows with high reconstruction error are flagged as anomalies.
+The model encodes each modality independently, fuses them via multi-modal self-attention, and reconstructs the input using an adversarial autoencoder. Windows with high reconstruction error are flagged as anomalies.
 
-- **KPI Encoder**: Conv1d token embedding + Positional encoding
-- **Log Encoder**: 4-layer Transformer
-- **Trace Encoder** *(optional)*: 2-layer Graph Attention Network (GAT) on the service call graph
-- **Fusion**: Multi-modal self-attention over log + KPI, with trace guiding the decoder
-- **Training**: GAN adversarial loss + contrastive loss on mismatched modality pairs
+| Component | Description |
+|:----------|:------------|
+| **KPI Encoder** | Conv1d token embedding + Positional encoding |
+| **Log Encoder** | 4-layer Transformer |
+| **Trace Encoder** *(optional)* | 2-layer Graph Attention Network (GAT) on the service call graph |
+| **Fusion** | Multi-modal self-attention over log + KPI, with trace guiding the decoder |
+| **Residual-Gated Trace Fusion** | `y = base_decoder(fm) + g * delta_head([fm, ZV])` — gate `g` opens only when trace genuinely reduces reconstruction loss; zero-init ensures the model starts exactly as the log+KPI baseline |
+| **Training** | GAN adversarial loss + contrastive loss on mismatched modality pairs |
 
 ---
 
@@ -34,71 +49,102 @@ pip install -r requirements.txt
 
 ---
 
-## Quick Start
+## Datasets
 
-```bash
-cd codes
-python run.py
-```
+| Dataset | System | Fault Types | Scenarios | Modalities | Status |
+|:--------|:-------|:------------|----------:|:-----------|:------:|
+| **SocialNetwork** | 12-service social network (DeathStarBench) | Resource & network faults | 12 | KPI, Logs, Traces | Done |
+| **RE2-OB** | Online Boutique (Google, 11 services) | Infrastructure faults (cpu, delay, disk, loss, mem, socket) | 30 | KPI, Logs, Traces | Done |
+| **RE3-OB** | Online Boutique (Google, 11 services) | Code-defect faults (f1–f5) | 5 | KPI, Logs, Traces | Done |
+| **RE2-TT** | TrainTicket (40+ services) | Infrastructure faults | TBD | KPI, Logs, Traces | Planned |
+| **RE3-TT** | TrainTicket (40+ services) | Code-defect faults | TBD | KPI, Logs, Traces | Planned |
 
-This runs on **Dataset A** (`data/chunk_10`) with default settings (KPI + log fusion, no trace branch).
+> **RE2-OB / RE3-OB** are from the [RCAEval](https://github.com/phamquiluan/RCAEval) benchmark.  
+> **SocialNetwork** is from the [AnoMod](https://zenodo.org/records/18342898) benchmark, built on [DeathStarBench](https://github.com/delimitrou/DeathStarBench).
+
+For preprocessing instructions, see the [Documentation](#documentation) section.
 
 ---
 
-## Datasets
+## Quick Start
 
-| Dataset | Modalities | Source |
-|---------|-----------|--------|
-| **A** (default) | KPI, Logs | Spark runtime — [Zenodo 7609780](https://doi.org/10.5281/zenodo.7609780) |
-| **B** (MicroSS) | KPI, Logs, Traces | QR-code login simulation — [GAIA-DataSet/MicroSS](https://github.com/CloudWise-OpenSource/GAIA-DataSet/tree/main/MicroSS) |
-| **C** (SocialNetwork) | KPI, Logs, Traces | 12-service microservice app — confidential |
+```bash
+# SocialNetwork — per-scenario evaluation (KPI + Log + Trace)
+python codes/common/eval_per_scenario_sn.py \
+  --data data/sn \
+  --dataset sn --data_type fuse \
+  --open_trace True --trace_c 6 --gate_lambda 0.01 \
+  --epoches 10 10 --batch_size 256 --patience 5 \
+  --window_size 5 --val_percentile 95 \
+  --alpha 0.16 --open_gan_sep True \
+  --run_start 0 --run_end 1
+```
 
-**Dataset A** includes CPU, memory, IO, and network metrics + Spark runtime logs.
-
-**Dataset B (MicroSS)** covers a QR-code login workflow with 4 services, ~85 KPI dimensions, and 20 log templates (Drain3-parsed).
-
-For preprocessing instructions, see [`docs/preprocess_micross_en.md`](docs/preprocess_micross_en.md) and [`docs/preprocess_sn.md`](docs/preprocess_sn.md).
+> **Note:** Raw data must be preprocessed before running. See the preprocessing guides in [Documentation](#documentation).
 
 ---
 
 ## Running Experiments
 
-### Dataset A (default)
+Each dataset has a dedicated **per-scenario evaluation script** under `codes/common/`. These scripts iterate over all fault-type scenarios, run UAC-AD on each, and report aggregated F1 / Precision / Recall (mean ± std).
+
+### SocialNetwork
 
 ```bash
-cd codes
-python run.py --data_type fuse --dataset original --data ../data/chunk_10
+python codes/common/eval_per_scenario_sn.py \
+  --data data/sn \
+  --dataset sn --data_type fuse \
+  --open_trace True --trace_c 6 --gate_lambda 0.01 \
+  --epoches 10 10 --batch_size 256 --patience 5 \
+  --window_size 5 --val_percentile 95 \
+  --alpha 0.16 --open_gan_sep True \
+  --run_start 0 --run_end 1
 ```
 
-### Dataset B (MicroSS, with traces)
+### Online Boutique — RE2-OB (Infrastructure Faults)
 
 ```bash
-cd codes
-python run.py \
-  --data_type fuse \
-  --dataset micross \
-  --data ../data/micross \
-  --open_trace True \
-  --window_size 50
+# Baseline: log + metric only
+python codes/common/eval_per_scenario_rcaeval_re2_ob.py \
+  --data data/rcaeval_re2_ob --dataset rcaeval_re2_ob --data_type fuse \
+  --open_trace False --batch_size 128 --window_size 30 \
+  --epoches 5 5 --patience 3 \
+  --result_dir data/rcaeval_re2_ob/result_per_scenario_fuse_baseline
+
+# Trace: log + metric + trace (GAT)
+python codes/common/eval_per_scenario_rcaeval_re2_ob.py \
+  --data data/rcaeval_re2_ob --dataset rcaeval_re2_ob --data_type fuse \
+  --open_trace True --batch_size 128 --window_size 30 \
+  --epoches 5 5 --patience 3 \
+  --result_dir data/rcaeval_re2_ob/result_per_scenario_fuse_trace
 ```
 
-### Dataset C (SocialNetwork, per-scenario evaluation)
+### Online Boutique — RE3-OB (Code-Defect Faults)
 
 ```bash
-cd codes
-python run.py \
-  --data_type fuse \
-  --dataset sn \
-  --data ../data/sn \
-  --open_trace True \
-  --window_size 30 \
-  --val_percentile 95
+# Baseline: log + metric only
+python codes/common/eval_per_scenario_rcaeval_re3_ob.py \
+  --data data/rcaeval_re3_ob --dataset rcaeval_re3_ob --data_type fuse \
+  --open_trace False --batch_size 128 --window_size 30 \
+  --epoches 5 5 --patience 3 \
+  --result_dir data/rcaeval_re3_ob/result_per_scenario_fuse_baseline
+
+# Trace: log + metric + trace (GAT)
+python codes/common/eval_per_scenario_rcaeval_re3_ob.py \
+  --data data/rcaeval_re3_ob --dataset rcaeval_re3_ob --data_type fuse \
+  --open_trace True --batch_size 128 --window_size 30 \
+  --epoches 5 5 --patience 3 \
+  --result_dir data/rcaeval_re3_ob/result_per_scenario_fuse_trace
 ```
 
-### Run multiple times (different random seeds)
+### TrainTicket — RE2-TT / RE3-TT
+
+> **Planned** — preprocessing and experiment scripts are under development.
+
+### Run Multiple Times (Different Random Seeds)
 
 ```bash
-python run.py --run_start 0 --run_end 5
+python codes/common/eval_per_scenario_sn.py --run_start 0 --run_end 5
 ```
 
 ---
@@ -106,17 +152,21 @@ python run.py --run_start 0 --run_end 5
 ## Key Arguments
 
 | Argument | Default | Description |
-|----------|---------|-------------|
+|:---------|:--------|:------------|
 | `--data` | `../data/chunk_10` | Path to dataset directory |
-| `--dataset` | `original` | Dataset type: `original`, `micross`, `sn` |
+| `--dataset` | `original` | Dataset type: `sn`, `rcaeval_re2_ob`, `rcaeval_re3_ob` |
 | `--data_type` | `kpi` | Modalities to use: `fuse` (log+KPI), `log`, `kpi` |
 | `--open_trace` | `False` | Enable trace branch (GAT; requires trace data) |
 | `--window_size` | `5` | Sliding window size |
 | `--hidden_size` | `32` | Common embedding dimension |
+| `--num_services` | `10` | Number of service nodes in the trace graph |
+| `--trace_c` | `5` | Feature dimension per trace node (e.g. 6 with `latency_dev`) |
+| `--gate_lambda` | `0.01` | L1 regularizer on the residual trace gate |
 | `--epoches` | `50 50` | Epochs for phase 1 and phase 2 |
 | `--batch_size` | `128` | Training batch size |
 | `--learning_rate` | `0.001` | Optimizer learning rate |
 | `--open_gan` | `True` | Enable GAN adversarial training |
+| `--open_gan_sep` | `False` | Separate GAN training for trace branch |
 | `--open_unmatch_zoomout` | `True` | Enable contrastive loss on mismatched pairs |
 | `--fuse_type` | `multi_modal_self_attn` | Fusion strategy: `multi_modal_self_attn`, `concat`, `cross_attn`, `sep_attn` |
 | `--criterion` | `l1` | Reconstruction loss: `l1` or `mse` |
@@ -127,21 +177,25 @@ python run.py --run_start 0 --run_end 5
 
 ## Results
 
-![Main Results](./result21/main_result.png)
-
 Detailed per-dataset experiment results:
-- [`docs/experiment_results_micross_trace_vs_baseline_en.md`](docs/experiment_results_micross_trace_vs_baseline_en.md)
-- [`docs/experiment_results_sn_trace_vs_baseline.md`](docs/experiment_results_sn_trace_vs_baseline.md)
 
-Each experiment run saves outputs to `result21/<run_hash>/`:
+| Dataset | Report |
+|:--------|:-------|
+| SocialNetwork | [Trace vs Baseline](docs/experiment_results_sn_trace_vs_baseline_en.md) |
+| RE2-OB (Online Boutique) | [Trace vs Baseline](docs/experiment_results_re2_ob_trace_vs_baseline_en.md) |
+| RE3-OB (Online Boutique) | [Trace vs Baseline](docs/experiment_results_re3_ob_trace_vs_baseline_en.md) |
+
+Each per-scenario evaluation saves outputs under the dataset's result directory:
 
 ```
-result21/
-└── <run_hash>/
-    ├── params.json       # All hyperparameters
-    ├── info_score.txt    # Final F1, Recall, Precision
-    ├── running.log       # Training log
-    └── model.ckpt        # Saved model weights
+data/<dataset>/result_per_scenario_fuse_{baseline|trace}/
+├── <scenario>/
+│   └── <run_hash>/
+│       ├── params.json       # All hyperparameters
+│       ├── info_score.txt    # Final F1, Recall, Precision
+│       ├── running.log       # Training log
+│       └── model.ckpt        # Saved model weights
+└── summary.json              # Aggregated metrics across all scenarios
 ```
 
 ---
@@ -151,32 +205,35 @@ result21/
 ```
 UAC-AD/
 ├── codes/
-│   ├── run.py                        # Main entry point
-│   ├── run_sequential.py             # Memory-efficient sequential variant
-│   ├── gpu0.sh / gpu1.sh             # Pre-configured experiment scripts
-│   ├── data_analysis.py              # Data exploration utilities
+│   ├── run.py                              # Main entry point
+│   ├── run_sequential.py                   # Memory-efficient sequential variant
+│   ├── gpu0.sh / gpu1.sh                   # Pre-configured experiment scripts
+│   ├── data_analysis.py                    # Data exploration utilities
 │   ├── common/
-│   │   ├── data_loads.py             # Data loading & windowing
-│   │   ├── data_processing.py        # Dataset-specific preprocessing
-│   │   ├── data_processing_utils.py  # Feature normalization & visualization
-│   │   ├── semantics.py              # Log feature extraction (Word2Vec, Drain3)
-│   │   ├── preprocess_micross.py     # MicroSS preprocessing script
-│   │   ├── preprocess_sn.py          # SocialNetwork preprocessing script
-│   │   ├── eval_per_scenario_sn.py   # Per-scenario evaluation for SN
-│   │   └── utils.py                  # General utilities
+│   │   ├── data_loads.py                   # Data loading & windowing
+│   │   ├── data_processing.py              # Dataset-specific preprocessing
+│   │   ├── data_processing_utils.py        # Feature normalization & visualization
+│   │   ├── semantics.py                    # Log feature extraction (Word2Vec, Drain3)
+│   │   ├── preprocess_sn.py                # SocialNetwork preprocessing
+│   │   ├── preprocess_rcaeval_re2_ob.py    # RE2-OB preprocessing
+│   │   ├── preprocess_rcaeval_re3_ob.py    # RE3-OB preprocessing
+│   │   ├── eval_per_scenario_sn.py         # Per-scenario evaluation for SN
+│   │   ├── eval_per_scenario_rcaeval_re2_ob.py  # Per-scenario evaluation for RE2-OB
+│   │   ├── eval_per_scenario_rcaeval_re3_ob.py  # Per-scenario evaluation for RE3-OB
+│   │   └── utils.py                        # General utilities
 │   └── models/
-│       ├── basev3.py                 # Train/eval loop & BaseModel
-│       ├── fuse_v3.py                # Multimodal fusion model
-│       ├── kpi_model_v3.py           # KPI encoder/decoder
-│       ├── log_model_v3.py           # Log encoder/decoder
-│       ├── trace_model_v3.py         # Trace encoder (GAT)
-│       └── utils.py                  # Shared modules (attention, embedders)
+│       ├── basev3.py                       # Train/eval loop & BaseModel
+│       ├── fuse_v3.py                      # Multimodal fusion model (incl. residual-gated trace)
+│       ├── kpi_model_v3.py                 # KPI encoder/decoder
+│       ├── log_model_v3.py                 # Log encoder/decoder
+│       ├── trace_model_v3.py               # Trace encoder (GAT, decomposed attention)
+│       └── utils.py                        # Shared modules (attention, embedders)
 ├── data/
-│   ├── chunk_10/                     # Dataset A (train/test/unlabel .pkl)
-│   ├── micross/                      # Dataset B (after preprocessing)
-│   └── sn/                           # Dataset C (after preprocessing)
-├── docs/                             # Architecture docs & experiment results
-├── result21/                         # Output directory
+│   ├── sn/                                 # SocialNetwork (after preprocessing)
+│   ├── rcaeval_re2_ob/                     # RE2-OB (after preprocessing)
+│   └── rcaeval_re3_ob/                     # RE3-OB (after preprocessing)
+├── docs/                                   # Architecture docs & experiment results
+├── result21/                               # Output directory
 └── requirements.txt
 ```
 
@@ -184,6 +241,33 @@ UAC-AD/
 
 ## Documentation
 
+### Preprocessing Guides
+
+| Dataset | Guide |
+|:--------|:------|
+| SocialNetwork | [preprocess_sn_en.md](docs/preprocess_sn_en.md) |
+| RE2-OB (Online Boutique) | [preprocess_re2_ob_en.md](docs/preprocess_re2_ob_en.md) |
+| RE3-OB (Online Boutique) | [preprocess_re3_ob_en.md](docs/preprocess_re3_ob_en.md) |
+
+### Architecture & Analysis
+
 - [Model Architecture & Data Flow](docs/model_architecture_flow_en.md)
-- [MicroSS Preprocessing Guide](docs/preprocess_micross_en.md)
-- [SocialNetwork Preprocessing Guide](docs/preprocess_sn.md)
+
+### Experiment Results
+
+- [SocialNetwork — Trace vs Baseline](docs/experiment_results_sn_trace_vs_baseline_en.md)
+- [RE2-OB — Trace vs Baseline](docs/experiment_results_re2_ob_trace_vs_baseline_en.md)
+- [RE3-OB — Trace vs Baseline](docs/experiment_results_re3_ob_trace_vs_baseline_en.md)
+
+---
+
+## Citation
+
+```bibtex
+@article{uac-ad,
+  title   = {UAC-AD: Unsupervised Adversarial Contrastive Learning for Anomaly Detection on Multi-source Data},
+  author  = {},
+  year    = {2026},
+  note    = {Source code: https://github.com/Tienhuynh9258/UAC-AD}
+}
+```
