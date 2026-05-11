@@ -8,11 +8,38 @@
   <img src="https://img.shields.io/badge/Python-%3E%3D3.7-blue?logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/PyTorch-1.11.0-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+  <img src="https://img.shields.io/github/last-commit/Tienhuynh9258/UAC-AD" alt="Last Commit">
+  <img src="https://img.shields.io/github/repo-size/Tienhuynh9258/UAC-AD" alt="Repo Size">
 </p>
 
 <p align="center">
   UAC-AD detects anomalies in cloud/microservice systems by jointly learning from three data modalities — <b>KPI metrics</b>, <b>logs</b>, and <b>traces</b> — without requiring labeled training data.
 </p>
+
+---
+
+## Table of Contents
+
+- [Key Features](#key-features)
+- [Architecture Overview](#architecture-overview)
+- [Getting Started](#getting-started)
+- [Datasets](#datasets)
+- [Running Experiments](#running-experiments)
+- [Key Arguments](#key-arguments)
+- [Results](#results)
+- [Project Structure](#project-structure)
+- [Documentation](#documentation)
+- [Citation](#citation)
+
+---
+
+## Key Features
+
+- **Unsupervised** — trains exclusively on normal data; no anomaly labels required
+- **Multi-modal fusion** — jointly learns from KPI metrics, logs, and service traces via multi-modal self-attention
+- **Residual-gated trace fusion** — trace branch is zero-init and gated; it can only help, never hurt baseline performance
+- **Adversarial + contrastive training** — GAN adversarial loss combined with contrastive loss on mismatched modality pairs
+- **Per-scenario evaluation** — dedicated scripts that iterate over fault scenarios and report aggregated F1 / Precision / Recall (mean +/- std)
 
 ---
 
@@ -35,38 +62,36 @@ The model encodes each modality independently, fuses them via multi-modal self-a
 
 ---
 
-## Requirements
+## Getting Started
+
+### Prerequisites
 
 - Python >= 3.7
 - PyTorch 1.11.0
 - CUDA-capable GPU recommended
 
+### Installation
+
 ```bash
+git clone https://github.com/Tienhuynh9258/UAC-AD.git
+cd UAC-AD
 pip install -r requirements.txt
 ```
 
-**Key dependencies:** `torch==1.11.0`, `gensim==4.2.0`, `drain3>=0.9.11`, `scikit-learn==1.1.1`, `pandas==1.4.2`
+<details>
+<summary><b>Key dependencies</b></summary>
 
----
+| Package | Version |
+|:--------|:--------|
+| `torch` | 1.11.0 |
+| `gensim` | 4.2.0 |
+| `drain3` | >= 0.9.11 |
+| `scikit-learn` | 1.1.1 |
+| `pandas` | 1.4.2 |
 
-## Datasets
+</details>
 
-| Dataset | System | Fault Types | Scenarios | Modalities | Status |
-|:--------|:-------|:------------|----------:|:-----------|:------:|
-| **SocialNetwork** | 12-service social network (DeathStarBench) | Resource & network faults | 12 | KPI, Logs, Traces | Done |
-| **RE2-OB** | Online Boutique (Google, 11 services) | Infrastructure faults (cpu, delay, disk, loss, mem, socket) | 30 | KPI, Logs, Traces | Done |
-| **RE3-OB** | Online Boutique (Google, 11 services) | Code-defect faults (f1–f5) | 5 | KPI, Logs, Traces | Done |
-| **RE2-TT** | TrainTicket (40+ services) | Infrastructure faults | TBD | KPI, Logs, Traces | Planned |
-| **RE3-TT** | TrainTicket (40+ services) | Code-defect faults | TBD | KPI, Logs, Traces | Planned |
-
-> **RE2-OB / RE3-OB** are from the [RCAEval](https://github.com/phamquiluan/RCAEval) benchmark.  
-> **SocialNetwork** is from the [AnoMod](https://zenodo.org/records/18342898) benchmark, built on [DeathStarBench](https://github.com/delimitrou/DeathStarBench).
-
-For preprocessing instructions, see the [Documentation](#documentation) section.
-
----
-
-## Quick Start
+### Quick Start
 
 ```bash
 # SocialNetwork — per-scenario evaluation (KPI + Log + Trace)
@@ -80,13 +105,32 @@ python codes/common/eval_per_scenario_sn.py \
   --run_start 0 --run_end 1
 ```
 
-> **Note:** Raw data must be preprocessed before running. See the preprocessing guides in [Documentation](#documentation).
+> [!NOTE]
+> Raw data must be preprocessed before running. See the preprocessing guides in [Documentation](#documentation).
+
+---
+
+## Datasets
+
+| Dataset | System | Fault Types | Scenarios | Modalities | Status |
+|:--------|:-------|:------------|----------:|:-----------|:------:|
+| **SocialNetwork** | 12-service social network (DeathStarBench) | Resource & network faults | 12 | KPI, Logs, Traces | Done |
+| **RE2-OB** | Online Boutique (Google, 11 services) | Infrastructure faults (cpu, delay, disk, loss, mem, socket) | 30 | KPI, Logs, Traces | Done |
+| **RE3-OB** | Online Boutique (Google, 11 services) | Code-defect faults (f1-f5) | 5 | KPI, Logs, Traces | Done |
+| **RE2-TT** | TrainTicket (40+ services) | Infrastructure faults | TBD | KPI, Logs, Traces | Planned |
+| **RE3-TT** | TrainTicket (40+ services) | Code-defect faults | TBD | KPI, Logs, Traces | Planned |
+
+> [!TIP]
+> **RE2-OB / RE3-OB** are from the [RCAEval](https://github.com/phamquiluan/RCAEval) benchmark.
+> **SocialNetwork** is from the [AnoMod](https://zenodo.org/records/18342898) benchmark, built on [DeathStarBench](https://github.com/delimitrou/DeathStarBench).
+
+For preprocessing instructions, see the [Documentation](#documentation) section.
 
 ---
 
 ## Running Experiments
 
-Each dataset has a dedicated **per-scenario evaluation script** under `codes/common/`. These scripts iterate over all fault-type scenarios, run UAC-AD on each, and report aggregated F1 / Precision / Recall (mean ± std).
+Each dataset has a dedicated **per-scenario evaluation script** under `codes/common/`. These scripts iterate over all fault-type scenarios, run UAC-AD on each, and report aggregated F1 / Precision / Recall (mean +/- std).
 
 ### SocialNetwork
 
@@ -100,6 +144,8 @@ python codes/common/eval_per_scenario_sn.py \
   --alpha 0.16 --open_gan_sep True \
   --run_start 0 --run_end 1
 ```
+
+---
 
 ### Online Boutique — RE2-OB (Infrastructure Faults)
 
@@ -119,6 +165,8 @@ python codes/common/eval_per_scenario_rcaeval_re2_ob.py \
   --result_dir data/rcaeval_re2_ob/result_per_scenario_fuse_trace
 ```
 
+---
+
 ### Online Boutique — RE3-OB (Code-Defect Faults)
 
 ```bash
@@ -137,9 +185,14 @@ python codes/common/eval_per_scenario_rcaeval_re3_ob.py \
   --result_dir data/rcaeval_re3_ob/result_per_scenario_fuse_trace
 ```
 
+---
+
 ### TrainTicket — RE2-TT / RE3-TT
 
+> [!WARNING]
 > **Planned** — preprocessing and experiment scripts are under development.
+
+---
 
 ### Run Multiple Times (Different Random Seeds)
 
@@ -150,6 +203,9 @@ python codes/common/eval_per_scenario_sn.py --run_start 0 --run_end 5
 ---
 
 ## Key Arguments
+
+<details>
+<summary><b>Click to expand full argument reference</b></summary>
 
 | Argument | Default | Description |
 |:---------|:--------|:------------|
@@ -173,6 +229,8 @@ python codes/common/eval_per_scenario_sn.py --run_start 0 --run_end 5
 | `--val_percentile` | `None` | If set, use this percentile of normal losses as threshold (e.g. `95`) |
 | `--result_dir` | `../result21/` | Output directory for results and checkpoints |
 
+</details>
+
 ---
 
 ## Results
@@ -184,6 +242,9 @@ Detailed per-dataset experiment results:
 | SocialNetwork | [Trace vs Baseline](docs/experiment_results_sn_trace_vs_baseline_en.md) |
 | RE2-OB (Online Boutique) | [Trace vs Baseline](docs/experiment_results_re2_ob_trace_vs_baseline_en.md) |
 | RE3-OB (Online Boutique) | [Trace vs Baseline](docs/experiment_results_re3_ob_trace_vs_baseline_en.md) |
+
+<details>
+<summary><b>Output directory structure</b></summary>
 
 Each per-scenario evaluation saves outputs under the dataset's result directory:
 
@@ -198,9 +259,14 @@ data/<dataset>/result_per_scenario_fuse_{baseline|trace}/
 └── summary.json              # Aggregated metrics across all scenarios
 ```
 
+</details>
+
 ---
 
 ## Project Structure
+
+<details>
+<summary><b>Click to expand</b></summary>
 
 ```
 UAC-AD/
@@ -236,6 +302,8 @@ UAC-AD/
 ├── result21/                               # Output directory
 └── requirements.txt
 ```
+
+</details>
 
 ---
 
